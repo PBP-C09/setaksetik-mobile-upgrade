@@ -108,6 +108,7 @@ Secara umum, alur untuk request adalah **Flutter** &rarr; (HTTP Request) &rarr; 
 
 Selanjutnya, alur untuk pengiriman data adalah **Database** &rarr; (Fetch Data) &rarr; **Django** &rarr; (Response JSON) &rarr; **Flutter**.
 
+Berikut langkah-langkah implementasinya:
 - Pada Flutter ditambahkan package HTTP untuk mengelola request HTTP.
 - Dibuat model pada Flutter yang sesuai dengan struktur JSON model pada Django.
 - Fungsi di Flutter dibuat dengan mengaitkan request HTTP ke endpoint Django.
