@@ -114,6 +114,16 @@ Berikut langkah-langkah implementasinya:
 - Fungsi di Flutter dibuat dengan mengaitkan request HTTP ke endpoint Django.
 - Autentikasi (Login, Register, Logout) divalidasi dan dikirimkan token cookie oleh Django, Flutter menyimpan cookie tersebut.
 
+# Desain Mobile
+![Steak Lovers](https://github.com/user-attachments/assets/313ae2c3-bb34-4a3b-b368-8dc38959fe4e)
+![Admin](https://github.com/user-attachments/assets/fff326d5-4ed3-414c-8ea3-f6e7c652e829)
+![Steakhouse owner](https://github.com/user-attachments/assets/e3cc1375-14a3-43d3-b579-7f34199eea72)
+![Admin2](https://github.com/user-attachments/assets/dfc75eba-00fc-46ee-819d-63a76c39f78d)
+![spin](https://github.com/user-attachments/assets/119fa270-876a-42e3-a829-e83aace266cb)
+![adminres](https://github.com/user-attachments/assets/758218e8-21fd-4f68-85e5-ae0546808e41)
+
+
+
 
 # Tautan Deployment
 Tautan deployment aplikasi **Setaksetik**. (TBA)
