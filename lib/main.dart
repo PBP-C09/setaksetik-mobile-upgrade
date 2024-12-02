@@ -26,6 +26,8 @@ class MyApp extends StatelessWidget {
           backgroundColor: const Color(0xFFF5F5DC),
           titleTextStyle: TextStyle(
             fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w700,
+            fontStyle: FontStyle.italic,
             color: const Color(0xFF3E2723),
             fontSize: 20,
           ),
