@@ -16,7 +16,7 @@ class BookingPage extends StatelessWidget {
           children: [
             // Title Section
             const Center(
-              child: Column(
+            child: Column(
                 children: [
                   Text(
                     'Book a Restaurant',
