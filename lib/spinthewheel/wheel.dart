@@ -20,6 +20,7 @@ class _WheelViewState extends State<WheelView> {
   ];
   List<MenuList> _menuOptions = [];
   String _selectedCategory = "All Categories";
+  String? _selectedItem;
 
   @override
   void dispose() {
@@ -34,64 +35,120 @@ class _WheelViewState extends State<WheelView> {
       final request = context.read<CookieRequest>();
       _fetchMenuOptions(request, _selectedCategory);
     });
+  //   _controller.stream.listen((selectedIndex) {
+  //   setState(() {
+  //     _selectedItem = (_wheelItems[selectedIndex].child as Text).data;
+  //   });
+  // });
   }
 
   @override
   Widget build(BuildContext context) {
+                  print(_selectedItem);
+
     final request = context.watch<CookieRequest>();
     return Center(
       child: Column(
         children: [
           const SizedBox(height: 50),
           FortuneBar(
+            styleStrategy: AlternatingStyleStrategy(),
             selected: _controller.stream,
             items: _wheelItems,
           ),
           const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _spinWheel,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            ),
-            child: const Text('Spin'),
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _clearWheel,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-            ),
-            child: const Text('Clear'),
-          ),
-          const SizedBox(height: 20),
-          DropdownButton<String>(
-            value: _selectedCategory,
-            items: const [
-              DropdownMenuItem(
-                value: "All Categories",
-                child: Text("All Categories"),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons horizontally
+            children: [
+              TextButton(
+                onPressed: _spinWheel,
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                ),
+                child: const Text(
+                  'Spin',
+                  style: TextStyle(
+                    fontFamily: 'Playfair Display',
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.italic,
+                    color: Color(0xFFF5F5DC), // Beige color for label
+                    fontSize: 16.0,
+                  ),
+                ),
               ),
-              DropdownMenuItem(value: "Beef", child: Text("Beef")),
-              DropdownMenuItem(value: "Chicken", child: Text("Chicken")),
-              DropdownMenuItem(value: "Fish", child: Text("Fish")),
-              DropdownMenuItem(value: "Lamb", child: Text("Lamb")),
-              DropdownMenuItem(value: "Pork", child: Text("Pork")),
-              DropdownMenuItem(value: "Rib Eye", child: Text("Rib Eye")),
-              DropdownMenuItem(value: "Sirloin", child: Text("Sirloin")),
-              DropdownMenuItem(value: "T-Bone", child: Text("T-Bone")),
-              DropdownMenuItem(value: "Tenderloin", child: Text("Tenderloin")),
-              DropdownMenuItem(value: "Wagyu", child: Text("Wagyu")),
-              DropdownMenuItem(value: "Other", child: Text("Other")),
+              const SizedBox(width: 20), // Add spacing between the buttons
+              TextButton(
+                onPressed: _clearWheel,
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                ),
+                child: const Text(
+                  'Clear',
+                  style: TextStyle(
+                    fontFamily: 'Playfair Display',
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.italic,
+                    color: Color(0xFFF5F5DC), // Beige color for label
+                    fontSize: 16.0,
+                  ),
+                ),
+              ),
             ],
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                setState(() {
-                  _selectedCategory = newValue;
-                });
-                _fetchMenuOptions(request, newValue);
-              }
-            },
-            hint: const Text("All Categories"),
+          ),
+
+          if (_selectedItem != null)
+            Text(
+              'Selected Item: $_selectedItem',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          const SizedBox(height: 20),
+          Container(
+            color: const Color(0xFF3E2723), // Beige background
+            width: 300, // Match the width of buildMenuRow
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+            child: DropdownButton<String>(
+              value: _selectedCategory,
+              isExpanded: true, // Ensures the dropdown fills the container's width
+              underline: const SizedBox(), // Removes the default underline
+              items: const [
+                DropdownMenuItem(
+                  value: "All Categories",
+                  child: Text("All Categories"),
+                ),
+                DropdownMenuItem(value: "Beef", child: Text("Beef")),
+                DropdownMenuItem(value: "Chicken", child: Text("Chicken")),
+                DropdownMenuItem(value: "Fish", child: Text("Fish")),
+                DropdownMenuItem(value: "Lamb", child: Text("Lamb")),
+                DropdownMenuItem(value: "Pork", child: Text("Pork")),
+                DropdownMenuItem(value: "Rib Eye", child: Text("Rib Eye")),
+                DropdownMenuItem(value: "Sirloin", child: Text("Sirloin")),
+                DropdownMenuItem(value: "T-Bone", child: Text("T-Bone")),
+                DropdownMenuItem(value: "Tenderloin", child: Text("Tenderloin")),
+                DropdownMenuItem(value: "Wagyu", child: Text("Wagyu")),
+                DropdownMenuItem(value: "Other", child: Text("Other")),
+              ],
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  setState(() {
+                    _selectedCategory = newValue;
+                  });
+                  _fetchMenuOptions(request, newValue);
+                }
+              },
+              hint: const Text("All Categories"),
+              dropdownColor: const Color(0xFF3E2723), // Beige for dropdown items
+              style: TextStyle(
+                      fontFamily: 'Raleway',
+                      // fontWeight: FontWeight.w600,
+                      color: const Color(0xFFF5F5DC),
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                    ),
+              icon: const Icon(Icons.arrow_drop_down), // Dropdown icon
+            ),
           ),
           const SizedBox(height: 20),
           SizedBox(
@@ -107,6 +164,7 @@ class _WheelViewState extends State<WheelView> {
         ],
       ),
     );
+    
   }
 
   Future<void> _fetchMenuOptions(CookieRequest request, String category) async {
@@ -146,13 +204,55 @@ class _WheelViewState extends State<WheelView> {
     });
   }
 
+  // void _spinWheel() {
+  //   if (_wheelItems.length > 1) {
+  //     final int randomIndex =
+  //         DateTime.now().millisecondsSinceEpoch % _wheelItems.length;
+  //     _controller.add(randomIndex);
+  //   }
+  // }
+
   void _spinWheel() {
-    if (_wheelItems.length > 1) {
-      final int randomIndex =
-          DateTime.now().millisecondsSinceEpoch % _wheelItems.length;
-      _controller.add(randomIndex);
-    }
+  if (_wheelItems.length > 1) {
+    final int randomIndex =
+        DateTime.now().millisecondsSinceEpoch % _wheelItems.length;
+
+    // Add the index to the stream
+    _controller.add(randomIndex);
+
+    // Delay the listener until the animation is complete
+    Future.delayed(const Duration(seconds: 2), () {
+      _controller.stream.listen((selectedIndex) {
+        setState(() {
+          _selectedItem = (_wheelItems[selectedIndex].child as Text).data;
+        });
+        // Show the pop-up with the result
+        _showResultDialog(_selectedItem!);
+      });
+    });
   }
+}
+
+void _showResultDialog(String selectedItem) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Result"),
+        content: Text("The selected item is: $selectedItem"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text("Close"),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   void _clearWheel() {
     setState(() {
@@ -174,7 +274,7 @@ class _WheelViewState extends State<WheelView> {
             Expanded(
               child: Text(
                 menuName,
-                style: const TextStyle(fontSize: 16),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
             ElevatedButton(
@@ -183,7 +283,10 @@ class _WheelViewState extends State<WheelView> {
                 backgroundColor: Colors.amber,
                 textStyle: const TextStyle(color: Colors.black),
               ),
-              child: const Text('Add'),
+              child: const Text(
+                'Add',
+                style: TextStyle(fontFamily: 'Raleway'),
+              ),
             ),
           ],
         ),
@@ -191,3 +294,4 @@ class _WheelViewState extends State<WheelView> {
     );
   }
 }
+
