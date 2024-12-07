@@ -1,104 +1,110 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../../screens/login.dart'; // Path ke halaman login
+import '../screens/list_message_entry.dart'; // Path ke daftar pesan
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
-class MessageFormPage extends StatefulWidget {
-  const MessageFormPage({super.key});
+class ItemHomepage {
+  final String name;
+  final IconData icon;
 
-  @override
-  State<MessageFormPage> createState() => _MessageFormPageState();
+  ItemHomepage(this.name, this.icon);
 }
 
-class _MessageFormPageState extends State<MessageFormPage> {
-  final _formKey = GlobalKey<FormState>();
-  String _content = "";
+class ItemCard extends StatelessWidget {
+  final ItemHomepage item;
+
+  const ItemCard(this.item, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final request = context.watch<CookieRequest>();
+    final request = context.watch<CookieRequest>();
+    return Material(
+      color: Theme.of(context).colorScheme.secondary,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: () async {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(SnackBar(
+                content: Text("Kamu telah menekan tombol ${item.name}!")));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Center(child: Text('Send a Message')),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-      ),
-      // drawer: const LeftDrawer(),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    hintText: "Your Message",
-                    labelText: "Message",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                  ),
-                  onChanged: (String? value) {
-                    setState(() {
-                      _content = value!;
-                    });
-                  },
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return "Message cannot be empty!";
-                    }
-                    return null;
-                  },
-                ),
+          if (item.name == "Tambah Pesan") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MessageFormPage(), // Halaman form tambah pesan
               ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).colorScheme.primary),
-                    ),
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        final response = await request.postJson(
-                          // "http://127.0.0.1:8000/create-message/",
-                          jsonEncode(<String, String>{
-                            'content': _content,
-                          }),
-                        );
-                        if (context.mounted) {
-                          if (response['status'] == 'success') {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                              content: Text("Message sent successfully!"),
-                            ));
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => MyHomePage()),
-                            );
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                              content: Text("There was an error, please try again."),
-                            ));
-                          }
-                        }
-                      }
-                    },
-                    child: const Text(
-                      "Send",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
+            );
+          } else if (item.name == "Lihat Pesan") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const MessageEntryPage(), // Halaman daftar pesan
               ),
-            ],
+            );
+          } else if (item.name == "Logout") {
+            final response = await request.logout(
+                "http://127.0.0.1:8000/auth/logout/"); // URL logout
+            String message = response["message"];
+            if (context.mounted) {
+              if (response['status']) {
+                String uname = response["username"];
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("$message Sampai jumpa, $uname."),
+                ));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(message),
+                  ),
+                );
+              }
+            }
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  item.icon,
+                  color: Colors.white,
+                  size: 30.0,
+                ),
+                const Padding(padding: EdgeInsets.all(3)),
+                Text(
+                  item.name,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+// Tambahkan kelas MessageFormPage di bawah ini
+class MessageFormPage extends StatelessWidget {
+  const MessageFormPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tambah Pesan'),
+      ),
+      body: const Center(
+        child: Text('Form Tambah Pesan akan diletakkan di sini.'),
       ),
     );
   }

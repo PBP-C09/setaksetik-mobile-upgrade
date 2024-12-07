@@ -15,7 +15,7 @@ class RectangleIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderColor =
-        this.borderColor ?? Theme.of(context).colorScheme.secondary;
+        this.borderColor ?? const Color(0xFFF5F5DC);
 
     return LayoutBuilder(builder: (context, constraints) {
       final width = constraints.maxWidth;
