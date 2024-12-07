@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'explore.dart';
 import 'review.dart';
 import 'spin.dart';
-import 'meatup.dart';
+import 'package:setaksetikmobile/meatup/screens/meatup.dart';
 import 'booking.dart';
 
 import 'package:setaksetikmobile/screens/login.dart';
