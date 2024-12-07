@@ -1,3 +1,5 @@
+// lib/models/review.dart
+
 import 'dart:convert';
 
 List<Review> reviewFromJson(String str) =>
@@ -7,54 +9,37 @@ String reviewToJson(List<Review> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class Review {
-  String model;
-  int pk;
-  Fields fields;
+  final String id;
+  final String menu;
+  final String place;
+  final int rating;
+  final String description;
 
   Review({
-    required this.model,
-    required this.pk,
-    required this.fields,
-  });
-
-  factory Review.fromJson(Map<String, dynamic> json) => Review(
-        model: json["model"],
-        pk: json["pk"],
-        fields: Fields.fromJson(json["fields"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "model": model,
-        "pk": pk,
-        "fields": fields.toJson(),
-      };
-}
-
-class Fields {
-  int user;
-  String name;
-  String description;
-  DateTime dateAdded;
-
-  Fields({
-    required this.user,
-    required this.name,
+    required this.id,
+    required this.menu,
+    required this.place,
+    required this.rating,
     required this.description,
-    required this.dateAdded,
   });
 
-  factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        user: json["user"],
-        name: json["name"],
-        description: json["description"],
-        dateAdded: DateTime.parse(json["date_added"]),
-      );
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
+      id: json['id'],
+      menu: json['menu'],
+      place: json['place'],
+      rating: json['rating'],
+      description: json['description'],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-        "user": user,
-        "name": name,
-        "description": description,
-        "date_added":
-            "${dateAdded.year.toString().padLeft(4, '0')}-${dateAdded.month.toString().padLeft(2, '0')}-${dateAdded.day.toString().padLeft(2, '0')}",
-      };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'menu': menu,
+      'place': place,
+      'rating': rating,
+      'description': description,
+    };
+  }
 }
