@@ -156,19 +156,49 @@ class AlternatingStyleStrategy
     implements StyleStrategy {
   final List<int> disabledIndices;
 
-  Color _getFillColor(ThemeData theme, int index, int itemCount) {
-    final color = theme.colorScheme.primary;
-    final background = theme.colorScheme.background;
-    final opacity = itemCount % 2 == 1 && index == 0
-        ? 0.7 // TODO: make 0.75
-        : index % 2 == 0
-            ? 0.5
-            : 1.0;
+// THE ORIGINAL GETFILLCOLOR
+// =========================
+  // Color _getFillColor(ThemeData theme, int index, int itemCount) {
+  //   final color = theme.colorScheme.primary;
+  //   final background = theme.colorScheme.background;
+  //   final opacity = itemCount % 2 == 1 && index == 0
+  //       ? 0.7 // TODO: make 0.75
+  //       : index % 2 == 0
+  //           ? 0.5
+  //           : 1.0;
 
-    return Color.alphaBlend(
-      color.withOpacity(opacity),
-      background,
-    );
+  //   return Color.alphaBlend(
+  //     color.withOpacity(opacity),
+  //     background,
+  //   );
+  // }
+
+  Color _getFillColor(ThemeData theme, int index) {
+    switch (index % 3) {
+      case 0:
+        return const Color(0xFF842323);
+      case 1:
+        return const Color(0xFFFFD54F);
+      case 2:
+        return const Color(0xFF3E2723);
+      case 3:
+        return const Color(0xFF842323);
+      default:
+        return theme.colorScheme.background; // Fallback (shouldn't happen)
+    }
+  }
+
+  Color _getTextColor(int index) {
+    switch (index % 3) {
+      case 0:
+        return const Color(0xFFF5F5DC);
+      case 1:
+        return const Color(0xFF3E2723);
+      case 2:
+        return const Color(0xFFF5F5DC);
+      default:
+        return const Color(0xFF000000);
+    }
   }
 
   const AlternatingStyleStrategy({
@@ -183,11 +213,16 @@ class AlternatingStyleStrategy
       index,
       itemCount,
       () => FortuneItemStyle(
-        color: _getFillColor(theme, index, itemCount),
+        color: _getFillColor(theme, index),
         borderColor: theme.colorScheme.primary,
-        borderWidth: 0.0,
-        textAlign: TextAlign.start,
-        textStyle: TextStyle(color: theme.colorScheme.onPrimary),
+        borderWidth: 2.0,
+        textAlign: TextAlign.center,
+        textStyle: TextStyle(
+                        fontFamily: 'Raleway',
+                        fontWeight: FontWeight.w600,
+                        color: _getTextColor(index), // Brown color for label
+                        fontSize: 16.0,
+                      ),
       ),
     );
   }

@@ -33,7 +33,7 @@ class MenuList {
 }
 
 class Fields {
-    int id;
+    // int id;
     String menu;
     String category;
     String restaurantName;
@@ -49,7 +49,7 @@ class Fields {
     bool wifi;
 
     Fields({
-        required this.id,
+        // required this.id,
         required this.menu,
         required this.category,
         required this.restaurantName,
@@ -66,7 +66,7 @@ class Fields {
     });
 
     factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-        id: json["id"],
+        // id: json["id"],
         menu: json["menu"],
         category: json["category"],
         restaurantName: json["restaurant_name"],
@@ -83,7 +83,7 @@ class Fields {
     );
 
     Map<String, dynamic> toJson() => {
-        "id": id,
+        // "id": id,
         "menu": menu,
         "category": category,
         "restaurant_name": restaurantName,
