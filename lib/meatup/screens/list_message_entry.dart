@@ -1,33 +1,40 @@
 import 'package:flutter/material.dart';
+import '../models/message_entry.dart';
+// import '../widgets/left_drawer.dart'; 
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 
-class MessagePage extends StatefulWidget {
-  const MessagePage({super.key});
+class MessageEntryPage extends StatefulWidget {
+  const MessageEntryPage({super.key});
 
   @override
-  State<MessagePage> createState() => _MessagePageState();
+  State<MessageEntryPage> createState() => _MessageEntryPageState();
 }
 
-class _MessagePageState extends State<MessagePage> {
-  Future<List<MeatupMessage>> fetchMessages(CookieRequest request) async {
-    final response = await request.get('http://127.0.0.1:8000/messages/');
+class _MessageEntryPageState extends State<MessageEntryPage> {
+  Future<List<MessageEntry>> fetchMessages(CookieRequest request) async {
+    // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
+    final response = await request.get('http://127.0.0.1:8000/api/messages/'); // Adjust URL to the correct endpoint
 
+    // Decode response into JSON
     var data = response;
 
-    List<MeatupMessage> messages = [];
+    // Convert the JSON data into MessageEntry objects
+    List<MessageEntry> listMessages = [];
     for (var d in data) {
       if (d != null) {
-        messages.add(MeatupMessage.fromJson(d));
+        listMessages.add(MessageEntry.fromJson(d));
       }
     }
-    return messages;
+    return listMessages;
   }
 
   @override
   Widget build(BuildContext context) {
-    // final request = context.watch<CookieRequest>();
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Message List'),
+        title: const Text('Message Entry List'),
       ),
       // drawer: const LeftDrawer(),
       body: FutureBuilder(
@@ -40,7 +47,7 @@ class _MessagePageState extends State<MessagePage> {
               return const Column(
                 children: [
                   Text(
-                    'No messages available.',
+                    'Belum ada data pesan pada MeatUp.',
                     style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
                   ),
                   SizedBox(height: 8),
@@ -53,19 +60,22 @@ class _MessagePageState extends State<MessagePage> {
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${snapshot.data![index].sender}",
+                        "From: ${snapshot.data![index].fields.sender}",
                         style: const TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text("${snapshot.data![index].content}"),
+                      Text("To: ${snapshot.data![index].fields.receiver}"),
                       const SizedBox(height: 10),
-                      Text("Sent at: ${snapshot.data![index].createdAt}")
+                      Text("Message: ${snapshot.data![index].fields.content}"),
+                      const SizedBox(height: 10),
+                      Text("Sent at: ${snapshot.data![index].fields.timestamp}")
                     ],
                   ),
                 ),
