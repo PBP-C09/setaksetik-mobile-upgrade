@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:setaksetikmobile/spinthewheel/fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
 class WheelView extends StatefulWidget {
@@ -15,12 +15,17 @@ class WheelView extends StatefulWidget {
 
 class _WheelViewState extends State<WheelView> {
   final StreamController<int> _controller = StreamController<int>();
+  bool _buttonsEnabled = false;
+
   final List<FortuneItem> _wheelItems = [
     FortuneItem(child: const Text("Start Adding Items!"))
   ];
+  List<int> _menuInWheel = [];
   List<MenuList> _menuOptions = [];
+
   String _selectedCategory = "All Categories";
-  String? _selectedItem;
+  MenuList? _selectedItem;
+  String? _selectedMenuName;
 
   @override
   void dispose() {
@@ -35,16 +40,16 @@ class _WheelViewState extends State<WheelView> {
       final request = context.read<CookieRequest>();
       _fetchMenuOptions(request, _selectedCategory);
     });
-  //   _controller.stream.listen((selectedIndex) {
-  //   setState(() {
-  //     _selectedItem = (_wheelItems[selectedIndex].child as Text).data;
-  //   });
-  // });
+    // Delay the listener until the animation is complete
+    Future.delayed(const Duration(seconds: 5), () {
+      setState(() {
+        _buttonsEnabled = true;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-                  print(_selectedItem);
 
     final request = context.watch<CookieRequest>();
     return Center(
@@ -61,7 +66,7 @@ class _WheelViewState extends State<WheelView> {
             mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons horizontally
             children: [
               TextButton(
-                onPressed: _spinWheel,
+                onPressed: _buttonsEnabled ? _spinWheel : null,
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 ),
@@ -78,7 +83,7 @@ class _WheelViewState extends State<WheelView> {
               ),
               const SizedBox(width: 20), // Add spacing between the buttons
               TextButton(
-                onPressed: _clearWheel,
+                onPressed: _buttonsEnabled ? _clearWheel : null,
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 ),
@@ -96,18 +101,10 @@ class _WheelViewState extends State<WheelView> {
             ],
           ),
 
-          if (_selectedItem != null)
-            Text(
-              'Selected Item: $_selectedItem',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           const SizedBox(height: 20),
           Container(
             color: const Color(0xFF3E2723), // Beige background
-            width: 300, // Match the width of buildMenuRow
+            width: 300, // Match the width of _buildOptionRow
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
             child: DropdownButton<String>(
               value: _selectedCategory,
@@ -155,21 +152,21 @@ class _WheelViewState extends State<WheelView> {
             height: 200,
             child: SingleChildScrollView(
               child: Column(
-                children: _menuOptions.map((menu) {
-                  return buildMenuRow(menu.fields.menu);
-                }).toList(),
+                children: _menuOptions.asMap().entries.map((entry) {
+                int index = entry.key;
+                var menu = entry.value;
+                return _buildOptionRow(menu.fields.menu, index);
+              }).toList(),
               ),
             ),
           ),
         ],
       ),
     );
-    
   }
 
   Future<void> _fetchMenuOptions(CookieRequest request, String category) async {
-    try {
-      final response = await request.get(
+    final response = await request.get(
           'http://127.0.0.1:8000/spinthewheel/option-json/$category/');
       var data = response;
 
@@ -181,88 +178,9 @@ class _WheelViewState extends State<WheelView> {
           }
         }
       });
-    } catch (error) {
-      print("Error fetching menu options: $error");
-    }
   }
 
-  void _addOptionToWheel(String option) {
-    setState(() {
-      // Remove the placeholder if it's the only item
-      if (_wheelItems.length == 1 &&
-          _wheelItems[0].child is Text &&
-          (_wheelItems[0].child as Text).data == "Start Adding Items!") {
-        _wheelItems.clear();
-      }
-
-      bool exists = _wheelItems.any((item) => 
-        item.child is Text && (item.child as Text).data == option);
-
-      if (!exists) {
-        _wheelItems.add(FortuneItem(child: Text(option)));
-      }
-    });
-  }
-
-  // void _spinWheel() {
-  //   if (_wheelItems.length > 1) {
-  //     final int randomIndex =
-  //         DateTime.now().millisecondsSinceEpoch % _wheelItems.length;
-  //     _controller.add(randomIndex);
-  //   }
-  // }
-
-  void _spinWheel() {
-  if (_wheelItems.length > 1) {
-    final int randomIndex =
-        DateTime.now().millisecondsSinceEpoch % _wheelItems.length;
-
-    // Add the index to the stream
-    _controller.add(randomIndex);
-
-    // Delay the listener until the animation is complete
-    Future.delayed(const Duration(seconds: 2), () {
-      _controller.stream.listen((selectedIndex) {
-        setState(() {
-          _selectedItem = (_wheelItems[selectedIndex].child as Text).data;
-        });
-        // Show the pop-up with the result
-        _showResultDialog(_selectedItem!);
-      });
-    });
-  }
-}
-
-void _showResultDialog(String selectedItem) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text("Result"),
-        content: Text("The selected item is: $selectedItem"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text("Close"),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-
-  void _clearWheel() {
-    setState(() {
-      _wheelItems.clear();
-      _wheelItems
-          .add(FortuneItem(child: const Text("Start Adding Items!")));
-    });
-  }
-
-  Widget buildMenuRow(String menuName) {
+  Widget _buildOptionRow(String menuName, int menuIndex) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: Container(
@@ -278,7 +196,7 @@ void _showResultDialog(String selectedItem) {
               ),
             ),
             ElevatedButton(
-              onPressed: () => _addOptionToWheel(menuName),
+              onPressed: () =>  _buttonsEnabled ? _addOptionToWheel(menuName, menuIndex) : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber,
                 textStyle: const TextStyle(color: Colors.black),
@@ -293,5 +211,108 @@ void _showResultDialog(String selectedItem) {
       ),
     );
   }
-}
 
+  void _addOptionToWheel(String option, int optionIndex) {
+    setState(() {
+      // Remove the placeholder if it's the only item
+      if (_wheelItems.length == 1 &&
+          _wheelItems[0].child is Text &&
+          (_wheelItems[0].child as Text).data == "Start Adding Items!") {
+        _wheelItems.clear();
+      }
+
+      bool exists = _wheelItems.any((item) => 
+        item.child is Text && (item.child as Text).data == option);
+
+      if (!exists) {
+        _wheelItems.add(FortuneItem(child: Text(option)));
+        _menuInWheel.add(optionIndex);
+      }
+    });
+  }
+
+  void _spinWheel() {
+    if (_wheelItems.length > 1) {
+      final int selectedIndex =
+          DateTime.now().millisecondsSinceEpoch % _wheelItems.length;
+
+      // Add the index to the stream
+      _controller.add(selectedIndex);
+      setState(() {
+        _buttonsEnabled = false;
+      });
+
+      // Delay the listener until the animation is complete
+      Future.delayed(const Duration(seconds: 5), () {
+        setState(() {
+          _selectedItem = _menuOptions[_menuInWheel[selectedIndex]];
+          _selectedMenuName = _selectedItem?.fields.menu;
+          _buttonsEnabled = true;
+        });
+        _showResultDialog(_selectedMenuName!, _selectedItem!); 
+      });
+    }
+  }
+
+  void _showResultDialog(String selectedMenuName, MenuList selectedMenu) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: EdgeInsets.all(20.0),
+          title: Center(
+            child: Text(
+              selectedMenuName,
+              style: TextStyle(
+                fontFamily: 'Raleway',
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF3E2723),
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Center(
+              child: Text(
+                selectedMenu.fields.restaurantName,
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+          actions: [
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // TODO: ADD TO SPIN HISTORAYYY
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Add to history"),
+                  ),
+                  SizedBox(width: 10), // Add some space between buttons if needed
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Close without adding"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _clearWheel() {
+    setState(() {
+      _menuInWheel.clear();
+      _wheelItems.clear();
+      _wheelItems
+          .add(FortuneItem(child: const Text("Start Adding Items!")));
+    });
+  }
+}
