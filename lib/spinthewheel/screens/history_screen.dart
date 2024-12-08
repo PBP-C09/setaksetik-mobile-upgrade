@@ -32,61 +32,71 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(
               child: Text(
-                'No Spin History Available :(',
-                style: TextStyle(fontSize: 20, color: Color(0xff59A5D8)),
+                "You don't have any spin history :(",
+                style: TextStyle(
+                  fontSize: 20, 
+                  color: Color(0xFFF5F5DC),
+                  fontFamily: 'Playfair Display',
+                  fontStyle: FontStyle.italic
+                  ),
               ),
             );
           } else {
-            return GridView.builder(
+            return ListView.builder(
               padding: const EdgeInsets.all(8.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8.0,
-                mainAxisSpacing: 8.0,
-                childAspectRatio: 3 / 2,
-              ),
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
+                final cardColor = (index % 2 == 0) ? const Color(0xFFFFD54F) : const Color(0xFFF5F5DC);
                 final history = snapshot.data![index];
                 return Card(
                   elevation: 4,
-                  color: const Color(0xFFF5F5DC),
+                  color: cardColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              history.fields.winner,
+                              '${index + 1} | ${history.fields.winner}',
+                              textAlign: TextAlign.center,
                               style: const TextStyle(
-                                fontSize: 16.0,
+                                fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'PlayfairDisplay',
+                                fontFamily: 'Playfair Display',
+                                fontStyle: FontStyle.italic
                               ),
                             ),
                             const SizedBox(height: 8.0),
+                            const Divider(
+                              color: Color(0xFF3E2723),
+                              height: 2,
+                              indent: 7,
+                              endIndent: 7,
+                            ),
+                            const SizedBox(height: 8.0),
                             Text(
-                              'Di-spin pada: ${history.fields.spinTime.toLocal().toString().split(' ')[0]}',
-                              style: const TextStyle(
-                                fontStyle: FontStyle.italic,
-                              ),
+                              history.fields.spinTime.toLocal().toString().split(' ')[0],
+
                             ),
                             const SizedBox(height: 4.0),
-                            Text('Note: ${history.fields.note.isEmpty ? '-' : history.fields.note}'),
+                            Text(
+                              'Note: ${history.fields.note.isEmpty ? '-' : history.fields.note}',
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         ),
+                        const SizedBox(height: 12.0),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            // TODO: booking?
                             // ElevatedButton(
-                            //   // TODO: tombol ke booking
                             //   onPressed: () {
                             //     Navigator.pushNamed(
                             //       context,
@@ -103,8 +113,8 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                             //     ),
                             //   ),
                             // ),
+                            // TODO: detail?
                             // ElevatedButton(
-                            //   // TODO: tombol ke detail
                             //   onPressed: () {
                             //     Navigator.pushNamed(
                             //       context,
@@ -129,12 +139,15 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                                 });
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFFD54F),
+                                backgroundColor: const Color(0xFF842323),
                               ),
                               child: const Text(
                                 'Delete',
                                 style: TextStyle(
-                                  fontFamily: 'Raleway',
+                                  color: Color(0xFFF5F5DC),
+                                  fontFamily: 'Playfair Display',
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.italic
                                 ),
                               ),
                             ),
@@ -146,6 +159,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                 );
               },
             );
+
           }
         },
       ),
