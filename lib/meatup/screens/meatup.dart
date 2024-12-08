@@ -1,25 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/meatup/screens/message_form.dart';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 
 class MeatUpPage extends StatefulWidget {
-  const MeatUpPage({super.key}); 
+  const MeatUpPage({super.key});
 
   @override
   MeatUpPageState createState() => MeatUpPageState();
 }
 
 class MeatUpPageState extends State<MeatUpPage> {
-  List<Map<String, String>> receivedMessages = [];
-  List<Map<String, String>> sentMessages = [];
+  List<dynamic> receivedMessages = [];
+  List<dynamic> sentMessages = [];
 
-  void _showCreateMessageForm() {
-    // Navigate to create message form
-    Navigator.pushNamed(context, '/create-message');
+  @override
+  void initState() {
+    super.initState();
+    _fetchMessages();
+  }
+
+  Future<void> _fetchMessages() async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.get('http://127.0.0.1:8000/meatup/');
+      
+      setState(() {
+        receivedMessages = response['received_messages'] ?? [];
+        sentMessages = response['sent_messages'] ?? [];
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal memuat pesan: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _deleteMessage(int messageId) async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.post(
+        'http://127.0.0.1:8000/meatup/delete-message/$messageId/',
+        {},
+      );
+
+      if (response['status']) {
+        // Refresh messages after deletion
+        await _fetchMessages();
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response['message'] ?? 'Pesan berhasil dihapus'),
+            backgroundColor: const Color(0xFFF7B32B),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response['message'] ?? 'Gagal menghapus pesan'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Terjadi kesalahan: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF3E2723), // Dark brown background
+      backgroundColor: const Color(0xFF3E2723),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -35,7 +94,7 @@ class MeatUpPageState extends State<MeatUpPage> {
                     fontSize: 42,
                     fontStyle: FontStyle.italic,
                     fontWeight: FontWeight.w400,
-                    fontFamily: 'Inter',
+                    fontFamily: 'Playfair Display',
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -43,7 +102,14 @@ class MeatUpPageState extends State<MeatUpPage> {
 
                 // Create Message Button
                 ElevatedButton(
-                  onPressed: _showCreateMessageForm, // This will navigate to the form
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MessageFormPage(),
+                      ),
+                    ).then((_) => _fetchMessages()); // Refresh messages after returning
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF7B32B),
                     foregroundColor: Colors.white,
@@ -56,7 +122,7 @@ class MeatUpPageState extends State<MeatUpPage> {
                     'Kirim Pesan Meat Up',
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
-                      fontFamily: 'Inter',
+                      fontFamily: 'Playfair Display',
                     ),
                   ),
                 ),
@@ -84,10 +150,9 @@ class MeatUpPageState extends State<MeatUpPage> {
     );
   }
 
-  // Helper method to display messages in grid view
   Widget _buildMessagesSection({
     required String title,
-    required List<Map<String, String>> messages,
+    required List<dynamic> messages,
     required bool isReceived,
   }) {
     return Column(
@@ -99,7 +164,7 @@ class MeatUpPageState extends State<MeatUpPage> {
             color: Color(0xFFFFD54F),
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            fontFamily: 'Inter',
+            fontFamily: 'Playfair Display',
           ),
         ),
         const SizedBox(height: 16),
@@ -134,8 +199,7 @@ class MeatUpPageState extends State<MeatUpPage> {
     );
   }
 
-  // Helper method to build individual message cards
-  Widget _buildMessageCard(Map<String, String> message, bool isReceived) {
+  Widget _buildMessageCard(dynamic message, bool isReceived) {
     return Container(
       decoration: BoxDecoration(
         color: const Color(0xFFF5F5DC),
@@ -159,7 +223,9 @@ class MeatUpPageState extends State<MeatUpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  isReceived ? 'From: ${message['sender']}' : 'To: ${message['receiver']}',
+                  isReceived 
+                    ? 'From: ${message['sender']}' 
+                    : 'To: ${message['receiver']}',
                   style: TextStyle(
                     fontFamily: 'Playfair Display',
                     fontWeight: FontWeight.w600,
@@ -170,7 +236,7 @@ class MeatUpPageState extends State<MeatUpPage> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  message['timestamp']!,
+                  message['timestamp'] ?? '',
                   style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
@@ -194,7 +260,7 @@ class MeatUpPageState extends State<MeatUpPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    message['title']!,
+                    message['title'] ?? '',
                     style: const TextStyle(
                       fontFamily: 'Raleway',
                       fontWeight: FontWeight.w600,
@@ -204,52 +270,58 @@ class MeatUpPageState extends State<MeatUpPage> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    message['content']!,
+                    message['content'] ?? '',
                     style: const TextStyle(
                       fontFamily: 'Raleway',
                       color: Color(0xFFF5F5DC),
                     ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 16),
-
-            // Action Button (Delete or Cancel)
-            ElevatedButton(
-              onPressed: () {
-                // Implement delete/cancel functionality
-                _deleteMessage(message, isReceived);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF842323),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+            // Delete Button
+            if (!isReceived) 
+              TextButton(
+                onPressed: () => _deleteMessage(message['id']),
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFF842323),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Cancel Meat Up',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              )
+            else
+              TextButton(
+                onPressed: () => _deleteMessage(message['id']),
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFF842323),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Reject Meat Up',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-              child: Text(
-                isReceived ? 'Reject Meat Up' : 'Cancel Meat Up',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
           ],
         ),
       ),
     );
-  }
-
-  void _deleteMessage(Map<String, String> message, bool isReceived) {
-    setState(() {
-      if (isReceived) {
-        receivedMessages.remove(message);
-      } else {
-        sentMessages.remove(message);
-      }
-    });
   }
 }
