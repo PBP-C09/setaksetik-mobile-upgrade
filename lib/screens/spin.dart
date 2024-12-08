@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/spinthewheel/wheel.dart';
-import 'package:setaksetikmobile/spinthewheel/spin_history.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/wheel_screen.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/history_screen.dart';
 
 class SpinPage extends StatefulWidget {
   const SpinPage({super.key});
