@@ -108,6 +108,23 @@ enum City {
     WEST_JAKARTA
 }
 
+extension CityExtension on City {
+  String get name {
+    switch (this) {
+      case City.CENTRAL_JAKARTA:
+        return "Central Jakarta";
+      case City.EAST_JAKARTA:
+        return "East Jakarta";
+      case City.NORTH_JAKARTA:
+        return "North Jakarta";
+      case City.SOUTH_JAKARTA:
+        return "South Jakarta";
+      case City.WEST_JAKARTA:
+        return "West Jakarta";
+    }
+  }
+}
+
 final cityValues = EnumValues({
     "Central Jakarta": City.CENTRAL_JAKARTA,
     "East Jakarta": City.EAST_JAKARTA,
