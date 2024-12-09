@@ -1,53 +1,67 @@
 import 'dart:convert';
 
-// Function to parse the JSON string into a list of ReviewList objects
-List<ReviewList> reviewListFromJson(String str) {
-  final data = json.decode(str);
-  return List<ReviewList>.from(data.map((item) => ReviewList.fromJson(item)));
-}
+List<ReviewList> reviewListFromJson(dynamic data) =>
+    List<ReviewList>.from(data.map((x) => ReviewList.fromJson(x)));
+
+String reviewListToJson(List<ReviewList> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class ReviewList {
-  final String id;
-  final ReviewFields fields;
+  String model;
+  String pk;
+  Fields fields;
 
   ReviewList({
-    required this.id,
-    required this.fields,  // fields is of type ReviewFields
+    required this.model,
+    required this.pk,
+    required this.fields,
   });
 
-  // Factory constructor to create a ReviewList object from JSON
-  factory ReviewList.fromJson(Map<String, dynamic> json) {
-    return ReviewList(
-      id: json['id'],
-      fields: ReviewFields.fromJson(json['fields']),  // Parse 'fields' into ReviewFields
-    );
-  }
+  factory ReviewList.fromJson(Map<String, dynamic> json) => ReviewList(
+        model: json["model"],
+        pk: json["pk"],
+        fields: Fields.fromJson(json["fields"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "model": model,
+        "pk": pk,
+        "fields": fields.toJson(),
+      };
 }
 
-// Model for the nested fields in the ReviewList
-class ReviewFields {
-  final String menu;
-  final String place;
-  final int rating;
-  final String description;
-  final String? ownerReply;
+class Fields {
+  int user;
+  String menu;
+  String place;
+  int rating;
+  String description;
+  String ownerReply;
 
-  ReviewFields({
+  Fields({
+    required this.user,
     required this.menu,
     required this.place,
     required this.rating,
     required this.description,
-    this.ownerReply,
+    required this.ownerReply,
   });
 
-  // Factory constructor to create a ReviewFields object from JSON
-  factory ReviewFields.fromJson(Map<String, dynamic> json) {
-    return ReviewFields(
-      menu: json['menu'],
-      place: json['place'],
-      rating: json['rating'],
-      description: json['description'],
-      ownerReply: json['owner_reply'],
-    );
-  }
+  factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+        user: json["user"],
+        menu: json["menu"],
+        place: json["place"],
+        rating: json["rating"],
+        description: json["description"],
+        ownerReply: json["owner_reply"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "user": user,
+        "menu": menu,
+        "place": place,
+        "rating": rating,
+        "description": description,
+        "owner_reply": ownerReply,
+      };
 }
