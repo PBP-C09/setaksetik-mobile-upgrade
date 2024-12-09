@@ -7,7 +7,6 @@ import 'explore.dart';
 import 'review.dart';
 import 'spin.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
-import 'booking.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
