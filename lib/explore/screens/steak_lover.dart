@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
+
 class MenuPage extends StatefulWidget {
   const MenuPage({Key? key}) : super(key: key);
 
@@ -47,6 +49,7 @@ class _MenuPageState extends State<MenuPage> {
         ),
         leading: const BackButton(color: Colors.black),
       ),
+      drawer: LeftDrawer(),
       body: FutureBuilder<List<MenuList>>(
         future: menuFuture,
         builder: (context, snapshot) {
