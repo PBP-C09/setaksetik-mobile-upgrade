@@ -143,6 +143,7 @@ class BookingPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: LeftDrawer(),
     );
   }
 }
