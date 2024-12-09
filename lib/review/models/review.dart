@@ -1,45 +1,67 @@
-// lib/models/review.dart
-
 import 'dart:convert';
 
-List<Review> reviewFromJson(String str) =>
-    List<Review>.from(json.decode(str).map((x) => Review.fromJson(x)));
+List<ReviewList> reviewListFromJson(dynamic data) =>
+    List<ReviewList>.from(data.map((x) => ReviewList.fromJson(x)));
 
-String reviewToJson(List<Review> data) =>
+String reviewListToJson(List<ReviewList> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class Review {
-  final String id;
-  final String menu;
-  final String place;
-  final int rating;
-  final String description;
+class ReviewList {
+  String model;
+  String pk;
+  Fields fields;
 
-  Review({
-    required this.id,
+  ReviewList({
+    required this.model,
+    required this.pk,
+    required this.fields,
+  });
+
+  factory ReviewList.fromJson(Map<String, dynamic> json) => ReviewList(
+        model: json["model"],
+        pk: json["pk"],
+        fields: Fields.fromJson(json["fields"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "model": model,
+        "pk": pk,
+        "fields": fields.toJson(),
+      };
+}
+
+class Fields {
+  int user;
+  String menu;
+  String place;
+  int rating;
+  String description;
+  String ownerReply;
+
+  Fields({
+    required this.user,
     required this.menu,
     required this.place,
     required this.rating,
     required this.description,
+    required this.ownerReply,
   });
 
-  factory Review.fromJson(Map<String, dynamic> json) {
-    return Review(
-      id: json['id'],
-      menu: json['menu'],
-      place: json['place'],
-      rating: json['rating'],
-      description: json['description'],
-    );
-  }
+  factory Fields.fromJson(Map<String, dynamic> json) => Fields(
+        user: json["user"],
+        menu: json["menu"],
+        place: json["place"],
+        rating: json["rating"],
+        description: json["description"],
+        ownerReply: json["owner_reply"],
+      );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'menu': menu,
-      'place': place,
-      'rating': rating,
-      'description': description,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        "user": user,
+        "menu": menu,
+        "place": place,
+        "rating": rating,
+        "description": description,
+        "owner_reply": ownerReply,
+      };
 }
