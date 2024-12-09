@@ -1,180 +1,168 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-
+import 'package:pbp_django_auth/pbp_django_auth.dart';
 class MenuPage extends StatefulWidget {
-  const MenuPage({super.key});
+  const MenuPage({Key? key}) : super(key: key);
 
   @override
   State<MenuPage> createState() => _MenuPageState();
 }
 
 class _MenuPageState extends State<MenuPage> {
-  Future<List<MenuList>> fetchMenu(CookieRequest request) async {
-    final response = await request.get('http://127.0.0.1:8000/json/');
-    var data = response;
+  late Future<List<MenuList>> menuFuture;
 
-    List<MenuList> listProduct = [];
-    for (var d in data) {
-      if (d != null) {
-        listProduct.add(MenuList.fromJson(d));
-      }
+  @override
+  void initState() {
+    super.initState();
+    menuFuture = fetchMenu(context.watch<CookieRequest>());
+  }
+
+  Future<List<MenuList>> fetchMenu(CookieRequest request) async {
+    // Ganti URL berikut dengan endpoint API dataset Anda
+    final response = await request.get('http://127.0.0.1:8000/json/');
+    if (response.isEmpty) {
+      throw Exception('Failed to load data');
     }
-    return listProduct;
+
+    // Parse JSON ke dalam model MenuList
+    return menuListFromJson(jsonEncode(response));
   }
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menu Admin'),
-        centerTitle: true,
-        backgroundColor: Colors.brown,
+        backgroundColor: Colors.white,
+        elevation: 0.0,
+        title: Text(
+          'Steak Lover Menu',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+            color: Colors.black,
+          ),
+        ),
+        leading: const BackButton(color: Colors.black),
       ),
-      body: FutureBuilder(
-        future: fetchMenu(request),
-        builder: (context, AsyncSnapshot snapshot) {
-          if (snapshot.data == null) {
+      body: FutureBuilder<List<MenuList>>(
+        future: menuFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          } else {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data!.length,
-                itemBuilder: (_, index) {
-                  final item = snapshot.data![index].fields;
-                  return Card(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 8),
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      children: [
-                        // Gambar menu
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12)),
-                          child: Image.network(
-                            item.imageUrl ?? 'https://via.placeholder.com/150',
-                            height: 180,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Nama menu
-                              Text(
-                                item.menu_name,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-
-                              // Lokasi restoran
-                              Row(
-                                children: [
-                                  const Icon(Icons.location_on,
-                                      color: Colors.grey, size: 16),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    '${item.restaurant}, ${item.kota}',
-                                    style: const TextStyle(
-                                        color: Colors.grey, fontSize: 14),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-
-                              // Rating dan harga
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.star,
-                                          color: Colors.amber, size: 16),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        '${item.rate} / 5',
-                                        style: const TextStyle(fontSize: 14),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'Rp ${item.harga}',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.brown,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-
-                              // Kategori tag
-                              Row(
-                                children: [
-                                  _buildTag(item.kategori),
-                                  const SizedBox(width: 8),
-                                  _buildTag(item.specialization),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-
-                              // Tombol
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    // Navigasi ke detail
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.brown,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: const Text('See Details'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              );
-            } else {
-              return const Center(child: Text("No data available."));
-            }
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No data available.'));
           }
-        },
-      ),
-    );
-  }
 
-  // Widget untuk kategori tag
-  Widget _buildTag(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.brown.shade100,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(fontSize: 12, color: Colors.brown),
+          // Tampilkan data dalam grid view
+          final menus = snapshot.data!;
+          return GridView.builder(
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 0.75,
+            ),
+            itemCount: menus.length,
+            itemBuilder: (context, index) {
+              final item = menus[index].fields;
+              return GestureDetector(
+                onTap: () {
+                  // Tambahkan aksi saat item di-tap, seperti navigasi ke detail
+                },
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 4.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Gambar menu
+                      AspectRatio(
+                        aspectRatio: 1.6,
+                        child: Image.network(
+                          item.image,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.network(
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Nama menu
+                            Text(
+                              item.menu,
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            // Restoran dan kota
+                            Text(
+                              '${item.restaurantName}, ${item.city.name}',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.grey,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            // Harga dan rating
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Icon(Icons.star,
+                                        size: 16, color: Colors.amber),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${item.rating} / 5',
+                                      style: TextStyle(
+                                        fontSize: 14.0,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  'Rp ${item.price}',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.brown,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
