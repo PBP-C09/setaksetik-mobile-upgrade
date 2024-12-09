@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class BookingPage extends StatelessWidget {
   const BookingPage({super.key});
@@ -9,6 +10,7 @@ class BookingPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Book a Restaurant'),
       ),
+      drawer: LeftDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -141,6 +143,7 @@ class BookingPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: LeftDrawer(),
     );
   }
 }

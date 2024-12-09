@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'dart:convert';
+
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 // import 'models/review.dart';  // Review model
 // import 'models/menu.dart';    // Menu model
 
@@ -65,6 +67,7 @@ class _ReviewPageState extends State<ReviewPage> {
         backgroundColor: Colors.brown,
         foregroundColor: Colors.white,
       ),
+      drawer: LeftDrawer(),
       body: menus.isEmpty
           ? Center(child: CircularProgressIndicator()) // Loading state
           : Padding(
