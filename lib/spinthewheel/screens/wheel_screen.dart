@@ -211,16 +211,14 @@ class _WheelViewState extends State<WheelView> {
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: _isAddedList[menuIndex] 
-                  ? const Color(0xFFF5F5DC)
-                  : Color(0XFFFFD54F),
-                disabledBackgroundColor: const Color(0xFFF5F5DC),
-                disabledForegroundColor: Color(0xFF3E2723),
                 textStyle: const TextStyle(
                   color: Color(0xFF3E2723),
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Raleway',
                 ),
+                backgroundColor: Color(0xFFFFD54F),
+                disabledBackgroundColor: const Color.fromARGB(255, 206, 188, 126),
+                disabledForegroundColor: Color.fromARGB(255, 128, 106, 102),
               ),
               child: _isAddedList[menuIndex] 
                   ? const Text(
@@ -332,7 +330,6 @@ class _WheelViewState extends State<WheelView> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 12),
-              // Add a TextField for notes
               TextField(
                 controller: _noteController,
                 decoration: InputDecoration(
