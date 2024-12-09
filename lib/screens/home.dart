@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
+import 'package:setaksetikmobile/review/screens/user_review.dart';
 import 'explore.dart';
 import 'review.dart';
 import 'spin.dart';
@@ -45,7 +46,7 @@ class HomePage extends StatelessWidget {
             SizedBox(height: 16.0),
             _buildButton(context, 'Spin', const SpinPage(), const Color(0xFF6D4C41), const Color(0xFFF5F5DC)),
             SizedBox(height: 16.0),
-            _buildButton(context, 'Review', const ReviewPage(), const Color(0xFF842323), const Color(0xFFF5F5DC)),
+            _buildButton(context, 'Review', const ReviewMainPage(), const Color(0xFF842323), const Color(0xFFF5F5DC)),
             SizedBox(height: 16.0),
             _buildButton(context, 'Meat Up', const MeatUpPage(), const Color(0xFF3E2723), const Color(0xFFF5F5DC)),
             SizedBox(height: 16.0),

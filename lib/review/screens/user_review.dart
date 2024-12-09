@@ -1,83 +1,101 @@
-// // ignore_for_file: prefer_const_constructors_in_immutables
+import 'package:flutter/material.dart';
+// import 'package:http/http.dart' as http;
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
+// import 'package:setaksetikmobile/review/models/menu.dart';
+import 'package:setaksetikmobile/review/models/review.dart';
+// import 'package:setaksetikmobile/explore/models/menu_entry.dart';
+import 'dart:convert';
 
-// import 'package:flutter/material.dart';
-// // import 'package:pageturn_mobile/apps/Reviewbuku/screens/addreview.dart';
-// // import 'package:pageturn_mobile/apps/Reviewbuku/screens/listreview.dart';
-// // import 'package:pageturn_mobile/components/left_drawer.dart';
+import 'package:setaksetikmobile/review/screens/review_list.dart';
+// import 'models/review.dart';  // Review model
+// import 'models/menu.dart';    // Menu model
 
-// class HalamanPertama extends StatelessWidget {
-//   HalamanPertama({Key? key}) : super(key: key);
+class ReviewMainPage extends StatefulWidget {
+  const ReviewMainPage({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       // drawer: const LeftDrawer(),
-//       appBar: AppBar(
-//         title: const Text(
-//           ' REVIEW BUKU ',
-//           style: TextStyle(
-//             color: Colors.white,
-//           ),
-//         ),
-//         backgroundColor: const Color.fromARGB(255, 78, 52, 16),
-//         foregroundColor: const Color.fromARGB(255, 255, 255, 255),
-//       ),
-//       body: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: <Widget>[
-//           const SizedBox(height: 20),
-//           Align(
-//             alignment: Alignment.center,
-//             child: TextButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => const ReviewForm()),
-//                 );
-//               },
-//               style: TextButton.styleFrom(
-//                 backgroundColor: const Color.fromARGB(255, 255, 152, 0),
-//                 padding:
-//                     const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-//               ),
-//               child: const Text(
-//                 'Add Review',
-//                 style: TextStyle(
-//                   fontSize: 20,
-//                   color: Colors.white, // Warna teks putih
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//             ),
-//           ),
-//           const SizedBox(height: 10),
-//           Align(
-//             alignment: Alignment.center,
-//             child: TextButton(
-//               onPressed: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(builder: (context) => const ReviewPage()),
-//                 );
-//               },
-//               style: TextButton.styleFrom(
-//                 backgroundColor: const Color.fromARGB(255, 255, 152, 0),
-//                 padding:
-//                     const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-//               ),
-//               child: const Text(
-//                 'Daftar Review',
-//                 style: TextStyle(
-//                   fontSize: 20,
-//                   color: Colors.white, // Warna teks putih
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  @override
+  _ReviewMainPageState createState() => _ReviewMainPageState();
+}
+
+class _ReviewMainPageState extends State<ReviewMainPage> {
+  List<ReviewList> reviews = [];  // Daftar menu yang di-fetch dari API
+
+  @override
+  void initState() {
+    super.initState();
+    final request = context.read<CookieRequest>();
+    print("tes");
+    fetchReviews(request);  // Panggil fungsi untuk fetch menu
+    print("masuk sini ga");
+  }
+
+
+  // Fetch menus dari API Django
+  // Future<void> fetchReviews(CookieRequest request) async {
+  //   try {
+  //     final response = await request.get('http://127.0.0.1:8000/review/get_review/');
+  //     print("Response: $response");  // Log the response to check its structure
+
+  //     if (response != null) {
+  //       // Parse the response into ReviewList objects
+  //       print("dia ga null");
+  //       setState(() {
+  //         reviews = reviewListFromJson(response);  // Ensure the response is a valid JSON string
+  //         print("disini ya errornya"); 
+  //       });
+  //     } else {
+  //       throw Exception('Response is null');
+  //     }
+  //   } catch (e) {
+  //     print('Error: $e');
+  //     throw Exception('Failed to load reviews');
+  //   }
+  // }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Add Review',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.brown,
+        foregroundColor: Colors.white,
+      ),
+      body: reviews.isEmpty
+          ? Center(child: CircularProgressIndicator()) // Loading state
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: reviews.map((reviews) {
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(16),
+                        // leading: Image.network(reviews.fields.place), // Menampilkan gambar
+                        title: Text(reviews.fields.place),
+                        subtitle: Text(reviews.fields.place),
+                        onTap: () {
+                          // Menavigasi ke halaman form review dengan membawa menu yang dipilih
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ReviewPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+    );
+  }
+}
+
