@@ -52,7 +52,6 @@ class LeftDrawer extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    // TODO: ERMMM PLACEHOLDER
                     builder: (context) => HomePage(fullName: "fullName"),
                   ));
               },
@@ -103,7 +102,7 @@ class LeftDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BookingPage(menuList: [])),
+                  MaterialPageRoute(builder: (context) => const BookingPage()),
                 );
               },
             ),
