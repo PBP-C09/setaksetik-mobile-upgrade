@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class BookingPage extends StatelessWidget {
   const BookingPage({super.key});
@@ -141,6 +142,7 @@ class BookingPage extends StatelessWidget {
           ],
         ),
       ),
+      drawer: LeftDrawer(),
     );
   }
 }
