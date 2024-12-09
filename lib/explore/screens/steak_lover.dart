@@ -5,7 +5,7 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:http/http.dart' as http;
 import 'package:setaksetikmobile/explore/screens/filter.dart';
-import 'package:http/http.dart' as http;
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 
 class MenuPage extends StatefulWidget {
@@ -94,6 +94,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
         ],
       ),
+      drawer: LeftDrawer(),
       body: Column(
         children: [
           Expanded(

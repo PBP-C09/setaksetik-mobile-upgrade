@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/meatup/screens/message_form.dart';
 import 'package:provider/provider.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class MeatUpPage extends StatefulWidget {
   const MeatUpPage({super.key});
@@ -79,6 +80,10 @@ class MeatUpPageState extends State<MeatUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
+      appBar: AppBar(
+        title: const Text('Meat Up'),
+      ),
+      drawer: LeftDrawer(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
