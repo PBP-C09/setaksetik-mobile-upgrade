@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/screens/booking.dart';
+
 import 'package:setaksetikmobile/screens/home.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
-import 'package:setaksetikmobile/screens/review.dart';
-import 'package:setaksetikmobile/screens/spin.dart';
-// import 'package:setaksetikmobile/screens/review.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
+import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
-// import 'package:setaksetikmobile/screens/booking.dart';
+import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -104,7 +103,7 @@ class LeftDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BookingPage()),
+                  MaterialPageRoute(builder: (context) => const BookingPage(menuList: [])),
                 );
               },
             ),
