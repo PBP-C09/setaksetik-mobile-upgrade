@@ -103,7 +103,7 @@ class LeftDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const BookingPage(menuList: [])),
+                  MaterialPageRoute(builder: (context) => const BookingPage()),
                 );
               },
             ),
