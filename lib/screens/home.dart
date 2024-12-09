@@ -5,6 +5,8 @@ import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
+import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
+import 'package:setaksetikmobile/screens/login.dart';
 import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
