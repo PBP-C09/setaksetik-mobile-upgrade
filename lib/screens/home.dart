@@ -51,7 +51,7 @@ class HomePage extends StatelessWidget {
             _buildButton(context, 'Meat Up', const MeatUpPage(), const Color(0xFF3E2723), const Color(0xFFF5F5DC)),
             SizedBox(height: 16.0),
             // Empty menuList as placeholder 
-            _buildButton(context, 'Booking', const BookingPage(menuList: []), const Color(0xFF6D4C41), const Color(0xFFF5F5DC)),
+            _buildButton(context, 'Booking', const BookingPage(), const Color(0xFF6D4C41), const Color(0xFFF5F5DC)),
             SizedBox(height: 32.0),
             _logoutButton(context, 'Logout', const Color(0xFFF5F5DC), const Color(0xFF842323)),
           ],
