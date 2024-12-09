@@ -12,6 +12,7 @@ import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 
 class HomePage extends StatelessWidget {
   final String fullName;
