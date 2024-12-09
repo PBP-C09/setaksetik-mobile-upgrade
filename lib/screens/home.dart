@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+
+import 'package:setaksetikmobile/review/models/review.dart';
+import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'explore.dart';
+
 import 'review.dart';
 import 'spin.dart';
-import 'meatup.dart';
-
+import 'package:setaksetikmobile/meatup/screens/meatup.dart';
+import 'booking.dart';
+import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +44,7 @@ class HomePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 32.0),
-            _buildButton(context, 'Explore', const ExplorePage(), const Color(0xFF3E2723), const Color(0xFFF5F5DC)),
+            _buildButton(context, 'Explore', const MenuPage(), const Color(0xFF3E2723), const Color(0xFFF5F5DC)),
             SizedBox(height: 16.0),
             _buildButton(context, 'Spin', const SpinPage(), const Color(0xFF6D4C41), const Color(0xFFF5F5DC)),
             SizedBox(height: 16.0),
