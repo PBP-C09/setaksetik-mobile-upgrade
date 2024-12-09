@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/meatup/models/message_entry.dart';
 import 'package:setaksetikmobile/meatup/screens/list_message_entry.dart';
 
+// to be edited
+// soon
+
 class ItemHomepage {
   final String name;
   final IconData icon;
