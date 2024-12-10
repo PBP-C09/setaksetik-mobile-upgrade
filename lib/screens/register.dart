@@ -202,6 +202,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       // Untuk menyambungkan Android emulator dengan Django pada localhost,
                       // gunakan URL http://10.0.2.2/
                       // TODO: BENERIN FIELDSNYA
+                      print("lol");
                       final response = await request.postJson(
                           "http://127.0.0.1:8000/register-mobile/",
                           jsonEncode({
@@ -225,8 +226,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to register!'),
+                            SnackBar(
+                              content: Text(response['message']),
                             ),
                           );
                         }

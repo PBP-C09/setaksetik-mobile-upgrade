@@ -4,44 +4,6 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/screens/register.dart';
 
-void main() {
-  runApp(const LoginApp());
-}
-
-class LoginApp extends StatelessWidget {
-  const LoginApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF6D4C41),
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.brown,
-        ).copyWith(secondary: const Color(0xFF842323)),
-        textTheme: TextTheme(
-          bodyLarge: TextStyle(fontFamily: 'Raleway', color: const Color(0xFF3E2723)),
-          bodyMedium: TextStyle(fontFamily: 'Raleway', color: const Color(0xFF3E2723)),
-          bodySmall: TextStyle(fontFamily: 'Raleway', color: const Color(0xFF3E2723)),
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFFF5F5DC),
-          titleTextStyle: TextStyle(
-            fontFamily: 'Playfair Display',
-            fontWeight: FontWeight.w700,
-            fontStyle: FontStyle.italic,
-            color: const Color(0xFF3E2723),
-            fontSize: 20,
-          ),
-        ),
-        useMaterial3: true,
-        ),
-      home: const LoginPage(),
-    );
-  }
-}
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
