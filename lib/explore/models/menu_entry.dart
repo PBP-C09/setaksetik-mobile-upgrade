@@ -20,9 +20,9 @@ class MenuList {
     });
 
     factory MenuList.fromJson(Map<String, dynamic> json) => MenuList(
-        pk: json["pk"],
-        model: modelValues.map[json["model"]]!,
-        fields: Fields.fromJson(json["fields"]),
+        pk: json["pk"] ?? 0,
+        model: modelValues.map[json["model"]] ?? Model.EXPLORE_MENU,
+        fields: Fields.fromJson(json["fields"] ?? {}),
     );
 
     Map<String, dynamic> toJson() => {
@@ -47,6 +47,7 @@ class Fields {
     bool outdoor;
     bool smokingArea;
     bool wifi;
+    String? claimedBy;
 
     Fields({
         // required this.id,
@@ -63,6 +64,7 @@ class Fields {
         required this.outdoor,
         required this.smokingArea,
         required this.wifi,
+        required this.claimedBy,
     });
 
     factory Fields.fromJson(Map<String, dynamic> json) => Fields(
@@ -80,7 +82,8 @@ class Fields {
         outdoor: json["outdoor"],
         smokingArea: json["smoking_area"],
         wifi: json["wifi"],
-    );
+        claimedBy: json["claimed_by"]?.toString(),
+     );
 
     Map<String, dynamic> toJson() => {
         // "id": id,
@@ -97,6 +100,7 @@ class Fields {
         "outdoor": outdoor,
         "smoking_area": smokingArea,
         "wifi": wifi,
+        "claimed_by": claimedBy,
     };
 }
 
