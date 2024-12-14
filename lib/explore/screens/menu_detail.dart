@@ -11,13 +11,13 @@ class MenuDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        leading: const BackButton(color: const Color(0xFF5B3E39)),
+        leading: const BackButton(color: const Color(0xFF3E2723)),
         title: const Text(
           'Detail Menu',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16.0,
-            color: const Color(0xFF5B3E39),
+            color: const Color(0xFF3E2723),
           ),
         ),
         elevation: 0.0,
@@ -75,14 +75,14 @@ class MenuDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                     Text(
                       menuList.fields.category,
                       style: const TextStyle(
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                   ],
@@ -96,14 +96,14 @@ class MenuDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                     Text(
                       'Rp ${menuList.fields.price}',
                       style: const TextStyle(
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                   ],
@@ -117,7 +117,7 @@ class MenuDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                     Expanded(
@@ -125,7 +125,7 @@ class MenuDetailPage extends StatelessWidget {
                         menuList.fields.restaurantName,
                         style: const TextStyle(
                           fontSize: 16.0,
-                          color: const Color(0xFF5B3E39),
+                          color: const Color(0xFF3E2723),
                         ),
                       ),
                     ),
@@ -140,14 +140,14 @@ class MenuDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                     Text(
                       menuList.fields.city.name,
                       style: const TextStyle(
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                   ],
@@ -161,14 +161,14 @@ class MenuDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                     Text(
                       menuList.fields.specialized,
                       style: const TextStyle(
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                   ],
@@ -182,14 +182,14 @@ class MenuDetailPage extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                     Text(
                       '${menuList.fields.rating}',
                       style: const TextStyle(
                         fontSize: 16.0,
-                        color: const Color(0xFF5B3E39),
+                        color: const Color(0xFF3E2723),
                       ),
                     ),
                   ],
@@ -200,9 +200,9 @@ class MenuDetailPage extends StatelessWidget {
                 const Text(
                   'Additional Information',
                   style: TextStyle(
-                    fontSize: 20.0,
+                    fontSize: 18.0,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF5B3E39),
+                    color: const Color(0xFF3E2723),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -225,7 +225,7 @@ class MenuDetailPage extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF5B3E39),
+                      backgroundColor: const Color(0xFF3E2723),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
@@ -260,7 +260,7 @@ class MenuDetailPage extends StatelessWidget {
           '• ',
           style: TextStyle(
             fontSize: 16.0,
-            color: const Color(0xFF5B3E39),
+            color: const Color(0xFF3E2723),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -269,7 +269,7 @@ class MenuDetailPage extends StatelessWidget {
           style: const TextStyle(
             fontSize: 16.0,
             fontWeight: FontWeight.bold,
-            color: const Color(0xFF5B3E39),
+            color: const Color(0xFF3E2723),
           ),
         ),
         const SizedBox(width: 8),

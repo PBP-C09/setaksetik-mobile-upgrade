@@ -32,23 +32,36 @@ class _FilterState extends State<Filter> {
         right: 24,
         bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
+      decoration: const BoxDecoration(
+        color: Color(0xFFF5F5DC),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(32),
+        ),
+      ),
       child: Form(
         key: _formKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            const Center(
+            child: Text(
               "Filter",
               style: TextStyle(
                 fontSize: 24,
+                fontFamily: 'Playfair Display',
                 fontWeight: FontWeight.bold,
+                color: const Color(0xFF5B3E39),
               ),
             ),
-            const SizedBox(height: 24),
-            
-            // City Dropdown
-            DropdownButtonFormField<City>(
+          ),
+          const SizedBox(height: 24),
+          
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: DropdownButtonFormField<City>(
               value: selectedCity,
               decoration: const InputDecoration(
                 labelText: 'City',
@@ -66,10 +79,16 @@ class _FilterState extends State<Filter> {
                 });
               },
             ),
-            const SizedBox(height: 16),
+          ),
+          const SizedBox(height: 16),
 
             // Category Dropdown
-            DropdownButtonFormField<String>(
+            Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: DropdownButtonFormField<String>(
               value: selectedCategory,
               decoration: const InputDecoration(
                 labelText: 'Category',
@@ -87,10 +106,16 @@ class _FilterState extends State<Filter> {
                 });
               },
             ),
-            const SizedBox(height: 16),
+          ),
+          const SizedBox(height: 16),
 
             // Price TextField
-            TextFormField(
+            Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextFormField(
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                 labelText: 'Maximum Price',
@@ -101,7 +126,8 @@ class _FilterState extends State<Filter> {
                 maxPrice = value;
               },
             ),
-            const SizedBox(height: 24),
+          ),
+          const SizedBox(height: 24),
 
             // Apply Button
             SizedBox(
@@ -119,7 +145,7 @@ class _FilterState extends State<Filter> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFC62828),
+                  backgroundColor: const Color(0xFF5B3E39),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

@@ -15,13 +15,18 @@ class MenuPage extends StatefulWidget {
 
 class _MenuPageState extends State<MenuPage> {
   late Future<List<MenuList>> _menuFuture;
-
+  final TextEditingController _searchController = TextEditingController();
+  List<MenuList> _originalMenus = [];
   @override
   void initState() {
     super.initState();
     _menuFuture = fetchMenu(Provider.of<CookieRequest>(context, listen: false));
   }
-
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
   Future<List<MenuList>> fetchMenu(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
@@ -41,7 +46,7 @@ class _MenuPageState extends State<MenuPage> {
           continue;
         }
       }
-
+      _originalMenus = listMenu; 
       return listMenu;
     } catch (e, stackTrace) {
       return []; // Return empty list instead of throwing
@@ -76,15 +81,24 @@ class _MenuPageState extends State<MenuPage> {
                     color: const Color(0xFF3E2723),
                     padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const Text(
-                          "Makan apa Hari ini?",
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontFamily: 'Playfair Display',
-                            color: Color(0xFFF5F5DC),
-                            //fontStyle: FontStyle.italic,
+                        Center( 
+                          child: RichText( 
+                            text: TextSpan(
+                              style: const TextStyle(
+                                fontSize: 42,
+                                fontFamily: 'Playfair Display',
+                                color: Color(0xFFF5F5DC),
+                              ),
+                              children: const [
+                                TextSpan(text: 'Makan apa '),
+                                TextSpan(
+                                  text: 'Hari ini?',
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -92,6 +106,7 @@ class _MenuPageState extends State<MenuPage> {
                           children: [
                             // Search Bar
                             Expanded(
+                              flex: 4,
                               child: Container(
                                 height: 48,
                                 decoration: BoxDecoration(
@@ -99,50 +114,63 @@ class _MenuPageState extends State<MenuPage> {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 child: TextField(
+                                  controller: _searchController, // tambah ini
                                   decoration: InputDecoration(
                                     hintText: 'Cari menu',
                                     hintStyle: const TextStyle(fontSize: 14),
                                     prefixIcon: const Icon(Icons.search, size: 20),
-                                    isDense: true, 
+                                    isDense: true,
                                     contentPadding: const EdgeInsets.symmetric(vertical: 12),
                                     border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      icon: const Icon(Icons.clear, size: 20),
+                                      onPressed: () {
+                                        _searchController.clear();
+                                        _handleSearch(''); // Panggil dengan string kosong untuk reset
+                                      },
+                                    ),
                                   ),
+                                  onSubmitted: _handleSearch,
                                 ),
                               ),
                             ),
                             const SizedBox(width: 12),
                             // Filter Button
-                            ElevatedButton.icon(
-                              onPressed: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(32),
+                            Expanded( 
+                              flex: 2, 
+                              child:
+                              ElevatedButton.icon(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(32),
+                                      ),
                                     ),
+                                    showDragHandle: true,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return Filter(
+                                        onFilter: (namaMenu, kota, jenisBeef, hargaMax) {
+                                          _applyFilters(namaMenu, kota, jenisBeef, hargaMax);
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
                                   ),
-                                  showDragHandle: true,
-                                  isScrollControlled: true,
-                                  builder: (BuildContext context) {
-                                    return Filter(
-                                      onFilter: (namaMenu, kota, jenisBeef, hargaMax) {
-                                        _applyFilters(namaMenu, kota, jenisBeef, hargaMax);
-                                      },
-                                    );
-                                  },
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                              ),
-                              icon: const Icon(Icons.tune, color: Colors.black),
-                              label: const Text(
-                                'Filter',
-                                style: TextStyle(color: Colors.black, fontSize: 14),
+                                icon: const Icon(Icons.tune, color: Colors.black),
+                                label: const Text(
+                                  'Filter',
+                                  style: TextStyle(color: Colors.black, fontSize: 14),
+                                ),
                               ),
                             ),
                           ],
@@ -343,14 +371,27 @@ class _MenuPageState extends State<MenuPage> {
 
   void _applyFilters(String? namaMenu, City? kota, String? jenisBeef, int? hargaMax) {
     setState(() {
-      _menuFuture = _menuFuture.then((menus) {
-        return menus.where((menuList) {
-          return (namaMenu == null || menuList.fields.menu.contains(namaMenu)) &&
-              (kota == null || menuList.fields.city == kota) &&
-              (jenisBeef == null || menuList.fields.category.contains(jenisBeef)) &&
-              (hargaMax == null || menuList.fields.price <= hargaMax);
-        }).toList();
-      });
+      _menuFuture = Future.value(_originalMenus.where((menuList) {
+        bool cityMatch = kota == null || menuList.fields.city == kota;
+        bool categoryMatch = jenisBeef == null || menuList.fields.category.contains(jenisBeef);
+        bool priceMatch = hargaMax == null || menuList.fields.price <= hargaMax;
+
+        return cityMatch && categoryMatch && priceMatch;
+      }).toList());
     });
+  }
+
+  void _handleSearch(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        _menuFuture = Future.value(_originalMenus);
+      });
+    } else {
+      setState(() {
+        _menuFuture = Future.value(_originalMenus.where((menuList) {
+          return menuList.fields.menu.toLowerCase().contains(value.toLowerCase());
+        }).toList());
+      });
+    }
   }
 }
