@@ -215,96 +215,75 @@ class MessageFormPageState extends State<MessageFormPage> {
   }
 
   Future<void> _submitMessage() async {
-    if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) return;
 
-    setState(() => _isSubmitting = true);
+  setState(() => _isSubmitting = true);
 
-    final request = context.read<CookieRequest>();
-    
+  final request = context.read<CookieRequest>();
+  
+  try {
+    final response = await request.post(
+      'http://127.0.0.1:8000/meatup/create/',
+      {
+        'title': titleController.text.trim(),
+        'content': contentController.text.trim(),
+        'receiver': receiverController.text.trim(),
+      },
+    );
+
+    // More robust response handling
+    dynamic parsedResponse;
     try {
-      // Add headers to explicitly request JSON response
-      final Map<String, String> headers = {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      };
-
-      // Helper function to safely parse JSON
-      Map<String, dynamic>? parseResponse(dynamic response) {
-        if (response == null) return null;
-        
-        // If it's already a Map, return it
-        if (response is Map<String, dynamic>) {
-          return response;
+      // Check if response is already a map (pbp_django_auth might do this)
+      if (response is Map) {
+        parsedResponse = response;
+      } else if (response is String) {
+        // Try parsing as JSON, with extra checks
+        if (response.trim().toLowerCase().startsWith('<!doctype') || 
+            response.trim().toLowerCase().startsWith('<html')) {
+          throw Exception('Received HTML instead of JSON');
         }
-        
-        // If it's a String, try to parse it as JSON
-        if (response is String) {
-          try {
-            // Check if the response is HTML
-            if (response.trim().toLowerCase().startsWith('<!doctype') || 
-                response.trim().toLowerCase().startsWith('<html')) {
-              debugPrint('Received HTML response instead of JSON');
-              return null;
-            }
-            
-            // Try to parse as JSON
-            return jsonDecode(response) as Map<String, dynamic>;
-          } catch (e) {
-            debugPrint('Failed to parse response as JSON: $e');
-            return null;
-          }
-        }
-        
-        return null;
-      }
-
-      final response = await request.post(
-        'http://127.0.0.1:8000/meatup/create/',
-        {
-          'title': titleController.text.trim(),
-          'content': contentController.text.trim(),
-          'receiver': receiverController.text.trim(),
-        },
-      );
-
-      // Parse the response
-      final parsedResponse = parseResponse(response);
-      
-      if (parsedResponse == null) {
-        throw Exception('Invalid response format from server');
-      }
-
-      if (parsedResponse['status'] == 'success') {
-        if (mounted) {
-          _showSnackBar('Message sent successfully!', isError: false);
-          Navigator.pop(context);
-        }
+        parsedResponse = jsonDecode(response);
       } else {
-        final errorMessage = parsedResponse['message'] ?? 'Unknown error occurred';
-        _showSnackBar('Failed to send message: $errorMessage', isError: true);
+        throw Exception('Unexpected response format');
       }
     } catch (e) {
-      debugPrint('Error during message submission: $e');
-      String errorMessage = 'Error sending message';
-      
-      // More specific error messages based on error type
-      if (e.toString().contains('SocketException')) {
-        errorMessage = 'Cannot connect to server. Please check your internet connection.';
-      } else if (e.toString().contains('DOCTYPE')) {
-        errorMessage = 'Server error occurred. Please try again later.';
-      } else if (e.toString().contains('Invalid response format')) {
-        errorMessage = 'Unexpected response from server. Please try again.';
-      }
-      
+      debugPrint('Response parsing error: $e');
+      _showSnackBar('Error processing server response', isError: true);
+      return;
+    }
+
+    // Check response status
+    if (parsedResponse['status'] == 'success') {
       if (mounted) {
-        _showSnackBar(errorMessage, isError: true);
+        _showSnackBar('Message sent successfully!', isError: false);
+        Navigator.pop(context);
       }
-    } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-      }
+    } else {
+      final errorMessage = parsedResponse['message'] ?? 'Unknown error occurred';
+      _showSnackBar('Failed to send message: $errorMessage', isError: true);
+    }
+  } catch (e) {
+    debugPrint('Submission error: $e');
+    
+    String errorMessage = 'Error sending message';
+    
+    // More specific error handling
+    if (e.toString().contains('SocketException')) {
+      errorMessage = 'Cannot connect to server. Check your connection.';
+    } else if (e.toString().contains('HTML')) {
+      errorMessage = 'Server returned an unexpected response. Check server logs.';
+    }
+    
+    if (mounted) {
+      _showSnackBar(errorMessage, isError: true);
+    }
+  } finally {
+    if (mounted) {
+      setState(() => _isSubmitting = false);
     }
   }
+}
 
   void _showSnackBar(String message, {bool isError = true}) {
     if (!mounted) return;
