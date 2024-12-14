@@ -214,6 +214,8 @@ class MessageFormPageState extends State<MessageFormPage> {
     );
   }
 
+  
+
   Future<void> _submitMessage() async {
   if (!_formKey.currentState!.validate()) return;
 
