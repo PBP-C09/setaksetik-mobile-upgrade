@@ -35,7 +35,6 @@ class MenuDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Gambar Menu dengan rounded corners
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
@@ -67,7 +66,6 @@ class MenuDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Main Information Section
                 Row(
                   children: [
                     const Text(
@@ -196,7 +194,6 @@ class MenuDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Additional Information Section
                 const Text(
                   'Additional Information',
                   style: TextStyle(
@@ -207,7 +204,6 @@ class MenuDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 
-                // Additional Info items with smaller spacing
                 _buildBulletInfo('Takeaway', menuList.fields.takeaway),
                 const SizedBox(height: 4),
                 _buildBulletInfo('Delivery', menuList.fields.delivery),
