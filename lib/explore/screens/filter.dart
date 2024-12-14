@@ -10,118 +10,125 @@ class Filter extends StatefulWidget {
   State<Filter> createState() => _FilterState();
 }
 
+// Ubah bagian build filter menjadi
 class _FilterState extends State<Filter> {
   final _formKey = GlobalKey<FormState>();
-  String? namaMenu;
-  City? kota;
-  String? jenisBeef;
-  int? hargaMax;
+  City? selectedCity;
+  String? selectedCategory;
+  String? maxPrice;
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      widget.onFilter(namaMenu, kota, jenisBeef, hargaMax);
-      Navigator.of(context).pop();
-    }
-  }
+  final List<String> categories = [
+    'Beef', 'Chicken', 'Fish', 'Lamb', 'Pork',
+    'Rib Eye', 'Sirloin', 'T-Bone', 'Tenderloin',
+    'Wagyu', 'Other'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        padding: EdgeInsets.only(
-          top: 4,
-          left: 24,
-          right: 24,
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(32),
-          ),
-        ),
+    return Container(
+      padding: EdgeInsets.only(
+        top: 4,
+        left: 24,
+        right: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: Form(
+        key: _formKey,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Filter Menu",
+              "Filter",
               style: TextStyle(
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
-                color: Colors.black,
               ),
             ),
-            const SizedBox(height: 12),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Menu',
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xff3992C6),
-                  ),
-                ),
-              ),
-              onSaved: (value) => namaMenu = value,
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 24),
+            
+            // City Dropdown
             DropdownButtonFormField<City>(
-              value: kota,
-              items: City.values.map((city) {
-                return DropdownMenuItem<City>(
-                  value: city,
-                  child: Text(city.name), // gunakan extension `name` pada enum
-                );
-              }).toList(),
+              value: selectedCity,
               decoration: const InputDecoration(
                 labelText: 'City',
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xff3992C6),
-                  ),
-                ),
+                border: OutlineInputBorder(),
               ),
-              onChanged: (value) => setState(() => kota = value),
-              onSaved: (value) => kota = value,
+              items: City.values.map((City city) {
+                return DropdownMenuItem<City>(
+                  value: city,
+                  child: Text(city.name),
+                );
+              }).toList(),
+              onChanged: (City? newValue) {
+                setState(() {
+                  selectedCity = newValue;
+                });
+              },
             ),
-            const SizedBox(height: 8),
-            TextFormField(
+            const SizedBox(height: 16),
+
+            // Category Dropdown
+            DropdownButtonFormField<String>(
+              value: selectedCategory,
               decoration: const InputDecoration(
-                labelText: 'Type',
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xff3992C6),
-                  ),
-                ),
+                labelText: 'Category',
+                border: OutlineInputBorder(),
               ),
-              onSaved: (value) => jenisBeef = value,
+              items: categories.map((String category) {
+                return DropdownMenuItem<String>(
+                  value: category,
+                  child: Text(category),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  selectedCategory = newValue;
+                });
+              },
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+
+            // Price TextField
             TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Price',
-                focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color(0xff3992C6),
-                  ),
-                ),
-              ),
               keyboardType: TextInputType.number,
-              onSaved: (value) => hargaMax = int.tryParse(value ?? ''),
+              decoration: const InputDecoration(
+                labelText: 'Maximum Price',
+                border: OutlineInputBorder(),
+                prefixText: 'Rp ',
+              ),
+              onChanged: (value) {
+                maxPrice = value;
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24.0),
-              child: MaterialButton(
-                onPressed: _submitForm,
-                color: const Color(0xff3992C6),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
+            const SizedBox(height: 24),
+
+            // Apply Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    widget.onFilter(
+                      null,
+                      selectedCity,
+                      selectedCategory,
+                      int.tryParse(maxPrice ?? ''),
+                    );
+                    Navigator.pop(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFC62828),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 child: const Text(
-                  'Apply Filters',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  'Apply Filter',
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
             ),
