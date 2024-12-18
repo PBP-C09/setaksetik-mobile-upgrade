@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
 
 class MessageFormPage extends StatefulWidget {
   const MessageFormPage({super.key});
@@ -11,14 +12,13 @@ class MessageFormPage extends StatefulWidget {
 
 class MessageFormPageState extends State<MessageFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _receiverController = TextEditingController();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController contentController = TextEditingController();
+  final TextEditingController receiverController = TextEditingController();
+  bool _isSubmitting = false;
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
-
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
@@ -39,7 +39,6 @@ class MessageFormPageState extends State<MessageFormPage> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              // Title Text
               const Text(
                 'Mau meat up sama siapa?',
                 style: TextStyle(
@@ -51,8 +50,6 @@ class MessageFormPageState extends State<MessageFormPage> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              
-              // Form Container
               Container(
                 decoration: BoxDecoration(
                   color: const Color(0xFFF5F5DC),
@@ -72,7 +69,7 @@ class MessageFormPageState extends State<MessageFormPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _buildFormField(
-                        controller: _receiverController,
+                        controller: receiverController,
                         label: 'Receiver Name',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -83,7 +80,7 @@ class MessageFormPageState extends State<MessageFormPage> {
                       ),
                       const SizedBox(height: 20),
                       _buildFormField(
-                        controller: _titleController,
+                        controller: titleController,
                         label: 'Message Title',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -94,7 +91,7 @@ class MessageFormPageState extends State<MessageFormPage> {
                       ),
                       const SizedBox(height: 20),
                       _buildFormField(
-                        controller: _contentController,
+                        controller: contentController,
                         label: 'Message Content',
                         maxLines: 5,
                         validator: (value) {
@@ -105,15 +102,13 @@ class MessageFormPageState extends State<MessageFormPage> {
                         },
                       ),
                       const SizedBox(height: 24),
-                      
-                      // Buttons Row
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: _isSubmitting ? null : () => Navigator.pop(context),
                             style: TextButton.styleFrom(
-                              backgroundColor: Colors.grey[500],
+                              backgroundColor: _isSubmitting ? Colors.grey[300] : Colors.grey[500],
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
                                 vertical: 12,
@@ -130,22 +125,28 @@ class MessageFormPageState extends State<MessageFormPage> {
                           ),
                           const SizedBox(width: 12),
                           TextButton(
-                            onPressed: () => _submitForm(request),
+                            onPressed: _isSubmitting ? null : _submitMessage,
                             style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF6D4C41),
+                              backgroundColor: _isSubmitting ? Colors.grey[300] : const Color(0xFF6D4C41),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 24,
                                 vertical: 12,
                               ),
                             ),
-                            child: const Text(
-                              'Send',
-                              style: TextStyle(
-                                fontFamily: 'Playfair Display',
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: _isSubmitting 
+                              ? const SizedBox(
+                                  width: 20, 
+                                  height: 20, 
+                                  child: CircularProgressIndicator(color: Colors.white)
+                                )
+                              : const Text(
+                                  'Send',
+                                  style: TextStyle(
+                                    fontFamily: 'Playfair Display',
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                           ),
                         ],
                       ),
@@ -213,56 +214,96 @@ class MessageFormPageState extends State<MessageFormPage> {
     );
   }
 
-  void _submitForm(CookieRequest request) async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        final response = await request.post(
-          'http://127.0.0.1:8000/meatup/create-message/',
-          {
-            'title': _titleController.text,
-            'content': _contentController.text,
-            'receiver': _receiverController.text,
-          },
-        );
+  
 
-        if (response['status']) {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(response['message'] ?? 'Message sent successfully!'),
-                backgroundColor: const Color(0xFF6D4C41),
-              ),
-            );
-            Navigator.pop(context);
-          }
-        } else {
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(response['message'] ?? 'Failed to send message'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
+  Future<void> _submitMessage() async {
+  if (!_formKey.currentState!.validate()) return;
+
+  setState(() => _isSubmitting = true);
+
+  final request = context.read<CookieRequest>();
+  
+  try {
+    final response = await request.post(
+      'http://127.0.0.1:8000/meatup/create/',
+      {
+        'title': titleController.text.trim(),
+        'content': contentController.text.trim(),
+        'receiver': receiverController.text.trim(),
+      },
+    );
+
+    // More robust response handling
+    dynamic parsedResponse;
+    try {
+      // Check if response is already a map (pbp_django_auth might do this)
+      if (response is Map) {
+        parsedResponse = response;
+      } else if (response is String) {
+        // Try parsing as JSON, with extra checks
+        if (response.trim().toLowerCase().startsWith('<!doctype') || 
+            response.trim().toLowerCase().startsWith('<html')) {
+          throw Exception('Received HTML instead of JSON');
         }
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: $e'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+        parsedResponse = jsonDecode(response);
+      } else {
+        throw Exception('Unexpected response format');
       }
+    } catch (e) {
+      debugPrint('Response parsing error: $e');
+      _showSnackBar('Error processing server response', isError: true);
+      return;
     }
+
+    // Check response status
+    if (parsedResponse['status'] == 'success') {
+      if (mounted) {
+        _showSnackBar('Message sent successfully!', isError: false);
+        Navigator.pop(context);
+      }
+    } else {
+      final errorMessage = parsedResponse['message'] ?? 'Unknown error occurred';
+      _showSnackBar('Failed to send message: $errorMessage', isError: true);
+    }
+  } catch (e) {
+    debugPrint('Submission error: $e');
+    
+    String errorMessage = 'Error sending message';
+    
+    // More specific error handling
+    if (e.toString().contains('SocketException')) {
+      errorMessage = 'Cannot connect to server. Check your connection.';
+    } else if (e.toString().contains('HTML')) {
+      errorMessage = 'Server returned an unexpected response. Check server logs.';
+    }
+    
+    if (mounted) {
+      _showSnackBar(errorMessage, isError: true);
+    }
+  } finally {
+    if (mounted) {
+      setState(() => _isSubmitting = false);
+    }
+  }
+}
+
+  void _showSnackBar(String message, {bool isError = true}) {
+    if (!mounted) return;
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _contentController.dispose();
-    _receiverController.dispose();
+    titleController.dispose();
+    contentController.dispose();
+    receiverController.dispose();
     super.dispose();
   }
 }
