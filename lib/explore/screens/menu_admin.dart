@@ -6,6 +6,7 @@ import 'package:setaksetikmobile/explore/screens/filter.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 import 'package:setaksetikmobile/explore/screens/menu_form.dart';
+import 'package:setaksetikmobile/explore/screens/edit_menu_form.dart';
 
 class MenuAdmin extends StatefulWidget {
   const MenuAdmin({Key? key}) : super(key: key);
@@ -56,6 +57,7 @@ class _MenuAdminState extends State<MenuAdmin> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
@@ -221,7 +223,9 @@ class _MenuAdminState extends State<MenuAdmin> {
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       color: const Color(0xFFF5F5DC),
                       clipBehavior: Clip.antiAlias,
-                      child: Column(
+                      child: Stack(
+                        children: [
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AspectRatio(
@@ -386,6 +390,101 @@ class _MenuAdminState extends State<MenuAdmin> {
                           ),
                         ],
                       ),
+                       Positioned(
+                            top: 8,
+                            left: 8,
+                            child: Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.yellow[300],
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditMenuFormPage(menuToEdit: menuList),
+                                        ),
+                                      ).then((_) {
+                                        setState(() {
+                                          _menuFuture = fetchMenu(
+                                            Provider.of<CookieRequest>(context, listen: false)
+                                          );
+                                        });
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width:8),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[400],
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Delete Menu'),
+                                            content: const Text('Are you sure you want to delete this menu?'),
+                                            actions: [
+                                              TextButton(
+                                                child: const Text('Cancel'),
+                                                onPressed: () => Navigator.of(context).pop(),
+                                              ),
+                                              TextButton(
+                                                child: const Text(
+                                                  'Delete',
+                                                  style: TextStyle(color: Colors.red),
+                                                ),
+                                                onPressed: () async {                  
+                                                  _deleteMenu(request, menuList.pk);
+                                                  setState(() {
+                                                    _menuFuture = fetchMenu(request);
+                                                  });
+                                                  Navigator.pop(context);
+                                                }         
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
@@ -395,6 +494,13 @@ class _MenuAdminState extends State<MenuAdmin> {
         },
       ),
     );
+  }
+
+  _deleteMenu(CookieRequest request, int pk) {
+    request.get('http://127.0.0.1:8000/explore/delete/$pk');
+    setState(() {
+      _menuFuture = fetchMenu(request);
+    });
   }
 
   void _applyFilters(String? namaMenu, City? kota, String? jenisBeef, int? hargaMax) {

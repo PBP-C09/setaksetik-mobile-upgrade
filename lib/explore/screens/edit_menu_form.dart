@@ -9,14 +9,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 
-class MenuFormPage extends StatefulWidget {
-  const MenuFormPage({super.key});
+class EditMenuFormPage extends StatefulWidget {
+  final MenuList menuToEdit;
+  const EditMenuFormPage({super.key, required this.menuToEdit});
 
   @override
-  State<MenuFormPage> createState() => _MenuFormPageState();
+  State<EditMenuFormPage> createState() => _EditMenuFormPageState();
 }
 
-class _MenuFormPageState extends State<MenuFormPage> {
+class _EditMenuFormPageState extends State<EditMenuFormPage> {
   final _formKey = GlobalKey<FormState>();
 
   // Dropdown Selections
@@ -76,13 +77,32 @@ class _MenuFormPageState extends State<MenuFormPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Pre-fill form dengan data yang ada
+    _menuName = widget.menuToEdit.fields.menu;
+    _restaurantName = widget.menuToEdit.fields.restaurantName;
+    _selectedCategory = widget.menuToEdit.fields.category.toLowerCase();
+    _selectedCity = widget.menuToEdit.fields.city.name;
+    _selectedSpecialized = widget.menuToEdit.fields.specialized.toLowerCase();
+    _price = widget.menuToEdit.fields.price;
+    _rating = widget.menuToEdit.fields.rating;
+    _imageUrl = widget.menuToEdit.fields.image;
+    _takeaway = widget.menuToEdit.fields.takeaway;
+    _delivery = widget.menuToEdit.fields.delivery;
+    _outdoor = widget.menuToEdit.fields.outdoor;
+    _smokingArea = widget.menuToEdit.fields.smokingArea;
+    _wifi = widget.menuToEdit.fields.wifi;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFEFBEA),
       appBar: AppBar(
-        title: const Text('Add Menu'),
+        title: const Text('Edit Menu'),
       ),
       body: Form(
         key: _formKey,
@@ -213,7 +233,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
                   onPressed: () async {
     if (_formKey.currentState!.validate()) {
       final response = await request.postJson(
-        "http://127.0.0.1:8000/explore/create-flutter/",
+        "http://127.0.0.1:8000/explore/edit-flutter/${widget.menuToEdit.pk}/",
 
        jsonEncode(<String, String>{
           "menu": _menuName,
@@ -252,7 +272,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
                 }
             },
         
-                  child: const Text("Add menu"),
+                  child: const Text("Save"),
                 ),
               ),
             ],
@@ -261,7 +281,6 @@ class _MenuFormPageState extends State<MenuFormPage> {
       ),
     );
   }
-}
   // Helper Widget: TextField
   Widget _buildTextField({
     required String label,
@@ -270,9 +289,28 @@ class _MenuFormPageState extends State<MenuFormPage> {
     required String? Function(String?) validator,
     bool isNumeric = false,
   }) {
+    String initialValue = '';
+    switch (label) {
+    case "Menu Name":
+      initialValue = _menuName;
+      break;
+    case "Restaurant":
+      initialValue = _restaurantName;
+      break;
+    case "Price":
+      initialValue = _price.toString();
+      break;
+    case "Rating":
+      initialValue = _rating.toString();
+      break;
+    case "Image URL":
+      initialValue = _imageUrl;
+      break;
+  }
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        initialValue: initialValue,
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
@@ -284,6 +322,8 @@ class _MenuFormPageState extends State<MenuFormPage> {
       ),
     );
   }
+}
+  
 
   // Helper Widget: Dropdown
   Widget _buildDropdown({
