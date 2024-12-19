@@ -2,6 +2,8 @@ import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
+import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
+import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -166,7 +168,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
 
               // Image URL Input
               _buildTextField(
-                label: "Gambar Menu",
+                label: "Image URL",
                 hint: "Masukkan URL gambar menu",
                 onChanged: (value) => setState(() => _imageUrl = value),
                 validator: (value) =>
@@ -209,91 +211,47 @@ class _MenuFormPageState extends State<MenuFormPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   ),
                   onPressed: () async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      // Show loading indicator
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const Center(child: CircularProgressIndicator());
-        },
-      );
+    if (_formKey.currentState!.validate()) {
+      final response = await request.postJson(
+        "http://127.0.0.1:8000/explore/create-flutter/",
 
-      // Prepare data
-      Map<String, dynamic> menuData = {
-        "menu": _menuName.trim(),
-        "category": _selectedCategory ?? "",
-        "restaurant_name": _restaurantName.trim(),
-        "city": _selectedCity ?? "",
-        "price": _price.toString(),
-        "rating": _rating.toString(),
-        "specialized": _selectedSpecialized ?? "",
-        "image": _imageUrl.trim(),
-        "takeaway": _takeaway,
-        "delivery": _delivery,
-        "outdoor": _outdoor,
-        "smoking_area": _smokingArea,
-        "wifi": _wifi,
-      };
-
-      // Debug print
-      print("Sending data: ${jsonEncode(menuData)}");
-
-      // Send request with proper headers
-      var url = Uri.parse('http://10.0.2.2:8000/api/create-flutter/');
-      var response = await http.post(
-        url,
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: jsonEncode(menuData),
-      );
-
-      // Close loading indicator
-      Navigator.pop(context);
-
-      print("Response status: ${response.statusCode}"); // Debug print
-      print("Response body: ${response.body}"); // Debug print
-
-      // Parse response
-      var jsonResponse = jsonDecode(response.body);
-
-      if (jsonResponse['status'] == 'success') {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Menu berhasil ditambahkan!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(jsonResponse['message'] ?? "Terjadi kesalahan"),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } catch (e, stackTrace) {
-      // Close loading indicator if still showing
-      if (Navigator.canPop(context)) {
-        Navigator.pop(context);
-      }
-      
-      print("Error occurred: $e"); // Debug print
-      print("Stack trace: $stackTrace"); // Debug print
-      
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-},
+       jsonEncode(<String, String>{
+          "menu": _menuName,
+          "category": _selectedCategory ?? "",
+          "restaurant_name": _restaurantName,
+          "city": _selectedCity ?? "",
+          "price": _price.toString(),
+          "rating": _rating.toString(),
+          "specialized": _selectedSpecialized ?? "",
+          "image": _imageUrl,
+          "takeaway": _takeaway.toString(),
+          "delivery": _delivery.toString(),
+          "outdoor": _outdoor.toString(),
+          "smoking_area": _smokingArea.toString(),
+          "wifi": _wifi.toString(),
+        }),
+       );
+        if (context.mounted) {
+                        if (response['status'] == 'success') {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                            content: Text("Produk baru berhasil disimpan!"),
+                            ));
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => MenuPage()),
+                            );
+                        } else {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                content:
+                                    Text("Terdapat kesalahan, silakan coba lagi."),
+                            ));
+                        }
+                    }
+                }
+            },
+        
                   child: const Text("Add menu"),
                 ),
               ),
