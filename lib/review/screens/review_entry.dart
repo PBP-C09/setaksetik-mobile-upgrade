@@ -151,7 +151,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                             jsonEncode(<String, dynamic>
                             {
                               'menu': widget.menu.fields.menu,
-                              'place': _place,
+                              'place': widget.menu.fields.restaurantName,
                               'rating': _rating.toString(),
                               'description': _description,
                               'owner_reply': _ownerReply,
