@@ -19,12 +19,14 @@ class MyApp extends StatelessWidget {
         return request;
       },
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'SetakSetik',
         theme: ThemeData(
           scaffoldBackgroundColor: const Color(0xFF6D4C41),
           colorScheme: ColorScheme.fromSwatch(
             primarySwatch: Colors.brown,
           ).copyWith(secondary: const Color(0xFF842323)),
+          fontFamily: 'Raleway',
           textTheme: TextTheme(
             bodyLarge: TextStyle(fontFamily: 'Raleway', color: const Color(0xFFF5F5DC)),
             bodyMedium: TextStyle(fontFamily: 'Raleway', color: const Color(0xFF3E2723)),
@@ -42,8 +44,23 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
           ),
-        home: const LoginApp(),
+        home: const LoginPage(),
       ),
     );
+  }
+}
+
+class UserProfile {
+  static bool loggedIn = false;
+  static Map<String, dynamic> data = {};
+
+  static void login(Map<String, dynamic> data) {
+    loggedIn = true;
+    UserProfile.data = data;
+  }
+
+  static void logout() {
+    loggedIn = false;
+    data = {};
   }
 }
