@@ -18,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _confirmPasswordController = TextEditingController();
 
   String? _selectedRole; // Holds the selected role
-  final List<String> _roles = ['Steak Lover', 'Steakhouse Owner'];
+  final List<String> _roles = ['Steak Lover', 'Steakhouse Owner', 'Admin'];
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +202,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       // Untuk menyambungkan Android emulator dengan Django pada localhost,
                       // gunakan URL http://10.0.2.2/
                       // TODO: BENERIN FIELDSNYA
-                      print("lol");
                       final response = await request.postJson(
                           "http://127.0.0.1:8000/register-mobile/",
                           jsonEncode({

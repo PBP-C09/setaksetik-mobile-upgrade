@@ -1,4 +1,5 @@
-import 'package:setaksetikmobile/screens/home.dart';
+import 'package:setaksetikmobile/main.dart';
+import 'package:setaksetikmobile/screens/root_page.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -107,21 +108,25 @@ class _LoginPageState extends State<LoginPage> {
 
                       if (request.loggedIn) {
                         String message = response['message'];
-                        String uname = response['username'];
-                        String full_name = response['full_name'];
-                        String role = response['role'];
+                        Map<String, dynamic> data = {
+                          "username" : response['username'],
+                          "full_name" : response['full_name'],
+                          "role" : response['role'],
+                        };
+                        UserProfile.login(data);
                         if (context.mounted) {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomePage(fullName: full_name)),
+                                // builder: (context) => HomePage(fullName: data['full_name'])),
+                                builder: (context) => RootPage(fullName: data['full_name'])),
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
                             ..showSnackBar(
                               SnackBar(
                                   content:
-                                      Text("$message Welcome back, $full_name. Your role is $role")),
+                                      Text("$message Welcome back, ${data['full_name']}. Your role is ${data['role']}")),
                             );
                         }
                       } else {

@@ -52,6 +52,15 @@ class MyApp extends StatelessWidget {
 
 class UserProfile {
   static bool loggedIn = false;
+  static Map<String, dynamic> data = {};
 
+  static void login(Map<String, dynamic> data) {
+    loggedIn = true;
+    UserProfile.data = data;
+  }
 
+  static void logout() {
+    loggedIn = false;
+    data = {};
+  }
 }
