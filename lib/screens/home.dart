@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/claim/screens/claim_home.dart';
+import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
+import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
@@ -12,6 +15,23 @@ import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+
+Future<Map<String, dynamic>?> fetchOwnedRestaurant(CookieRequest request) async {
+  try {
+    final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
+
+    print('Response fetchOwnedRestaurant: $response'); // Debugging log
+    
+    if (response == null || response.isEmpty) {
+      return null; // Jika user tidak memiliki restoran
+    }
+
+    return response;
+  } catch (e) {
+    print('Error fetching owned restaurant: $e');
+    return null; // Handle error dengan return null
+  }
+}
 
 class HomePage extends StatelessWidget {
   final String fullName;
@@ -111,36 +131,49 @@ class HomePage extends StatelessWidget {
       ]);
     } else if (role == "steakhouse owner") {
       buttons.addAll([
-        _buildButtonWithInfo(
-          context,
-          'Claim a Steakhouse - blm diubah',
-          // TODO: CLAIM OWNER
-          const SpinPage(),
-          const Color(0xFF3E2723),
-          const Color(0xFFF5F5DC),
-          'Claim a steakhouse!',
-        ),
-        SizedBox(height: 16.0),
-        _buildButtonWithInfo(
-          context,
-          'Pantau Review - blm diubah',
-          // TODO: REVIEW OWNER
-          const SpinPage(),
-          const Color(0xFF842323),
-          const Color(0xFFF5F5DC),
-          'View customer reviews and answer them',
-        ),
-        SizedBox(height: 16.0),
-        _buildButtonWithInfo(
-          context,
-          'Pantau Booking - blm diubah',
-          // TODO: BOOKING OWNER
-          const SpinPage(),
-          const Color(0xFF6D4C41),
-          const Color(0xFFF5F5DC),
-          'Pantau booking di restoranmu!',
-        ),
-      ]);
+      // Tombol untuk claim restoran
+      _buildButtonWithInfo(
+        context,
+        'Claim a Steakhouse',
+        const ClaimPage(),
+        const Color(0xFF3E2723),
+        const Color(0xFFF5F5DC),
+        'Claim a steakhouse!',
+      ),
+      SizedBox(height: 16.0),
+
+      // Tombol untuk melihat restoran yang dimiliki
+      _buildButtonWithInfo(
+        context,
+        'My Restaurant',
+        const OwnedRestaurantPage(),
+        const Color(0xFF3E2723),
+        const Color(0xFFF5F5DC),
+        'Lihat restoran yang Anda miliki!',
+      ),
+      SizedBox(height: 16.0),
+
+      // Tombol untuk memantau review
+      _buildButtonWithInfo(
+        context,
+        'Pantau Review',
+        const SpinPage(),
+        const Color(0xFF842323),
+        const Color(0xFFF5F5DC),
+        'View customer reviews and answer them',
+      ),
+      SizedBox(height: 16.0),
+
+      // Tombol untuk memantau booking
+      _buildButtonWithInfo(
+        context,
+        'Pantau Booking',
+        const SpinPage(),
+        const Color(0xFF6D4C41),
+        const Color(0xFFF5F5DC),
+        'Pantau booking di restoranmu!',
+      ),
+    ]);
     } else {
       buttons.addAll([
         _buildButtonWithInfo(
