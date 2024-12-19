@@ -70,7 +70,7 @@ class _WheelViewState extends State<WheelView> {
             mainAxisAlignment: MainAxisAlignment.center, // Centers the buttons horizontally
             children: [
               TextButton(
-                onPressed: _buttonsEnabled ? _spinWheel : null,
+                onPressed: _buttonsEnabled ? () => _spinWheel(request) : null,
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                 ),
@@ -259,7 +259,7 @@ class _WheelViewState extends State<WheelView> {
     });
   }
 
-  void _spinWheel() {
+  void _spinWheel(CookieRequest request) {
     if (_wheelItems.length > 1) {
       final int selectedIndex =
           DateTime.now().millisecondsSinceEpoch % _wheelItems.length;
@@ -276,7 +276,7 @@ class _WheelViewState extends State<WheelView> {
           _selectedMenuName = _selectedItem?.fields.menu;
           _buttonsEnabled = true;
         });
-        _showResultDialog(_selectedMenuName!, _selectedItem!); 
+        _showResultDialog(request, _selectedMenuName!, _selectedItem!); 
       });
     }
   }
@@ -291,7 +291,7 @@ class _WheelViewState extends State<WheelView> {
     });
   }
 
-  void _showResultDialog(String selectedMenuName, MenuList selectedMenu) {
+  void _showResultDialog(CookieRequest request, String selectedMenuName, MenuList selectedMenu) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -356,14 +356,14 @@ class _WheelViewState extends State<WheelView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
-                    onPressed: () {
-                      context.read<CookieRequest>().postJson(
+                    onPressed: () async {
+                      final response = await request.postJson(
                         "http://127.0.0.1:8000/spinthewheel/add-spin-history-mobile/",
-                        jsonEncode(<String, String>{
+                        jsonEncode({
                           'winner': selectedMenuName,
                           'winnerId': selectedMenu.pk.toString(),
                           'note': _noteController.text
-                        }),
+                        })
                       );
                       Navigator.of(context).pop();
                       _noteController.clear();
