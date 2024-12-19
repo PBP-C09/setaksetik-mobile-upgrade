@@ -5,7 +5,6 @@ import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/review/screens/user_review.dart';
-
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/screens/login.dart';
