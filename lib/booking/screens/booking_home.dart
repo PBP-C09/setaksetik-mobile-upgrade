@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/booking/screens/filter_widget.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -6,7 +7,6 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
 import 'package:setaksetikmobile/booking/screens/list_booking.dart';
 
-// Add the fetchMenu function here
 Future<List<MenuList>> fetchMenu(CookieRequest request) async {
   try {
     final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
@@ -31,12 +31,14 @@ class BookingPage extends StatefulWidget {
 
 class _BookingPageState extends State<BookingPage> {
   late Future<List<MenuList>> _menuFuture;
+  List<MenuList> _originalMenus = [];
 
   @override
   void initState() {
     super.initState();
     final request = Provider.of<CookieRequest>(context, listen: false);
     _menuFuture = fetchMenu(request);
+    _menuFuture.then((menus) => _originalMenus = menus);
   }
 
   @override
@@ -45,13 +47,12 @@ class _BookingPageState extends State<BookingPage> {
       appBar: AppBar(
         title: const Text('Book a Restaurant'),
       ),
-      drawer: LeftDrawer(),
+      drawer: const LeftDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Title Section
             const Center(
               child: Column(
                 children: [
@@ -60,7 +61,7 @@ class _BookingPageState extends State<BookingPage> {
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF6F4E37), // brown color
+                      color: Color(0xFF6F4E37),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -68,7 +69,7 @@ class _BookingPageState extends State<BookingPage> {
                     'Choose your favorite restaurant and make your reservation now!',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Color(0xFF6F4E37), // brown color
+                      color: Color(0xFF6F4E37),
                     ),
                   ),
                 ],
@@ -76,7 +77,6 @@ class _BookingPageState extends State<BookingPage> {
             ),
             const SizedBox(height: 24),
 
-            // "Atur Booking" Button
             Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -90,7 +90,9 @@ class _BookingPageState extends State<BookingPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFFFFC107),
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 child: const Text(
                   'Atur Booking',
@@ -101,7 +103,6 @@ class _BookingPageState extends State<BookingPage> {
 
             const SizedBox(height: 32),
 
-            // Menu Grid Display
             const Text(
               'Restaurant Menus',
               style: TextStyle(
@@ -111,7 +112,95 @@ class _BookingPageState extends State<BookingPage> {
             ),
             const SizedBox(height: 16),
 
-            // Fetch and Display Menu Data
+            Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: Container(
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        hintText: 'Cari menu',
+                        hintStyle: TextStyle(fontSize: 14),
+                        prefixIcon: Icon(Icons.search, size: 20),
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(vertical: 12),
+                        border: InputBorder.none,
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _menuFuture = Future.value(_originalMenus.where((menu) {
+                            return menu.fields.menu.toLowerCase().contains(value.toLowerCase());
+                          }).toList());
+                        });
+                      },
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(32),
+                          ),
+                        ),
+                        showDragHandle: true,
+                        isScrollControlled: true,
+                        builder: (BuildContext context) {
+                          return FilterWidget(
+                            onFilter: (filterOptions) {
+                              setState(() {
+                                _menuFuture = Future.value(_originalMenus.where((menu) {
+                                  final hasActiveFilter = filterOptions['city'] != null ||
+                                      filterOptions['takeaway'] == true ||
+                                      filterOptions['delivery'] == true ||
+                                      filterOptions['outdoor'] == true ||
+                                      filterOptions['wifi'] == true;
+
+                                  if (!hasActiveFilter) {
+                                    return true;
+                                  }
+
+                                  final isCityMatch = filterOptions['city'] == null || 
+                                      menu.fields.city.name == filterOptions['city'];
+                                  final isTakeaway = filterOptions['takeaway'] == null || 
+                                      filterOptions['takeaway'] == false || 
+                                      menu.fields.takeaway;
+                                  final isDelivery = filterOptions['delivery'] == null || 
+                                      filterOptions['delivery'] == false || 
+                                      menu.fields.delivery;
+                                  final isOutdoor = filterOptions['outdoor'] == null || 
+                                      filterOptions['outdoor'] == false || 
+                                      menu.fields.outdoor;
+                                  final isWifi = filterOptions['wifi'] == null || 
+                                      filterOptions['wifi'] == false || 
+                                      menu.fields.wifi;
+
+                                  return isCityMatch && isTakeaway && isDelivery && 
+                                      isOutdoor && isWifi;
+                                }).toList());
+                              });
+                            },
+                          );
+                        },
+                      );
+                    },
+                    icon: const Icon(Icons.filter_alt_outlined),
+                    label: const Text('Filter'),
+                  ),
+                ),
+              ],
+            ),
+
             FutureBuilder<List<MenuList>>(
               future: _menuFuture,
               builder: (context, snapshot) {
@@ -188,7 +277,7 @@ class RestaurantCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF6F4E37), // brown color
+                    color: Color(0xFF6F4E37),
                   ),
                 ),
                 Text('Category: ${menu.fields.category}'),
@@ -211,9 +300,11 @@ class RestaurantCard extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFC107), // yellow color
+                backgroundColor: const Color(0xFFFFC107),
                 padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               child: const Text('Select Restaurant'),
             ),
