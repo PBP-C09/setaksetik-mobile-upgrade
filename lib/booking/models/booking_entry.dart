@@ -21,6 +21,8 @@ class BookingEntry {
         fields: Fields.fromJson(json["fields"]),
     );
 
+  get menu => null;
+
     Map<String, dynamic> toJson() => {
         "model": model,
         "pk": pk,

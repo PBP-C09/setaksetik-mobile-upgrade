@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 import 'package:setaksetikmobile/claim/screens/claim_home.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
@@ -168,7 +169,7 @@ class HomePage extends StatelessWidget {
       _buildButtonWithInfo(
         context,
         'Pantau Booking',
-        const SpinPage(),
+        const PantauBookingPage(),
         const Color(0xFF6D4C41),
         const Color(0xFFF5F5DC),
         'Pantau booking di restoranmu!',
