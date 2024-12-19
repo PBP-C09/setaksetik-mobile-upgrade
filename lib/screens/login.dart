@@ -1,46 +1,9 @@
-import 'package:setaksetikmobile/screens/home.dart';
+import 'package:setaksetikmobile/main.dart';
+import 'package:setaksetikmobile/screens/root_page.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/screens/register.dart';
-
-void main() {
-  runApp(const LoginApp());
-}
-
-class LoginApp extends StatelessWidget {
-  const LoginApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF6D4C41),
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.brown,
-        ).copyWith(secondary: const Color(0xFF842323)),
-        textTheme: TextTheme(
-          bodyLarge: TextStyle(fontFamily: 'Raleway', color: const Color(0xFF3E2723)),
-          bodyMedium: TextStyle(fontFamily: 'Raleway', color: const Color(0xFF3E2723)),
-          bodySmall: TextStyle(fontFamily: 'Raleway', color: const Color(0xFF3E2723)),
-        ),
-        appBarTheme: AppBarTheme(
-          backgroundColor: const Color(0xFFF5F5DC),
-          titleTextStyle: TextStyle(
-            fontFamily: 'Playfair Display',
-            fontWeight: FontWeight.w700,
-            fontStyle: FontStyle.italic,
-            color: const Color(0xFF3E2723),
-            fontSize: 20,
-          ),
-        ),
-        useMaterial3: true,
-        ),
-      home: const LoginPage(),
-    );
-  }
-}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -145,21 +108,25 @@ class _LoginPageState extends State<LoginPage> {
 
                       if (request.loggedIn) {
                         String message = response['message'];
-                        String uname = response['username'];
-                        String full_name = response['full_name'];
-                        String role = response['role'];
+                        Map<String, dynamic> data = {
+                          "username" : response['username'],
+                          "full_name" : response['full_name'],
+                          "role" : response['role'],
+                        };
+                        UserProfile.login(data);
                         if (context.mounted) {
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomePage(fullName: full_name)),
+                                // builder: (context) => HomePage(fullName: data['full_name'])),
+                                builder: (context) => RootPage(fullName: data['full_name'])),
                           );
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
                             ..showSnackBar(
                               SnackBar(
                                   content:
-                                      Text("$message Welcome back, $full_name. Your role is $role")),
+                                      Text("$message Welcome back, ${data['full_name']}. Your role is ${data['role']}")),
                             );
                         }
                       } else {

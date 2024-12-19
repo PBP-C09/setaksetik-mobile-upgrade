@@ -30,6 +30,7 @@ class _SpinPageState extends State<SpinPage> with SingleTickerProviderStateMixin
     return Scaffold(
       appBar: AppBar(
         title: const Text('Spin the Wheel'),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           tabs: const [

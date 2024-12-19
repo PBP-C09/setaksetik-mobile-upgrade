@@ -18,7 +18,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _confirmPasswordController = TextEditingController();
 
   String? _selectedRole; // Holds the selected role
-  final List<String> _roles = ['Steak Lover', 'Steakhouse Owner'];
+  final List<String> _roles = ['Steak Lover', 'Steakhouse Owner', 'Admin'];
 
   @override
   Widget build(BuildContext context) {
@@ -225,8 +225,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Failed to register!'),
+                            SnackBar(
+                              content: Text(response['message']),
                             ),
                           );
                         }
