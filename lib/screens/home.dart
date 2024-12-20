@@ -3,6 +3,7 @@ import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 import 'package:setaksetikmobile/claim/screens/claim_home.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
+import 'package:setaksetikmobile/explore/screens/menu_owner.dart';
 
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
@@ -107,7 +108,6 @@ class HomePage extends StatelessWidget {
         _buildButtonWithInfo(
           context,
           'Manage Menus - blm diubah',
-          // TODO: EXPLORE ADMIN
           const ExploreAdmin(),
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
@@ -131,8 +131,7 @@ class HomePage extends StatelessWidget {
         _buildButtonWithInfo(
           context,
           'Manage Ownership - blm diubah',
-          // TODO: BOOKING ADMIN
-          const SpinPage(),
+          const ExploreOwner(),
           const Color(0xFF6D4C41),
           const Color(0xFFF5F5DC),
           'Manage the ownership of each restaurants, revoke an ownership if necessary!',

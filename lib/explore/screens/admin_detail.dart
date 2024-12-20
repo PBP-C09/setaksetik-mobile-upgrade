@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-import 'package:setaksetikmobile/booking/screens/booking_form.dart';
-import 'package:setaksetikmobile/review/screens/review_entry.dart';
 
-class MenuDetailPage extends StatelessWidget {
+class AdminDetail extends StatelessWidget {
   final MenuList menuList;
 
-  const MenuDetailPage({required this.menuList, Key? key}) : super(key: key);
+  const AdminDetail({required this.menuList, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -218,91 +216,31 @@ class MenuDetailPage extends StatelessWidget {
                 
                 const SizedBox(height: 20),
 
-                // Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3E2723),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+                // Back button
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF3E2723),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
                       ),
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Back to Menu List',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFF7B32B), // Warna oranye untuk Review
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ReviewEntryFormPage(menu: menuList),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Review',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      'Back to Menu List',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFC62828), // Warna merah untuk Booking
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookingFormPage(menuId: menuList.pk),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Booking',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
