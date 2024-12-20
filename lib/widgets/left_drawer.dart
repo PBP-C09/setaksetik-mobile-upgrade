@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:setaksetikmobile/main.dart';
+import 'package:setaksetikmobile/review/screens/user_review.dart';
 import 'package:setaksetikmobile/screens/root_page.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
@@ -125,7 +126,7 @@ class LeftDrawer extends StatelessWidget {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const ReviewPage()),
+              MaterialPageRoute(builder: (context) => const ReviewMainPage()),
             );
           },
         ),

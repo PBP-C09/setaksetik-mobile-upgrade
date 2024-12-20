@@ -146,18 +146,28 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                       if (_formKey.currentState!.validate()) {
                         print("iya dia .!validate");
                         try {
+                          print({
+                              'menu': widget.menu.fields.menu,
+                              'place': widget.menu.fields.restaurantName,
+                              'rating': _rating.toString(),
+                              'description': _description,
+                              'owner_reply': _ownerReply,
+                            });
+                            
                           final response = await request.postJson(
                             "http://127.0.0.1:8000/review/create-review-flutter/",
                             jsonEncode(<String, dynamic>
                             {
                               'menu': widget.menu.fields.menu,
-                              'place': _place,
+                              'place': widget.menu.fields.restaurantName,
                               'rating': _rating.toString(),
                               'description': _description,
                               'owner_reply': _ownerReply,
                             }),
                           );
 
+                          print("HELLO");
+                          print(response);
 
 
                           
@@ -175,6 +185,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                             );
                           }
                         } catch (e) {
+                          print("HELLO");
                           print("Error: $e");
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Terjadi kesalahan: $e")),
