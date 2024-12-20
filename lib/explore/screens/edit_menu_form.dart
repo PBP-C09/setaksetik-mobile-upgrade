@@ -259,7 +259,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                             ));
                             Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => MenuAdmin()),
+                                MaterialPageRoute(builder: (context) => ExploreAdmin()),
                             );
                         } else {
                             ScaffoldMessenger.of(context)

@@ -3,6 +3,7 @@ import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 import 'package:setaksetikmobile/claim/screens/claim_home.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
+import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
 
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
@@ -104,7 +105,7 @@ class HomePage extends StatelessWidget {
           context,
           'Manage Menus - blm diubah',
           // TODO: EXPLORE ADMIN
-          const SpinPage(),
+          const ExploreAdmin(),
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
           'Manage steakhouse listings and menus.',
