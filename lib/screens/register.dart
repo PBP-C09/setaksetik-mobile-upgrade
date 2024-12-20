@@ -17,230 +17,274 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  String? _selectedRole; // Holds the selected role
+  String? _selectedRole;
   final List<String> _roles = ['Steak Lover', 'Steakhouse Owner', 'Admin'];
 
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     const formStyle = TextStyle(
-                        fontFamily: 'Raleway',
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF3E2723), // Brown color for label
-                        fontSize: 16.0,
-                      );
+      fontFamily: 'Raleway',
+      fontWeight: FontWeight.w600,
+      color: Color(0xFF3E2723),
+      fontSize: 16.0,
+    );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('SetakSetik'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Text(
-                    'Register to',
-                    style: TextStyle(
-                      fontFamily: 'Playfair Display',
-                      fontWeight: FontWeight.w700,
-                      fontStyle: FontStyle.italic,
-                      color: const Color(0xFF3E2723),
-                      fontSize: 24,
+      body: Container(
+        color: Color(0xFF6D4C41),
+        child: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Container(
+                padding: EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF5F5DC),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 15,
+                      offset: Offset(0, 8),
                     ),
-                  ),
-                  const Text(
-                    'SetakSetik',
-                    style: TextStyle(
-                      fontFamily: 'Raleway',
-                      fontWeight: FontWeight.w700,
-                      color: const Color(0xFF3E2723),
-                      fontSize: 24,
-                    ),
-                  ),
-                  const SizedBox(height: 30.0),
-                  DropdownButtonFormField<String>(
-                    value: _selectedRole,
-                    items: _roles.map((role) {
-                      return DropdownMenuItem<String>(
-                        value: role,
-                        child: Text(
-                          role,
-                          style: formStyle,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedRole = value;
-                      });
-                    },
-                    
-                    decoration: const InputDecoration(
-                      labelText: 'Role',
-                      hintText: 'Select your role',
-                      labelStyle: formStyle,
-                      hintStyle: formStyle,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      'Register to',
+                      style: TextStyle(
+                        fontFamily: 'Playfair Display',
+                        fontWeight: FontWeight.w700,
+                        fontStyle: FontStyle.italic,
+                        color: Color(0xFF3E2723),
+                        fontSize: 24,
                       ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select your role';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextFormField(
-                    controller: _usernameController,
-                    style: formStyle,
-                    decoration: const InputDecoration(
-                      labelText: 'Username',
-                      hintText: 'Create a unique username!',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                    Text(
+                      'SetakSetik',
+                      style: TextStyle(
+                        fontFamily: 'Raleway',
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF842323),
+                        fontSize: 32,
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your username';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextFormField(
-                    controller: _fullnameController,
-                    style: formStyle,
-                    decoration: const InputDecoration(
-                      labelText: 'Full Name',
-                      hintText: 'What\'s your name?',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                    SizedBox(height: 30.0),
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
                       ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your username';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextFormField(
-                    controller: _passwordController,
-                    style: formStyle,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      hintText: 'Type a password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    style: formStyle,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      hintText: 'Retype your password',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                      ),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                    ),
-                    obscureText: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please confirm your password';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 24.0),
-                  ElevatedButton(
-                    onPressed: () async {
-                      String role = _selectedRole?.toLowerCase() ?? '';
-                      String username = _usernameController.text;
-                      String fullname = _fullnameController.text;
-                      String password1 = _passwordController.text;
-                      String password2 = _confirmPasswordController.text;
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          DropdownButtonFormField<String>(
+                            value: _selectedRole,
+                            items: _roles.map((role) {
+                              return DropdownMenuItem<String>(
+                                value: role,
+                                child: Text(
+                                  role,
+                                  // style: TextStyle(color: Color(0xFF3E2723)),
+                                  style: formStyle
+                                ),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedRole = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Role',
+                              labelStyle: TextStyle(color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.person_outline, color: Color(0xFF3E2723)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF3E2723)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF842323), width: 2),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          TextFormField(
+                            controller: _usernameController,
+                            style: formStyle,
+                            decoration: InputDecoration(
+                              labelText: 'Username',
+                              labelStyle: TextStyle(color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.account_circle, color: Color(0xFF3E2723)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF3E2723)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF842323), width: 2),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          TextFormField(
+                            controller: _fullnameController,
+                            style: formStyle,
+                            decoration: InputDecoration(
+                              labelText: 'Full Name',
+                              labelStyle: TextStyle(color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.person, color: Color(0xFF3E2723)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF3E2723)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF842323), width: 2),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 16),
+                          TextFormField(
+                            controller: _passwordController,
+                            style: formStyle,
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              labelStyle: TextStyle(color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.lock_outline, color: Color(0xFF3E2723)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF3E2723)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF842323), width: 2),
+                              ),
+                            ),
+                            obscureText: true,
+                          ),
+                          SizedBox(height: 16),
+                          TextFormField(
+                            controller: _confirmPasswordController,
+                            style: formStyle,
+                            decoration: InputDecoration(
+                              labelText: 'Confirm Password',
+                              labelStyle: TextStyle(color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.lock, color: Color(0xFF3E2723)),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF3E2723)),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: Color(0xFF842323), width: 2),
+                              ),
+                            ),
+                            obscureText: true,
+                          ),
+                          SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () async {
+                              String role = _selectedRole?.toLowerCase() ?? '';
+                              String username = _usernameController.text;
+                              String fullname = _fullnameController.text;
+                              String password1 = _passwordController.text;
+                              String password2 = _confirmPasswordController.text;
 
-                      // Cek kredensial
-                      // Untuk menyambungkan Android emulator dengan Django pada localhost,
-                      // gunakan URL http://10.0.2.2/
-                      // TODO: BENERIN FIELDSNYA
-                      final response = await request.postJson(
-                          "http://127.0.0.1:8000/register-mobile/",
-                          jsonEncode({
-                            "username": username,
-                            "password1": password1,
-                            "password2": password2,
-                            "role": role,
-                            "full_name": fullname,
-                          }));
-                      if (context.mounted) {
-                        if (response['status'] == 'success') {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Successfully registered!'),
+                              final response = await request.postJson(
+                                "http://127.0.0.1:8000/register-mobile/",
+                                jsonEncode({
+                                  "username": username,
+                                  "password1": password1,
+                                  "password2": password2,
+                                  "role": role,
+                                  "full_name": fullname,
+                                }),
+                              );
+                              
+                              if (context.mounted) {
+                                if (response['status'] == 'success') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Successfully registered!',
+                                        style: TextStyle(color: Color(0xFFF5F5DC)),
+                                      ),
+                                      backgroundColor: Color(0xFF3E2723),
+                                    ),
+                                  );
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginPage(),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        response['message'],
+                                        style: TextStyle(color: Color(0xFFF5F5DC)),
+                                      ),
+                                      backgroundColor: Color(0xFF842323),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Color(0xFFF5F5DC),
+                              backgroundColor: Color(0xFF842323),
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              minimumSize: Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 3,
                             ),
-                          );
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                          );
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(response['message']),
+                            child: Text(
+                              'Register',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        }
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      minimumSize: Size(double.infinity, 50),
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: const Text('Register'),
-                  ),
-                ],
+                    SizedBox(height: 24),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Already have an account? Login',
+                        style: TextStyle(
+                          color: Color(0xFF842323),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
