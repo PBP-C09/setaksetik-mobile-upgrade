@@ -62,6 +62,29 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     }
   }
 
+  Future<void> updateReplyFlutter(CookieRequest request, String review_id, String reply_text) async {
+    try {
+      if (review_id.isNotEmpty && reply_text.isNotEmpty) {
+        final response = await request.post(
+          'http://127.0.0.1:8000/review/update-reply-flutter/',  // Use the Django endpoint
+          jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
+        );
+        if (response['status'] == 'success') {
+          // Handle success (e.g., refresh the reviews or show a success message)
+          fetchReviews(request);
+          print('Reply updated successfully');
+        } else {
+          throw Exception('Failed to update reply');
+        }
+      } else {
+        print('Error: Review ID or reply text is empty');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final request = context.read<CookieRequest>();
@@ -120,7 +143,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                             ),
                             const SizedBox(height: 8),
                             // Cek apakah ownerReply masih "No reply yet"
-                            if (review.fields.ownerReply == 'No reply yet') 
+                            if (review.fields.ownerReply == 'No reply yet' || review.fields.ownerReply == "") 
                               ElevatedButton(
                                 onPressed: () async {
                                   final reply = await showDialog<String>(
@@ -135,14 +158,38 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                 child: const Text('Reply'),
                               )
                             else
-                              Text(
-                                'Owner Reply: ${review.fields.ownerReply}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Owner Reply: ${review.fields.ownerReply}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      // Buka dialog untuk mengedit balasan
+                                      final updatedReply = await showDialog<String>(
+                                        context: context,
+                                        builder: (context) => _ReplyDialog(
+                                          initialText: review.fields.ownerReply, // Kirim teks balasan yang ada ke dialog
+                                        ),
+                                      );
+                                      print('Updated Reply from dialog: $updatedReply'); // Debug untuk melihat teks baru
+                                      if (updatedReply != null && updatedReply.isNotEmpty) {
+                                        print("masuk sini ya");
+                                        await updateReplyFlutter(request, review.pk.toString(), updatedReply);
+                                        setState(() {}); // Refresh UI setelah mengedit
+                                      }
+                                    },
+                                    child: const Text('Edit Reply'),
+                                  ),
+                                ],
+                              )
                           ],
                         ),
                       ),
@@ -157,12 +204,16 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
 // Dialog untuk memasukkan balasan
 class _ReplyDialog extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller;
+  final String? initialText;
+
+  _ReplyDialog({super.key, this.initialText})
+      : _controller = TextEditingController(text: initialText);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Reply'),
+      title: Text(initialText == null ? 'Add Reply' : 'Edit Reply'),
       content: TextField(
         controller: _controller,
         maxLines: 3,
@@ -179,9 +230,10 @@ class _ReplyDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop(_controller.text); // Kirim balasan
           },
-          child: const Text('Submit'),
+          child: const Text('Save'),
         ),
       ],
     );
   }
 }
+
