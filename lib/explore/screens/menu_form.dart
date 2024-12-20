@@ -84,14 +84,49 @@ class _MenuFormPageState extends State<MenuFormPage> {
       appBar: AppBar(
         title: const Text('Add Menu'),
       ),
-      body: Form(
+      body: Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        margin: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white, // Latar belakang kotak form
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: Colors.brown.shade400, // Warna border cokelat
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8.0,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+      child: Form(
         key: _formKey,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Center(
+                child: Text(
+                  "Add New Menu",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: const Color(0xFF4E342E),
+                    fontFamily: 'PlayfairDisplay', 
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              Divider(color: Colors.brown.shade300, thickness: 1.5), // Garis dekoratif
+
               // Menu Name Input
+              const SizedBox(height: 16),
               _buildTextField(
                 label: "Menu Name",
                 hint: "Menu name (max length: 50)",
@@ -136,12 +171,15 @@ class _MenuFormPageState extends State<MenuFormPage> {
               // Price Input
               _buildTextField(
                 label: "Price",
-                hint: "Masukkan harga menu",
+                hint: "Add price (1000 - 1800000)",
                 isNumeric: true,
                 onChanged: (value) => setState(() => _price = int.tryParse(value) ?? 0),
                 validator: (value) {
                   if (value == null || value.isEmpty) return "Harga menu tidak boleh kosong!";
                   if (int.tryParse(value) == null) return "Harga harus berupa angka!";
+                  if (_price < 1000 || _price > 1800000) {
+                    return "Rating harus antara 1000 dan 1800000!";
+                  }
                   return null;
                 },
               ),
@@ -149,7 +187,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
               // Rating Input
               _buildTextField(
                 label: "Rating",
-                hint: "Masukkan rating (0.0 - 5.0)",
+                hint: "Add rating (0.0 - 5.0)",
                 isNumeric: true,
                 onChanged: (value) {
                   setState(() {
@@ -158,6 +196,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) return "Rating tidak boleh kosong!";
+                  if (double.tryParse(value) == null) return "Harga harus berupa angka!";
                   double? rating = double.tryParse(value);
                   if (rating == null || rating < 0.0 || rating > 5.0) {
                     return "Rating harus antara 0.0 dan 5.0!";
@@ -169,12 +208,21 @@ class _MenuFormPageState extends State<MenuFormPage> {
               // Image URL Input
               _buildTextField(
                 label: "Image URL",
-                hint: "Masukkan URL gambar menu",
+                hint: "Add image URL",
                 onChanged: (value) => setState(() => _imageUrl = value),
                 validator: (value) =>
                     value == null || value.isEmpty ? "Gambar menu tidak boleh kosong!" : null,
               ),
 
+              // Checkboxes for Additional Features
+              const SizedBox(height: 16),
+              Text(
+                "Additional Features",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF4E342E),
+                ),
+              ),
               // Checkboxes for Additional Features
               _buildCheckbox(
                 label: "Takeaway",
@@ -203,58 +251,95 @@ class _MenuFormPageState extends State<MenuFormPage> {
               ),
 
               // Submit Button
-              Align(
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFD54F),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      final response = await request.postJson(
-                        "http://127.0.0.1:8000/explore/create-flutter/",
-
-                      jsonEncode(<String, String>{
-                          "menu": _menuName,
-                          "category": _selectedCategory ?? "",
-                          "restaurant_name": _restaurantName,
-                          "city": _selectedCity ?? "",
-                          "price": _price.toString(),
-                          "rating": _rating.toString(),
-                          "specialized": _selectedSpecialized ?? "",
-                          "image": _imageUrl,
-                          "takeaway": _takeaway.toString(),
-                          "delivery": _delivery.toString(),
-                          "outdoor": _outdoor.toString(),
-                          "smoking_area": _smokingArea.toString(),
-                          "wifi": _wifi.toString(),
-                        }),
-                      );
-                        if (context.mounted) {
-                          if (response['status'] == 'success') {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                            content: Text("Produk baru berhasil disimpan!"),
-                            ));
-                            Navigator.pushReplacement(
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Cancel Button
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFBCAAA4),
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context); // Kembali ke halaman sebelumnya
+                      },
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    
+                     const SizedBox(width: 16),
+                    // Add Menu Button
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFFD54F), // Warna kuning
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          final response = await request.postJson(
+                            "http://127.0.0.1:8000/explore/create-flutter/",
+                            jsonEncode(<String, String>{
+                              "menu": _menuName,
+                              "category": _selectedCategory ?? "",
+                              "restaurant_name": _restaurantName,
+                              "city": _selectedCity ?? "",
+                              "price": _price.toString(),
+                              "rating": _rating.toString(),
+                              "specialized": _selectedSpecialized ?? "",
+                              "image": _imageUrl,
+                              "takeaway": _takeaway.toString(),
+                              "delivery": _delivery.toString(),
+                              "outdoor": _outdoor.toString(),
+                              "smoking_area": _smokingArea.toString(),
+                              "wifi": _wifi.toString(),
+                            }),
+                          );
+                          if (context.mounted) {
+                            if (response['status'] == 'success') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                              );
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (context) => ExploreAdmin()),
-                            );
-                        } else {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content:
-                                    Text("Terdapat kesalahan, silakan coba lagi."),
-                            ));
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Terdapat kesalahan, silakan coba lagi."),
+                                ),
+                              );
+                            }
                           }
                         }
-                      }
-                    },       
-                  child: const Text("Add menu"),
+                      },
+                      child: const Text(
+                        "Add Menu",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+               ),
+              ),
             ),
           ),
         ),
@@ -272,10 +357,16 @@ class _MenuFormPageState extends State<MenuFormPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        style: const TextStyle(color: Colors.black),
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        
         ),
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         onChanged: onChanged,
@@ -297,7 +388,11 @@ class _MenuFormPageState extends State<MenuFormPage> {
         value: value,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
+            borderRadius: BorderRadius.circular(8.0),
+          ),
         ),
         items: items,
         onChanged: onChanged,
