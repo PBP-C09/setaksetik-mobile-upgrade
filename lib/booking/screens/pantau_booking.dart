@@ -6,9 +6,7 @@ import 'package:setaksetikmobile/booking/models/booking_entry.dart';
 Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
   try {
     final response = await request.get('http://127.0.0.1:8000/booking/pantau_flutter/');
-    print("Raw response data: $response"); // Debug print
     if (response != null && response['status'] == 'success') {
-      print("Response received successfully");
       return response;
     }
     print('Failed to fetch bookings: ${response['message']}');
@@ -16,6 +14,24 @@ Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
   } catch (e) {
     print('Error fetching bookings: $e');
     return null;
+  }
+}
+
+Future<bool> approveBooking(CookieRequest request, int bookingId) async {
+  try {
+    final response = await request.post(
+      'http://127.0.0.1:8000/booking/approve_flutter/$bookingId/',
+      {}, // Kirim data kosong jika tidak diperlukan
+    );
+    if (response['status'] == 'success') {
+      return true;
+    } else {
+      print('Failed to approve booking: ${response["message"]}');
+      return false;
+    }
+  } catch (e) {
+    print('Error approving booking: $e');
+    return false;
   }
 }
 
@@ -42,7 +58,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
       appBar: AppBar(
         title: const Text('Pantau Booking Owner'),
       ),
-      body: FutureBuilder<Map<String, dynamic>?>( 
+      body: FutureBuilder<Map<String, dynamic>?>(
         future: _futureBookings,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -98,8 +114,18 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                     ),
                     trailing: booking.status == 'waiting'
                         ? ElevatedButton(
-                            onPressed: () {
-                              print('Approve button clicked for booking ID ${booking.id}');
+                            onPressed: () async {
+                              final request = Provider.of<CookieRequest>(context, listen: false);
+                              final success = await approveBooking(request, booking.id);
+                              if (success) {
+                                setState(() {
+                                  booking.status = 'approved';
+                                });
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Failed to approve booking')),
+                                );
+                              }
                             },
                             child: const Text('Approve'),
                           )
