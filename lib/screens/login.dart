@@ -150,14 +150,16 @@ class _LoginPageState extends State<LoginPage> {
                                       "username": response['username'],
                                       "full_name": response['full_name'],
                                       "role": response['role'],
+                                      "claim" : response['claim']
                                     };
                                     UserProfile.login(data);
                                     if (context.mounted) {
-                                      Navigator.pushReplacement(
+                                      Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                RootPage(fullName: data['full_name'])),
+                                          builder: (context) => RootPage(fullName: data['full_name']),
+                                        ),
+                                        (Route<dynamic> route) => false,
                                       );
                                       ScaffoldMessenger.of(context)
                                         ..hideCurrentSnackBar()

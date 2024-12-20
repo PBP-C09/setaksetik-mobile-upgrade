@@ -16,23 +16,6 @@ import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 
-Future<Map<String, dynamic>?> fetchOwnedRestaurant(CookieRequest request) async {
-  try {
-    final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
-
-    print('Response fetchOwnedRestaurant: $response'); // Debugging log
-    
-    if (response == null || response.isEmpty) {
-      return null; // Jika user tidak memiliki restoran
-    }
-
-    return response;
-  } catch (e) {
-    print('Error fetching owned restaurant: $e');
-    return null; // Handle error dengan return null
-  }
-}
-
 class HomePage extends StatelessWidget {
   final String fullName;
   const HomePage({super.key, required this.fullName});
@@ -103,6 +86,7 @@ class HomePage extends StatelessWidget {
 
   List<Widget> _buildRoleSpecificButtons(BuildContext context) {
     final role = UserProfile.data["role"];
+    final claim = UserProfile.data["claim"];
     final buttons = <Widget>[];
 
     if (role == "admin") {
@@ -142,58 +126,64 @@ class HomePage extends StatelessWidget {
         ),
       ]);
     } else if (role == "steakhouse owner") {
+      if (claim == 0) {
+        buttons.addAll([
+          // Tombol untuk claim restoran
+          _buildButtonWithInfo(
+            context,
+            'Claim a Steakhouse',
+            const ClaimPage(),
+            const Color(0xFF3E2723),
+            const Color(0xFFF5F5DC),
+            'Claim a steakhouse!',
+            Icons.store,
+            false,
+          ),
+          SizedBox(height: 16.0),
+        ]);
+      } else {
+        buttons.addAll([
+          // Tombol untuk melihat restoran yang dimiliki
+          _buildButtonWithInfo(
+            context,
+            'My Restaurant',
+            const OwnedRestaurantPage(),
+            const Color(0xFF3E2723),
+            const Color(0xFFF5F5DC),
+            'Lihat restoran yang Anda miliki!',
+            Icons.restaurant,
+            false,
+          ),
+          SizedBox(height: 16.0),
+        ]);
+      }
+
       buttons.addAll([
-      // Tombol untuk claim restoran
-      _buildButtonWithInfo(
-        context,
-        'Claim a Steakhouse',
-        const ClaimPage(),
-        const Color(0xFF3E2723),
-        const Color(0xFFF5F5DC),
-        'Claim a steakhouse!',
-        Icons.store,
-        true
-      ),
-      SizedBox(height: 16.0),
+        // Tombol untuk memantau review
+        _buildButtonWithInfo(
+          context,
+          'Pantau Review',
+          const ReviewOwner(),
+          const Color(0xFF842323),
+          const Color(0xFFF5F5DC),
+          'View customer reviews and answer them',
+          Icons.rate_review,
+          true,
+        ),
+        SizedBox(height: 16.0),
 
-      // Tombol untuk melihat restoran yang dimiliki
-      _buildButtonWithInfo(
-        context,
-        'My Restaurant',
-        const OwnedRestaurantPage(),
-        const Color(0xFF3E2723),
-        const Color(0xFFF5F5DC),
-        'Lihat restoran yang Anda miliki!',
-        Icons.rate_review,
-        false
-      ),
-      SizedBox(height: 16.0),
-
-      // Tombol untuk memantau review
-      _buildButtonWithInfo(
-        context,
-        'Pantau Review',
-        const ReviewOwner(),
-        const Color(0xFF842323),
-        const Color(0xFFF5F5DC),
-        'View customer reviews and answer them',
-        Icons.rate_review,
-        true
-      ),
-      SizedBox(height: 16.0),
-
-      // Tombol untuk memantau booking
-      _buildButtonWithInfo(
-        context,
-        'Pantau Booking',
-        const PantauBookingPage(),
-        const Color(0xFF6D4C41),
-        const Color(0xFFF5F5DC),
-        'Pantau booking di restoranmu!',
-        Icons.book_online,
-        false
-      ),
-    ]);
+        // Tombol untuk memantau booking
+        _buildButtonWithInfo(
+          context,
+          'Pantau Booking',
+          const PantauBookingPage(),
+          const Color(0xFF6D4C41),
+          const Color(0xFFF5F5DC),
+          'Pantau booking di restoranmu!',
+          Icons.book_online,
+          false,
+        ),
+      ]);
     } else {
       buttons.addAll([
         _buildButtonWithInfo(

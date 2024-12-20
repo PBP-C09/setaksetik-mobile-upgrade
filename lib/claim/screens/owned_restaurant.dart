@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
+import 'package:setaksetikmobile/main.dart';
+import 'package:setaksetikmobile/screens/home.dart';
 
 class OwnedRestaurantPage extends StatefulWidget {
   const OwnedRestaurantPage({super.key});
@@ -136,12 +138,19 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                                   onPressed: () async {
                                     final success = await deleteOwnership(request, menu.pk);
                                     if (success) {
+                                      UserProfile.data["claim"] = 0;
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                           content: Text('Ownership deleted successfully.'),
                                         ),
                                       );
                                       Navigator.pop(context); // Kembali ke halaman sebelumnya
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                HomePage(fullName:UserProfile.data["full_name"]),
+                                      ));
                                       setState(() {}); // Refresh halaman
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
