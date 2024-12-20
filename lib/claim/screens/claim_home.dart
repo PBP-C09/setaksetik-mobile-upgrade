@@ -25,7 +25,7 @@ Future<List<MenuList>> fetchClaimResto(CookieRequest request) async {
 Future<void> claimRestaurant(BuildContext context, CookieRequest request, int menuId) async {
   final response = await request.post(
     'http://127.0.0.1:8000/claim/claim_flutter/$menuId/',
-    {}, // Body kosong karena hanya perlu menu_id
+    {},
   );
 
   if (response['status'] == 'success') {
@@ -229,18 +229,31 @@ class RestaurantCard extends StatelessWidget {
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  menu.fields.image,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Image.network(
-                      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                      fit: BoxFit.cover,
-                    );
-                  },
-                ),
+              aspectRatio: 16 / 9,
+              child: Image.network(
+                menu.fields.image,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  // Create a list of placeholder images
+                  List<String> placeholderImages = [
+                    "assets/images/placeholder-image-1.png",
+                    "assets/images/placeholder-image-2.png",
+                    "assets/images/placeholder-image-3.png",
+                    "assets/images/placeholder-image-4.png",
+                    "assets/images/placeholder-image-5.png",
+                  ];
+
+                  // Use menu.id to determine which placeholder image to use
+                  int index = menu.pk % placeholderImages.length;
+
+                  // Return the selected placeholder image
+                  return Image.asset(
+                    placeholderImages[index], // Select the image based on menu.id
+                    fit: BoxFit.cover,
+                  );
+                },
               ),
+            ),
             ),
             
             // Restaurant Info
@@ -262,7 +275,7 @@ class RestaurantCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.category, size: 16),
+                      const Icon(Icons.food_bank, size: 16),
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(

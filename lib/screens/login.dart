@@ -161,15 +161,6 @@ class _LoginPageState extends State<LoginPage> {
                                         ),
                                         (Route<dynamic> route) => false,
                                       );
-                                      ScaffoldMessenger.of(context)
-                                        ..hideCurrentSnackBar()
-                                        ..showSnackBar(
-                                          SnackBar(
-                                            backgroundColor: Color(0xFF3E2723),
-                                            content: Text(
-                                                "$message Welcome back, ${data['full_name']}!"),
-                                          ),
-                                        );
                                     }
                                   } else {
                                     if (context.mounted) {
