@@ -147,6 +147,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                       color: Colors.grey,
                                     ),
                                   ),
+                                  
                               ],
                             ),
                             onTap: () {
@@ -183,4 +184,3 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
     );
   }
 }
-
