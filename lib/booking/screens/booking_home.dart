@@ -125,7 +125,7 @@ class _BookingPageState extends State<BookingPage> {
                     ),
                     child: TextField(
                       decoration: const InputDecoration(
-                        hintText: 'Cari menu',
+                        hintText: 'Cari nama menu atau nama restoran',
                         hintStyle: TextStyle(fontSize: 14),
                         prefixIcon: Icon(Icons.search, size: 20),
                         isDense: true,
@@ -135,7 +135,7 @@ class _BookingPageState extends State<BookingPage> {
                       onChanged: (value) {
                         setState(() {
                           _menuFuture = Future.value(_originalMenus.where((menu) {
-                            return menu.fields.menu.toLowerCase().contains(value.toLowerCase());
+                            return (menu.fields.menu.toLowerCase().contains(value.toLowerCase()) || menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase()));
                           }).toList());
                         });
                       },
@@ -225,7 +225,17 @@ class _BookingPageState extends State<BookingPage> {
                     itemCount: menus.length,
                     itemBuilder: (context, index) {
                       final menu = menus[index];
-                      return RestaurantCard(menu: menu);
+                      return RestaurantCard(
+                        menu: menu,
+                        onSelect: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookingFormPage(menuId: menu.pk),
+                            ),
+                          );
+                        },
+                      );
                     },
                   );
                 }
@@ -240,77 +250,156 @@ class _BookingPageState extends State<BookingPage> {
 
 class RestaurantCard extends StatelessWidget {
   final MenuList menu;
+  final VoidCallback onSelect;
 
-  const RestaurantCard({required this.menu, Key? key}) : super(key: key);
+  const RestaurantCard({required this.menu, required this.onSelect, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              menu.fields.image,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.network(
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                  height: 120,
-                  width: double.infinity,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Image.network(
+                  menu.fields.image,
                   fit: BoxFit.cover,
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  menu.fields.menu,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF6F4E37),
-                  ),
-                ),
-                Text('Category: ${menu.fields.category}'),
-                Text('Price: Rp ${menu.fields.price}'),
-                Text('City: ${menu.fields.city.name}'),
-                Text('Rating: ${menu.fields.rating}'),
-              ],
-            ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BookingFormPage(menuId: menu.pk),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFC107),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  errorBuilder: (context, error, stackTrace) {
+                    // Placeholder images
+                    List<String> placeholderImages = [
+                      "assets/images/placeholder-image-1.png",
+                      "assets/images/placeholder-image-2.png",
+                      "assets/images/placeholder-image-3.png",
+                      "assets/images/placeholder-image-4.png",
+                      "assets/images/placeholder-image-5.png",
+                    ];
+
+                    // Select placeholder image based on `menu.pk`
+                    int index = menu.pk % placeholderImages.length;
+
+                    return Image.asset(
+                      placeholderImages[index],
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
-              child: const Text('Select Restaurant'),
             ),
-          ),
-        ],
+
+            // Restaurant Info
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    menu.fields.restaurantName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF6F4E37),
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.restaurant, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'Menu: ${menu.fields.menu}',
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.food_bank, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'Category: ${menu.fields.category}',
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'City: ${menu.fields.city.name}',
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, size: 16, color: Colors.amber),
+                      const SizedBox(width: 4),
+                      Text(
+                        menu.fields.rating.toString(),
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Price: Rp ${menu.fields.price}',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+
+            // Select Button
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: ElevatedButton(
+                onPressed: onSelect,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFC107),
+                  foregroundColor: Colors.black87,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Select Restaurant',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
