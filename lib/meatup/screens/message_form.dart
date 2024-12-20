@@ -35,67 +35,79 @@ class MessageFormPageState extends State<MessageFormPage> {
   }
 
   Future<void> _submitMessage() async {
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
+  if (!_formKey.currentState!.validate()) {
+    return;
+  }
 
-    setState(() {
-      _isSubmitting = true;
-    });
+  setState(() {
+    _isSubmitting = true;
+  });
 
-    final request = context.read<CookieRequest>();
+  final request = context.read<CookieRequest>();
 
-    try {
-      final url = widget.messageToEdit != null 
-          ? "http://127.0.0.1:8000/meatup/edit-flutter/${widget.messageToEdit!['id']}/"
-          : "http://127.0.0.1:8000/meatup/create-flutter/";
+  try {
+    // Using the exact URLs from your original code
+    final url = widget.messageToEdit != null 
+        ? "http://127.0.0.1:8000/meatup/edit-flutter/${widget.messageToEdit!['id']}/"
+        : "http://127.0.0.1:8000/meatup/create-flutter/";  // This matches your original URL
 
-      final response = await request.postJson(
-        url,
-        jsonEncode({
-          'receiver': selectedReceiver,
-          'title': titleController.text.trim(),
-          'content': contentController.text.trim(),
-        }),
-      );
+    // Debug print to verify the URL and data
+    print("Sending request to: $url");
+    print("Data being sent: {" +
+        "'receiver': $selectedReceiver, " +
+        "'title': ${titleController.text.trim()}, " +
+        "'content': ${contentController.text.trim()}" +
+        "}");
 
-      if (context.mounted) {
-        if (response['status'] == 'success') {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(widget.messageToEdit != null 
-                  ? "Message updated successfully!"
-                  : "Message sent successfully!"),
-              backgroundColor: Colors.green,
-            ),
-          );
-          Navigator.pop(context, true); // Return true to indicate success
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(response['message'] ?? "Operation failed."),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (context.mounted) {
+    final response = await request.postJson(
+      url,
+      jsonEncode({
+        'receiver': selectedReceiver,
+        'title': titleController.text.trim(),
+        'content': contentController.text.trim(),
+      }),
+    );
+
+    print("Response received: $response"); // Debug print to see response
+
+    if (context.mounted) {
+      if (response['status'] == 'success') {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("An error occurred."),
+          SnackBar(
+            content: Text(widget.messageToEdit != null 
+                ? "Message updated successfully!"
+                : "Message sent successfully!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.pop(context, true);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response['message'] ?? "Operation failed."),
             backgroundColor: Colors.red,
           ),
         );
       }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isSubmitting = false;
-        });
-      }
+    }
+  } catch (e) {
+    print("Error occurred: $e"); // Detailed error logging
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("An error occurred: $e"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  } finally {
+    if (mounted) {
+      setState(() {
+        _isSubmitting = false;
+      });
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
