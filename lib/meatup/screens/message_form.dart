@@ -4,113 +4,64 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 
 class MessageFormPage extends StatefulWidget {
-  final Map<String, dynamic>? messageToEdit; // Add this to handle editing
+  final Map<String, dynamic>? messageToEdit;
   const MessageFormPage({super.key, this.messageToEdit});
 
   @override
-  MessageFormPageState createState() => MessageFormPageState();
+  State<MessageFormPage> createState() => _MessageFormPageState();
 }
 
-class MessageFormPageState extends State<MessageFormPage> {
+class _MessageFormPageState extends State<MessageFormPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController contentController = TextEditingController();
   String? selectedReceiver;
-  bool _isSubmitting = false;
-  List<Map<String, String>> receiverList = [
-    {'id': '1', 'name': 'John Doe'},
-    {'id': '2', 'name': 'Jane Smith'},
-    {'id': '3', 'name': 'Bob Johnson'},
-  ]; // Hardcoded receivers for now
+  String _title = "";
+  String _content = "";
+  bool _isLoading = true;
+  List<Map<String, dynamic>> receiverList = [];
 
   @override
   void initState() {
     super.initState();
-    // If editing, populate the form with existing message data
+    fetchReceivers();
+
     if (widget.messageToEdit != null) {
-      titleController.text = widget.messageToEdit!['title'];
-      contentController.text = widget.messageToEdit!['content'];
-      selectedReceiver = widget.messageToEdit!['receiver'].toString();
+      setState(() {
+        _title = widget.messageToEdit!['title'];
+        _content = widget.messageToEdit!['content'];
+        selectedReceiver = widget.messageToEdit!['receiver'].toString();
+      });
     }
   }
 
-  Future<void> _submitMessage() async {
-  if (!_formKey.currentState!.validate()) {
-    return;
-  }
-
-  setState(() {
-    _isSubmitting = true;
-  });
-
-  final request = context.read<CookieRequest>();
-
-  try {
-    // Using the exact URLs from your original code
-    final url = widget.messageToEdit != null 
-        ? "http://127.0.0.1:8000/meatup/edit-flutter/${widget.messageToEdit!['id']}/"
-        : "http://127.0.0.1:8000/meatup/create-flutter/";  // This matches your original URL
-
-    // Debug print to verify the URL and data
-    print("Sending request to: $url");
-    print("Data being sent: {" +
-        "'receiver': $selectedReceiver, " +
-        "'title': ${titleController.text.trim()}, " +
-        "'content': ${contentController.text.trim()}" +
-        "}");
-
-    final response = await request.postJson(
-      url,
-      jsonEncode({
-        'receiver': selectedReceiver,
-        'title': titleController.text.trim(),
-        'content': contentController.text.trim(),
-      }),
-    );
-
-    print("Response received: $response"); // Debug print to see response
-
-    if (context.mounted) {
-      if (response['status'] == 'success') {
+  Future<void> fetchReceivers() async {
+    final request = context.read<CookieRequest>();
+    try {
+      final response = await request.get('http://127.0.0.1:8000/meatup/flutter/get-receivers/');
+      if (mounted) {
+        setState(() {
+          receiverList = List<Map<String, dynamic>>.from(response);
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(widget.messageToEdit != null 
-                ? "Message updated successfully!"
-                : "Message sent successfully!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pop(context, true);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(response['message'] ?? "Operation failed."),
+          const SnackBar(
+            content: Text("Failed to load receivers"),
             backgroundColor: Colors.red,
           ),
         );
       }
     }
-  } catch (e) {
-    print("Error occurred: $e"); // Detailed error logging
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("An error occurred: $e"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  } finally {
-    if (mounted) {
-      setState(() {
-        _isSubmitting = false;
-      });
-    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
@@ -126,124 +77,165 @@ class MessageFormPageState extends State<MessageFormPage> {
         iconTheme: const IconThemeData(color: Color(0xFFF5F5DC)),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F5DC),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (widget.messageToEdit == null) ...[
-                        DropdownButtonFormField<String>(
-                          value: selectedReceiver,
-                          onChanged: (value) {
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F5DC),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (widget.messageToEdit == null) ...[
+                          DropdownButtonFormField<String>(
+                            value: selectedReceiver,
+                            decoration: _inputDecoration("Select Receiver"),
+                            items: receiverList.map((receiver) {
+                              return DropdownMenuItem<String>(
+                                value: receiver['username'],
+                                child: Text(receiver['full_name']),
+                              );
+                            }).toList(),
+                            onChanged: (String? value) {
+                              setState(() {
+                                selectedReceiver = value!;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please select a receiver';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                        TextFormField(
+                          initialValue: _title,
+                          decoration: _inputDecoration("Message Title"),
+                          onChanged: (String? value) {
                             setState(() {
-                              selectedReceiver = value;
+                              _title = value!;
                             });
                           },
-                          items: receiverList
-                              .map((receiver) => DropdownMenuItem<String>(
-                                    value: receiver['id'],
-                                    child: Text(receiver['name']!),
-                                  ))
-                              .toList(),
-                          decoration: _inputDecoration('Select Receiver'),
-                          validator: (value) {
+                          validator: (String? value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please select a receiver';
+                              return 'Title cannot be empty!';
                             }
                             return null;
                           },
                         ),
                         const SizedBox(height: 20),
+                        TextFormField(
+                          initialValue: _content,
+                          decoration: _inputDecoration("Message Content"),
+                          onChanged: (String? value) {
+                            setState(() {
+                              _content = value!;
+                            });
+                          },
+                          maxLines: 5,
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Content cannot be empty!';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.grey[500],
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12,
+                                ),
+                              ),
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            TextButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  // Determine the URL based on whether we're editing or creating
+                                  final String url = widget.messageToEdit != null
+                                      ? 'http://127.0.0.1:8000/meatup/flutter/edit/${widget.messageToEdit!['id']}/'
+                                      : 'http://127.0.0.1:8000/meatup/create-flutter/';
+
+                                  final response = await request.postJson(
+                                    url,
+                                    jsonEncode({
+                                      'receiver': selectedReceiver,
+                                      'title': _title,
+                                      'content': _content,
+                                    }),
+                                  );
+
+                                  if (context.mounted) {
+                                    if (response['status'] == 'success') {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            widget.messageToEdit != null
+                                                ? "Message updated successfully!"
+                                                : "Message created successfully!",
+                                          ),
+                                          backgroundColor: Color(0xFF3E2723),
+                                        ),
+                                      );
+                                      Navigator.pop(context, true);
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text("An error occurred"),
+                                          backgroundColor: Color(0xFF3E2723),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                }
+                              },
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFF6D4C41),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12,
+                                ),
+                              ),
+                              child: Text(
+                                widget.messageToEdit != null ? 'Update' : 'Send',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
-                      TextFormField(
-                        controller: titleController,
-                        decoration: _inputDecoration('Message Title'),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter message title';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: contentController,
-                        decoration: _inputDecoration('Message Content'),
-                        maxLines: 5,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter message content';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 24),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            onPressed: _isSubmitting ? null : () => Navigator.pop(context),
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.grey[500],
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
-                            ),
-                            child: const Text(
-                              'Cancel',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          TextButton(
-                            onPressed: _isSubmitting ? null : _submitMessage,
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF6D4C41),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
-                            ),
-                            child: _isSubmitting
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(color: Colors.white),
-                                  )
-                                : Text(
-                                    widget.messageToEdit != null ? 'Update' : 'Send',
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
-                          ),
-                        ],
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -265,12 +257,5 @@ class MessageFormPageState extends State<MessageFormPage> {
         borderSide: const BorderSide(color: Color(0xFF6D4C41), width: 2),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    contentController.dispose();
-    super.dispose();
   }
 }

@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
+import 'package:setaksetikmobile/main.dart';
+
 import 'package:setaksetikmobile/claim/screens/claim_home.dart';
 import 'package:setaksetikmobile/claim/screens/manage_ownership.dart';
-import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
-import 'package:setaksetikmobile/explore/screens/menu_owner.dart';
+import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 
-import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
-import 'package:setaksetikmobile/review/screens/review_entry.dart';
-import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
+import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/review/screens/user_review.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
 import 'package:setaksetikmobile/booking/screens/booking_home.dart';
-
-import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 
 class HomePage extends StatelessWidget {
   final String fullName;

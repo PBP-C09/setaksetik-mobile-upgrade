@@ -12,30 +12,44 @@ class MeatUpPage extends StatefulWidget {
 }
 
 class MeatUpPageState extends State<MeatUpPage> {
-  // Sample data structure for testing
-  final List<Map<String, dynamic>> receivedMessages = [
-    {
-      'sender': 'John Doe',
-      'receiver': 'Me',
-      'timestamp': '2024-03-09 14:30',
-      'title': 'Steak Dinner',
-      'content': 'Would you like to meet up for steak dinner?',
-      'id': 1,
-    },
-    // Add more sample messages as needed
-  ];
 
-  final List<Map<String, dynamic>> sentMessages = [
-    {
-      'sender': 'Me',
-      'receiver': 'Jane Smith',
-      'timestamp': '2024-03-08 15:45',
-      'title': 'BBQ Meetup',
-      'content': 'Let\'s have a BBQ this weekend!',
-      'id': 2,
-    },
-    // Add more sample messages as needed
-  ];
+  List<Map<String, dynamic>> receivedMessages = [];
+  List<Map<String, dynamic>> sentMessages = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchMessages();
+  }
+
+  Future<void> fetchMessages() async {
+    final request = context.read<CookieRequest>();
+    
+    try {
+      final response = await request.get('http://127.0.0.1:8000/meatup/flutter/get-messages-json/');
+      
+      if (mounted) {
+        setState(() {
+          receivedMessages = List<Map<String, dynamic>>.from(response['received_messages']);
+          sentMessages = List<Map<String, dynamic>>.from(response['sent_messages']);
+          isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error loading messages: $e'),
+            backgroundColor: Color(0xFF3E2723),
+          ),
+        );
+      }
+    }
+  }
 
   Future<void> _deleteMessage(int messageId) async {
     try {
@@ -47,14 +61,14 @@ class MeatUpPageState extends State<MeatUpPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Pesan berhasil dihapus'),
-          backgroundColor: Color(0xFFF7B32B),
+          backgroundColor: Color(0xFF3E2723),
         ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Terjadi kesalahan: $e'),
-          backgroundColor: Colors.red,
+          backgroundColor: Color(0xFF3E2723),
         ),
       );
     }
@@ -91,13 +105,16 @@ class MeatUpPageState extends State<MeatUpPage> {
 
                 // Create Message Button
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
+                  onPressed: () async {
+                    final result = await Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const MessageFormPage(),
                       ),
                     );
+                    if (result == true) {
+                      fetchMessages();
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFFF7B32B),
