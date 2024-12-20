@@ -71,6 +71,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
         );
         if (response['status'] == 'success') {
           // Handle success (e.g., refresh the reviews or show a success message)
+          fetchReviews(request);
           print('Reply updated successfully');
         } else {
           throw Exception('Failed to update reply');
@@ -157,14 +158,38 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                 child: const Text('Reply'),
                               )
                             else
-                              Text(
-                                'Owner Reply: ${review.fields.ownerReply}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey,
-                                ),
-                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Owner Reply: ${review.fields.ownerReply}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      // Buka dialog untuk mengedit balasan
+                                      final updatedReply = await showDialog<String>(
+                                        context: context,
+                                        builder: (context) => _ReplyDialog(
+                                          initialText: review.fields.ownerReply, // Kirim teks balasan yang ada ke dialog
+                                        ),
+                                      );
+                                      print('Updated Reply from dialog: $updatedReply'); // Debug untuk melihat teks baru
+                                      if (updatedReply != null && updatedReply.isNotEmpty) {
+                                        print("masuk sini ya");
+                                        await updateReplyFlutter(request, review.pk.toString(), updatedReply);
+                                        setState(() {}); // Refresh UI setelah mengedit
+                                      }
+                                    },
+                                    child: const Text('Edit Reply'),
+                                  ),
+                                ],
+                              )
                           ],
                         ),
                       ),
@@ -179,12 +204,16 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
 // Dialog untuk memasukkan balasan
 class _ReplyDialog extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller;
+  final String? initialText;
+
+  _ReplyDialog({super.key, this.initialText})
+      : _controller = TextEditingController(text: initialText);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Add Reply'),
+      title: Text(initialText == null ? 'Add Reply' : 'Edit Reply'),
       content: TextField(
         controller: _controller,
         maxLines: 3,
@@ -201,9 +230,10 @@ class _ReplyDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop(_controller.text); // Kirim balasan
           },
-          child: const Text('Submit'),
+          child: const Text('Save'),
         ),
       ],
     );
   }
 }
+
