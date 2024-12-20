@@ -81,7 +81,7 @@ class _FilterState extends State<Filter> {
             ),
           ),
           const SizedBox(height: 16),
-
+          
             // Category Dropdown
             Container(
             decoration: BoxDecoration(
@@ -117,6 +117,7 @@ class _FilterState extends State<Filter> {
             ),
             child: TextFormField(
               keyboardType: TextInputType.number,
+              style: const TextStyle(color: Colors.black),
               decoration: const InputDecoration(
                 labelText: 'Maximum Price',
                 border: OutlineInputBorder(),

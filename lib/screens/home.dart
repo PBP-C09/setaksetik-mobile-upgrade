@@ -104,7 +104,6 @@ class HomePage extends StatelessWidget {
         _buildButtonWithInfo(
           context,
           'Manage Menus - blm diubah',
-          // TODO: EXPLORE ADMIN
           const ExploreAdmin(),
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
