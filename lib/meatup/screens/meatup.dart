@@ -51,11 +51,11 @@ class MeatUpPageState extends State<MeatUpPage> {
     }
   }
 
-  Future<void> _deleteMessage(int messageId) async {
+  Future<void> _deleteMessage(CookieRequest request, int messageId) async {
     try {
+      request.get('http://127.0.0.1:8000/meatup/flutter/delete/$messageId/');
       setState(() {
-        receivedMessages.removeWhere((message) => message['id'] == messageId);
-        sentMessages.removeWhere((message) => message['id'] == messageId);
+        fetchMessages();
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -76,6 +76,7 @@ class MeatUpPageState extends State<MeatUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
@@ -136,6 +137,7 @@ class MeatUpPageState extends State<MeatUpPage> {
 
                 // Received Messages Section
                 _buildMessagesSection(
+                  request: request,
                   title: 'Received Meat Up Request',
                   messages: receivedMessages,
                   isReceived: true,
@@ -144,6 +146,7 @@ class MeatUpPageState extends State<MeatUpPage> {
 
                 // Sent Messages Section
                 _buildMessagesSection(
+                  request: request,
                   title: 'Sent Meat Up Request',
                   messages: sentMessages,
                   isReceived: false,
@@ -157,6 +160,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   }
 
   Widget _buildMessagesSection({
+    required request,
     required String title,
     required List<Map<String, dynamic>> messages,
     required bool isReceived,
@@ -187,7 +191,7 @@ class MeatUpPageState extends State<MeatUpPage> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final message = messages[index];
-                  return _buildMessageCard(message, isReceived);
+                  return _buildMessageCard(message, isReceived, request);
                 },
               )
             : Center(
@@ -205,7 +209,7 @@ class MeatUpPageState extends State<MeatUpPage> {
     );
   }
 
-  Widget _buildMessageCard(Map<String, dynamic> message, bool isReceived) {
+  Widget _buildMessageCard(Map<String, dynamic> message, bool isReceived, CookieRequest request) {
     final sender = message['sender'] as String;
     final receiver = message['receiver'] as String;
     final timestamp = message['timestamp'] as String;
@@ -297,7 +301,13 @@ class MeatUpPageState extends State<MeatUpPage> {
 
             // Delete/Reject Button
             TextButton(
-              onPressed: () => _deleteMessage(messageId),
+              // onPressed: () => _deleteMessage(request, messageId),
+              onPressed: () async {
+                _deleteMessage(request, messageId);
+                setState(() {
+                  fetchMessages();
+                });
+              },
               style: TextButton.styleFrom(
                 backgroundColor: const Color(0xFF842323),
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

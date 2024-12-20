@@ -125,6 +125,7 @@ class _MessageFormPageState extends State<MessageFormPage> {
                           const SizedBox(height: 20),
                         ],
                         TextFormField(
+                          style: TextStyle(color: Color(0xFF3E2723)),
                           initialValue: _title,
                           decoration: _inputDecoration("Message Title"),
                           onChanged: (String? value) {
@@ -141,6 +142,7 @@ class _MessageFormPageState extends State<MessageFormPage> {
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
+                          style: TextStyle(color: Color(0xFF3E2723)),
                           initialValue: _content,
                           decoration: _inputDecoration("Message Content"),
                           onChanged: (String? value) {
