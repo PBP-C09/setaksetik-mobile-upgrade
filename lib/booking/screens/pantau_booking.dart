@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/booking/models/booking_entry.dart';
 
 Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
   try {
     final response = await request.get('http://127.0.0.1:8000/booking/pantau_flutter/');
+    print("Raw response data: $response"); // Debug print
     if (response != null && response['status'] == 'success') {
-      print("ayam");
+      print("Response received successfully");
       return response;
     }
     print('Failed to fetch bookings: ${response['message']}');
@@ -42,7 +42,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
       appBar: AppBar(
         title: const Text('Pantau Booking Owner'),
       ),
-      body: FutureBuilder<Map<String, dynamic>?>(
+      body: FutureBuilder<Map<String, dynamic>?>( 
         future: _futureBookings,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -55,7 +55,10 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
             return const Center(child: Text('No bookings available.'));
           }
 
-          final restaurant = snapshot.data!['restaurant'];
+          final restaurant = snapshot.data!['restaurant'] ?? {};
+          final restaurantName = restaurant['restaurant_name'] ?? 'Unknown Restaurant';
+          final city = restaurant['city'] ?? 'Unknown City';
+
           final bookings = snapshot.data!.containsKey('bookings')
               ? (snapshot.data!['bookings'] as List)
                   .map((booking) => BookingEntry.fromJson(booking))
@@ -71,10 +74,10 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Owned Restaurant: ${restaurant['restaurant_name']} - ${restaurant['city']}',
+                  'Owned Restaurant: $restaurantName - $city',
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold, 
-                    fontSize: 18
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
                 ),
               ),
@@ -83,21 +86,20 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ListTile(
-                    title: Text('User ID: ${booking.fields.user}'),
+                    title: Text('User: ${booking.user}'),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Menu ID: ${booking.menu}'),
-                        Text('Date: ${booking.fields.bookingDate}'),
-                        Text('People: ${booking.fields.numberOfPeople}'),
-                        Text('Status: ${booking.fields.status}'),
+                        Text('Menu: ${booking.menu}'),
+                        Text('Date: ${booking.bookingDate.toString()}'),
+                        Text('People: ${booking.numberOfPeople}'),
+                        Text('Status: ${booking.status}'),
                       ],
                     ),
-                    trailing: booking.fields.status == 'waiting'
+                    trailing: booking.status == 'waiting'
                         ? ElevatedButton(
                             onPressed: () {
-                              // Tidak ada logika approve di sini, hanya tampilan tombol
-                              print('Tombol approve diklik untuk booking ID ${booking.pk}');
+                              print('Approve button clicked for booking ID ${booking.id}');
                             },
                             child: const Text('Approve'),
                           )
