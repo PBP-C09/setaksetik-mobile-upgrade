@@ -225,7 +225,6 @@ class RestaurantCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
@@ -243,12 +242,10 @@ class RestaurantCard extends StatelessWidget {
                     "assets/images/placeholder-image-5.png",
                   ];
 
-                  // Use menu.id to determine which placeholder image to use
                   int index = menu.pk % placeholderImages.length;
 
-                  // Return the selected placeholder image
                   return Image.asset(
-                    placeholderImages[index], // Select the image based on menu.id
+                    placeholderImages[index],
                     fit: BoxFit.cover,
                   );
                 },
