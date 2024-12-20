@@ -8,14 +8,14 @@ import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 import 'package:setaksetikmobile/explore/screens/menu_form.dart';
 import 'package:setaksetikmobile/explore/screens/edit_menu_form.dart';
 
-class MenuAdmin extends StatefulWidget {
-  const MenuAdmin({Key? key}) : super(key: key);
+class ExploreAdmin extends StatefulWidget {
+  const ExploreAdmin({Key? key}) : super(key: key);
 
   @override
-  State<MenuAdmin> createState() => _MenuAdminState();
+  State<ExploreAdmin> createState() => _ExploreAdminState();
 }
 
-class _MenuAdminState extends State<MenuAdmin> {
+class _ExploreAdminState extends State<ExploreAdmin> {
   late Future<List<MenuList>> _menuFuture;
   final TextEditingController _searchController = TextEditingController();
   List<MenuList> _originalMenus = [];
