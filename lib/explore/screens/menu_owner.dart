@@ -79,11 +79,12 @@ class _ExploreOwnerState extends State<ExploreOwner> {
                   color: Color(0xFFF5F5DC),
                 ),
                 children: const [
-                  TextSpan(text: 'Makan apa '),
+                  TextSpan(text: 'Yang '),
                   TextSpan(
-                    text: 'Hari ini?',
+                    text: 'mana',
                     style: TextStyle(fontStyle: FontStyle.italic),
                   ),
+                  TextSpan(text: 'resto milikmu?'),
                 ],
               ),
             ),
