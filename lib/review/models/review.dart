@@ -36,7 +36,7 @@ class Fields {
   String place;
   int rating;
   String description;
-  String ownerReply;
+  String? _ownerReply;
 
   Fields({
     required this.user,
@@ -44,8 +44,11 @@ class Fields {
     required this.place,
     required this.rating,
     required this.description,
-    required this.ownerReply,
-  });
+    String? ownerReply, // Parameter untuk nilai ownerReply
+  }) : _ownerReply = ownerReply;
+
+  // Getter untuk memberikan nilai default jika _ownerReply null
+  String get ownerReply => _ownerReply ?? 'No reply yet';
 
   factory Fields.fromJson(Map<String, dynamic> json) => Fields(
         user: json["user"],
@@ -62,6 +65,6 @@ class Fields {
         "place": place,
         "rating": rating,
         "description": description,
-        "owner_reply": ownerReply,
+        "owner_reply": _ownerReply,
       };
 }
