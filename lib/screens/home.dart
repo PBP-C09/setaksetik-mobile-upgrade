@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 import 'package:setaksetikmobile/claim/screens/claim_home.dart';
+import 'package:setaksetikmobile/claim/screens/manage_ownership.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
@@ -125,8 +126,8 @@ class HomePage extends StatelessWidget {
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
           context,
-          'Manage Ownership - blm diubah',
-          const ExploreOwner(),
+          'Manage Ownership',
+          const ManageOwnershipPage(),
           const Color(0xFF6D4C41),
           const Color(0xFFF5F5DC),
           'Manage the ownership of each restaurants, revoke an ownership if necessary!',
