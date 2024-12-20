@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 /// Fetch all claimed restaurants
 Future<List<Map<String, dynamic>>> fetchClaimedRestaurants(CookieRequest request) async {
@@ -56,7 +57,9 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manage Ownership'),
+        centerTitle: true,
       ),
+      drawer: LeftDrawer(),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _futureClaimedRestaurants,
         builder: (context, snapshot) {
@@ -79,7 +82,7 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
               return Card(
                 margin: const EdgeInsets.all(8.0),
                 child: ListTile(
-                  title: Text('Restaurant: ${restaurant['restaurant_name']}'),
+                  title: Text('Restaurant: ${restaurant['restaurant_name']}', style: TextStyle(fontWeight: FontWeight.bold),),
                   subtitle: Text('Owner: ${restaurant['claimed_by']}'),
                   trailing: ElevatedButton(
                     onPressed: () async {
@@ -98,8 +101,8 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
                         );
                       }
                     },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text('Revoke'),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red, textStyle: TextStyle(color: Color(0xFFF5F5DC), fontStyle: FontStyle.italic)),
+                    child: const Text('Revoke', style: TextStyle(color: Color(0xFFF5F5DC))),
                   ),
                 ),
               );

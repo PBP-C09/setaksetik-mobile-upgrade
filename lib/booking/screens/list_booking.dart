@@ -33,7 +33,6 @@ class _BookingListPageState extends State<BookingListPage> {
       final response = await request.get('http://127.0.0.1:8000/booking/json/all/');
       
       // Debug the response
-      print('Response received: $response');
 
       if (response == null || response.isEmpty) {
         return [];
@@ -90,7 +89,10 @@ class _BookingListPageState extends State<BookingListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Bookings')),
+      appBar: AppBar(
+        title: const Text('Your Bookings'),
+        centerTitle: true,
+      ),
       body: FutureBuilder<List<dynamic>>(
         future: _bookingsFuture,
         builder: (context, snapshot) {

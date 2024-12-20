@@ -77,30 +77,22 @@ class _ClaimPageState extends State<ClaimPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Claim a Restaurant'),
+        centerTitle: true,
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
               padding: const EdgeInsets.all(16),
               child: const Column(
                 children: [
                   Text(
-                    'Claim a Restaurant',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF6F4E37),
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
                     'Find a restaurant to claim and become its owner!',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Color(0xFF6F4E37),
+                      color: Color(0xFFF5F5DC),
                     ),
                     textAlign: TextAlign.center,
                   ),

@@ -46,6 +46,7 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book a Restaurant'),
+        centerTitle: true,
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
