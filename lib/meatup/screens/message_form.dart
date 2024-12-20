@@ -70,10 +70,10 @@ class MessageFormPageState extends State<MessageFormPage> {
                     children: [
                       _buildFormField(
                         controller: receiverController,
-                        label: 'Receiver Name',
+                        label: 'Receiver ID',
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter receiver name';
+                            return 'Please enter receiver ID';
                           }
                           return null;
                         },
@@ -117,7 +117,7 @@ class MessageFormPageState extends State<MessageFormPage> {
                             child: const Text(
                               'Cancel',
                               style: TextStyle(
-                                fontFamily: 'Playfair Display',
+                                 fontFamily: 'Playfair Display',
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -214,90 +214,62 @@ class MessageFormPageState extends State<MessageFormPage> {
     );
   }
 
-  
-
   Future<void> _submitMessage() async {
-  if (!_formKey.currentState!.validate()) return;
+  if (!_formKey.currentState!.validate()) {
+    return;
+  }
 
-  setState(() => _isSubmitting = true);
+  setState(() {
+    _isSubmitting = true;
+  });
 
   final request = context.read<CookieRequest>();
-  
+
   try {
-    final response = await request.post(
-      'http://127.0.0.1:8000/meatup/create/',
-      {
+    final response = await request.postJson(
+      "http://127.0.0.1:8000/meatup/create-flutter/",
+      jsonEncode({
+        'receiver': receiverController.text.trim(),
         'title': titleController.text.trim(),
         'content': contentController.text.trim(),
-        'receiver': receiverController.text.trim(),
-      },
+      }),
     );
 
-    // More robust response handling
-    dynamic parsedResponse;
-    try {
-      // Check if response is already a map (pbp_django_auth might do this)
-      if (response is Map) {
-        parsedResponse = response;
-      } else if (response is String) {
-        // Try parsing as JSON, with extra checks
-        if (response.trim().toLowerCase().startsWith('<!doctype') || 
-            response.trim().toLowerCase().startsWith('<html')) {
-          throw Exception('Received HTML instead of JSON');
-        }
-        parsedResponse = jsonDecode(response);
-      } else {
-        throw Exception('Unexpected response format');
-      }
-    } catch (e) {
-      debugPrint('Response parsing error: $e');
-      _showSnackBar('Error processing server response', isError: true);
-      return;
-    }
-
-    // Check response status
-    if (parsedResponse['status'] == 'success') {
-      if (mounted) {
-        _showSnackBar('Message sent successfully!', isError: false);
+    if (context.mounted) {
+      if (response['status'] == 'success') {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Message sent successfully!"),
+            backgroundColor: Colors.green,
+          ),
+        );
         Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(response['message'] ?? "Failed to send message."),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
-    } else {
-      final errorMessage = parsedResponse['message'] ?? 'Unknown error occurred';
-      _showSnackBar('Failed to send message: $errorMessage', isError: true);
     }
   } catch (e) {
-    debugPrint('Submission error: $e');
-    
-    String errorMessage = 'Error sending message';
-    
-    // More specific error handling
-    if (e.toString().contains('SocketException')) {
-      errorMessage = 'Cannot connect to server. Check your connection.';
-    } else if (e.toString().contains('HTML')) {
-      errorMessage = 'Server returned an unexpected response. Check server logs.';
-    }
-    
-    if (mounted) {
-      _showSnackBar(errorMessage, isError: true);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("An error occurred while sending the message."),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   } finally {
     if (mounted) {
-      setState(() => _isSubmitting = false);
+      setState(() {
+        _isSubmitting = false;
+      });
     }
   }
 }
-
-  void _showSnackBar(String message, {bool isError = true}) {
-    if (!mounted) return;
-    
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-        duration: const Duration(seconds: 3),
-      ),
-    );
-  }
 
   @override
   void dispose() {
