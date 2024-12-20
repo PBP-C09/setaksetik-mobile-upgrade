@@ -5,6 +5,7 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
+import 'package:setaksetikmobile/review/screens/review_admin.dart';
 import 'package:setaksetikmobile/review/screens/review_entry.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
@@ -115,7 +116,7 @@ class HomePage extends StatelessWidget {
           context,
           'Mange Reviews - blm diubah',
           // TODO: REVIEW ADMIN
-          const ReviewMainPage(),
+          const ReviewAdmin(),
           const Color(0xFF842323),
           const Color(0xFFF5F5DC),
           'Manage customer reviews.',

@@ -62,6 +62,28 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     }
   }
 
+  Future<void> updateReplyFlutter(CookieRequest request, String review_id, String reply_text) async {
+    try {
+      if (review_id.isNotEmpty && reply_text.isNotEmpty) {
+        final response = await request.post(
+          'http://127.0.0.1:8000/review/update-reply-flutter/',  // Use the Django endpoint
+          jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
+        );
+        if (response['status'] == 'success') {
+          // Handle success (e.g., refresh the reviews or show a success message)
+          print('Reply updated successfully');
+        } else {
+          throw Exception('Failed to update reply');
+        }
+      } else {
+        print('Error: Review ID or reply text is empty');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final request = context.read<CookieRequest>();
@@ -120,7 +142,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                             ),
                             const SizedBox(height: 8),
                             // Cek apakah ownerReply masih "No reply yet"
-                            if (review.fields.ownerReply == 'No reply yet') 
+                            if (review.fields.ownerReply == 'No reply yet' || review.fields.ownerReply == "") 
                               ElevatedButton(
                                 onPressed: () async {
                                   final reply = await showDialog<String>(
