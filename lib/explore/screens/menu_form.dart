@@ -211,28 +211,28 @@ class _MenuFormPageState extends State<MenuFormPage> {
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   ),
                   onPressed: () async {
-    if (_formKey.currentState!.validate()) {
-      final response = await request.postJson(
-        "http://127.0.0.1:8000/explore/create-flutter/",
+                    if (_formKey.currentState!.validate()) {
+                      final response = await request.postJson(
+                        "http://127.0.0.1:8000/explore/create-flutter/",
 
-       jsonEncode(<String, String>{
-          "menu": _menuName,
-          "category": _selectedCategory ?? "",
-          "restaurant_name": _restaurantName,
-          "city": _selectedCity ?? "",
-          "price": _price.toString(),
-          "rating": _rating.toString(),
-          "specialized": _selectedSpecialized ?? "",
-          "image": _imageUrl,
-          "takeaway": _takeaway.toString(),
-          "delivery": _delivery.toString(),
-          "outdoor": _outdoor.toString(),
-          "smoking_area": _smokingArea.toString(),
-          "wifi": _wifi.toString(),
-        }),
-       );
-        if (context.mounted) {
-                        if (response['status'] == 'success') {
+                      jsonEncode(<String, String>{
+                          "menu": _menuName,
+                          "category": _selectedCategory ?? "",
+                          "restaurant_name": _restaurantName,
+                          "city": _selectedCity ?? "",
+                          "price": _price.toString(),
+                          "rating": _rating.toString(),
+                          "specialized": _selectedSpecialized ?? "",
+                          "image": _imageUrl,
+                          "takeaway": _takeaway.toString(),
+                          "delivery": _delivery.toString(),
+                          "outdoor": _outdoor.toString(),
+                          "smoking_area": _smokingArea.toString(),
+                          "wifi": _wifi.toString(),
+                        }),
+                      );
+                        if (context.mounted) {
+                          if (response['status'] == 'success') {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
                             content: Text("Produk baru berhasil disimpan!"),
@@ -247,21 +247,20 @@ class _MenuFormPageState extends State<MenuFormPage> {
                                 content:
                                     Text("Terdapat kesalahan, silakan coba lagi."),
                             ));
+                          }
                         }
-                    }
-                }
-            },
-        
+                      }
+                    },       
                   child: const Text("Add menu"),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
-}
   // Helper Widget: TextField
   Widget _buildTextField({
     required String label,

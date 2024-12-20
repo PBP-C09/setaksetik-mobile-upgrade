@@ -4,18 +4,16 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:setaksetikmobile/explore/screens/filter.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
-import 'package:setaksetikmobile/explore/screens/admin_detail.dart';
-import 'package:setaksetikmobile/explore/screens/menu_form.dart';
-import 'package:setaksetikmobile/explore/screens/edit_menu_form.dart';
+import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 
-class ExploreAdmin extends StatefulWidget {
-  const ExploreAdmin({Key? key}) : super(key: key);
+class ExploreOwner extends StatefulWidget {
+  const ExploreOwner({Key? key}) : super(key: key);
 
   @override
-  State<ExploreAdmin> createState() => _ExploreAdminState();
+  State<ExploreOwner> createState() => _ExploreOwnerState();
 }
 
-class _ExploreAdminState extends State<ExploreAdmin> {
+class _ExploreOwnerState extends State<ExploreOwner> {
   late Future<List<MenuList>> _menuFuture;
   final TextEditingController _searchController = TextEditingController();
   List<MenuList> _originalMenus = [];
@@ -57,7 +55,6 @@ class _ExploreAdminState extends State<ExploreAdmin> {
 
   @override
   Widget build(BuildContext context) {
-    final request = context.watch<CookieRequest>();
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
@@ -68,105 +65,104 @@ class _ExploreAdminState extends State<ExploreAdmin> {
         future: _menuFuture,
         builder: (context, snapshot) {
           Widget searchAndFilterSection = Container(
-            color: const Color(0xFF3E2723),
-            padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontSize: 42,
-                        fontFamily: 'Playfair Display',
-                        color: Color(0xFFF5F5DC),
+      color: const Color(0xFF3E2723),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 42,
+                  fontFamily: 'Playfair Display',
+                  color: Color(0xFFF5F5DC),
+                ),
+                children: const [
+                  TextSpan(text: 'Makan apa '),
+                  TextSpan(
+                    text: 'Hari ini?',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    style: const TextStyle(color: Colors.black),
+                    decoration: InputDecoration(
+                      hintText: 'Cari menu',
+                      hintStyle: const TextStyle(fontSize: 14),
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      border: InputBorder.none,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear, size: 20),
+                        onPressed: () {
+                          _searchController.clear();
+                          _handleSearch('');
+                        },
                       ),
-                      children: const [
-                        TextSpan(text: 'Menu '),
-                        TextSpan(
-                          text: 'Admin',
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ],
                     ),
+                    onSubmitted: _handleSearch,
                   ),
                 ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        height: 48,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: TextField(
-                          controller: _searchController,
-                          style: const TextStyle(color: Colors.black),
-                          decoration: InputDecoration(
-                            hintText: 'Cari menu',
-                            hintStyle: const TextStyle(fontSize: 14),
-                            prefixIcon: const Icon(Icons.search, size: 20),
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                            border: InputBorder.none,
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.clear, size: 20),
-                              onPressed: () {
-                                _searchController.clear();
-                                _handleSearch('');
-                              },
-                            ),
-                          ),
-                          onSubmitted: _handleSearch,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(32),
                         ),
                       ),
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return Filter(
+                          onFilter: (namaMenu, kota, jenisBeef, hargaMax) {
+                            _applyFilters(namaMenu, kota, jenisBeef, hargaMax);
+                          },
+                        );
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      flex: 2,
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(32),
-                              ),
-                            ),
-                            showDragHandle: true,
-                            isScrollControlled: true,
-                            builder: (BuildContext context) {
-                              return Filter(
-                                onFilter: (namaMenu, kota, jenisBeef, hargaMax) {
-                                  _applyFilters(namaMenu, kota, jenisBeef, hargaMax);
-                                },
-                              );
-                            },
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        icon: const Icon(Icons.tune, color: Colors.black),
-                        label: const Text(
-                          'Filter',
-                          style: TextStyle(color: Colors.black, fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          );
-
+                  ),
+                  icon: const Icon(Icons.tune, color: Colors.black),
+                  label: const Text(
+                    'Filter',
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -193,7 +189,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                   ),
                 ],
               ),
-            );
+            );          
           } else {
             final menus = snapshot.data!;
             return ListView.builder(
@@ -216,9 +212,9 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                 color: Color(0xFFF5F5DC),
                               ),
                               children: const [
-                                TextSpan(text: 'Menu '),
+                                TextSpan(text: 'Makan apa '),
                                 TextSpan(
-                                  text: 'Admin',
+                                  text: 'Hari ini?',
                                   style: TextStyle(fontStyle: FontStyle.italic),
                                 ),
                               ],
@@ -299,34 +295,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                               ),
                             ),
                           ],
-                        ),
-                        const SizedBox(height: 16), // Spasi antara Filter/Search dan tombol Add Menu
-
-                        // Tombol Add Menu
-                        SizedBox(
-                          width: 160,
-                          height: 40,
-                          child: ElevatedButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => const MenuFormPage()),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red, // Warna merah
-                              foregroundColor: Colors.white, // Warna teks putih
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8), // Radius sudut
-                              ),
-                            ),
-                            icon: const Icon(Icons.add),
-                            label: const Text(
-                              'Add Menu',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
+                        )
                       ],
                     ),
                   );
@@ -337,7 +306,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AdminDetail(menuList: menuList),
+                          builder: (context) => MenuDetailPage(menuList: menuList),
                         ),
                       );
                     },
@@ -345,9 +314,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       color: const Color(0xFFF5F5DC),
                       clipBehavior: Clip.antiAlias,
-                      child: Stack(
-                        children: [
-                      Column(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AspectRatio(
@@ -487,7 +454,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => AdminDetail(menuList: menuList),
+                                        builder: (context) => MenuDetailPage(menuList: menuList),
                                       ),
                                     );
                                   },
@@ -501,105 +468,10 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                     ),
                                   ),
                                   child: const Text(
-                                    'See Details',
+                                    'Claim Ownership',
                                     style: TextStyle(
                                       fontSize: 14,
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                       Positioned(
-                            top: 8,
-                            left: 8,
-                            child: Row(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.yellow[300],
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditMenuFormPage(menuToEdit: menuList),
-                                        ),
-                                      ).then((_) {
-                                        setState(() {
-                                          _menuFuture = fetchMenu(
-                                            Provider.of<CookieRequest>(context, listen: false)
-                                          );
-                                        });
-                                      });
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(width:8),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.red[400],
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text('Delete Menu'),
-                                            content: const Text('Are you sure you want to delete this menu?'),
-                                            actions: [
-                                              TextButton(
-                                                child: const Text('Cancel'),
-                                                onPressed: () => Navigator.of(context).pop(),
-                                              ),
-                                              TextButton(
-                                                child: const Text(
-                                                  'Delete',
-                                                  style: TextStyle(color: Colors.red),
-                                                ),
-                                                onPressed: () async {                  
-                                                  _deleteMenu(request, menuList.pk);
-                                                  setState(() {
-                                                    _menuFuture = fetchMenu(request);
-                                                  });
-                                                  Navigator.pop(context);
-                                                }         
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
                                   ),
                                 ),
                               ],
@@ -616,13 +488,6 @@ class _ExploreAdminState extends State<ExploreAdmin> {
         },
       ),
     );
-  }
-
-  _deleteMenu(CookieRequest request, int pk) {
-    request.get('http://127.0.0.1:8000/explore/delete/$pk');
-    setState(() {
-      _menuFuture = fetchMenu(request);
-    });
   }
 
   void _applyFilters(String? namaMenu, City? kota, String? jenisBeef, int? hargaMax) {

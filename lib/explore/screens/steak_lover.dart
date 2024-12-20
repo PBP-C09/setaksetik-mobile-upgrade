@@ -49,7 +49,7 @@ class _MenuPageState extends State<MenuPage> {
       _originalMenus = listMenu; 
       return listMenu;
     } catch (e, stackTrace) {
-      return []; // Return empty list instead of throwing
+      return []; 
     }
   }
 
@@ -64,12 +64,132 @@ class _MenuPageState extends State<MenuPage> {
       body: FutureBuilder<List<MenuList>>(
         future: _menuFuture,
         builder: (context, snapshot) {
+          Widget searchAndFilterSection = Container(
+            color: const Color(0xFF3E2723),
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      style: const TextStyle(
+                        fontSize: 42,
+                        fontFamily: 'Playfair Display',
+                        color: Color(0xFFF5F5DC),
+                      ),
+                      children: const [
+                        TextSpan(text: 'Makan apa '),
+                        TextSpan(
+                          text: 'Hari ini?',
+                          style: TextStyle(fontStyle: FontStyle.italic),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: TextField(
+                          controller: _searchController,
+                          style: const TextStyle(color: Colors.black),
+                          decoration: InputDecoration(
+                            hintText: 'Cari menu',
+                            hintStyle: const TextStyle(fontSize: 14),
+                            prefixIcon: const Icon(Icons.search, size: 20),
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                            border: InputBorder.none,
+                            suffixIcon: IconButton(
+                              icon: const Icon(Icons.clear, size: 20),
+                              onPressed: () {
+                                _searchController.clear();
+                                _handleSearch('');
+                              },
+                            ),
+                          ),
+                          onSubmitted: _handleSearch,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(32),
+                              ),
+                            ),
+                            showDragHandle: true,
+                            isScrollControlled: true,
+                            builder: (BuildContext context) {
+                              return Filter(
+                                onFilter: (namaMenu, kota, jenisBeef, hargaMax) {
+                                  _applyFilters(namaMenu, kota, jenisBeef, hargaMax);
+                                },
+                              );
+                            },
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        icon: const Icon(Icons.tune, color: Colors.black),
+                        label: const Text(
+                          'Filter',
+                          style: TextStyle(color: Colors.black, fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          );
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error fetching menu data.'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No menu available.'));
+              return SingleChildScrollView(
+              child: Column(
+                children: [
+                  searchAndFilterSection,
+                  const SizedBox(height: 40),
+                  const Icon(
+                    Icons.sentiment_dissatisfied,
+                    size: 80,
+                    color: Color(0xFFF5F5DC),
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Menu yang kamu cari tidak ada',
+                    style: TextStyle(
+                      fontSize: 18,
+                      color: Color(0xFFF5F5DC),
+                      fontFamily: 'Playfair Display',
+                    ),
+                  ),
+                ],
+              ),
+            );          
           } else {
             final menus = snapshot.data!;
             return ListView.builder(
@@ -114,7 +234,8 @@ class _MenuPageState extends State<MenuPage> {
                                   borderRadius: BorderRadius.circular(30),
                                 ),
                                 child: TextField(
-                                  controller: _searchController, // tambah ini
+                                  controller: _searchController, 
+                                  style: const TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
                                     hintText: 'Cari menu',
                                     hintStyle: const TextStyle(fontSize: 14),
