@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
+import 'package:setaksetikmobile/main.dart';
+import 'package:setaksetikmobile/screens/root_page.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +31,20 @@ Future<void> claimRestaurant(BuildContext context, CookieRequest request, int me
   if (response['status'] == 'success') {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Successfully claimed the restaurant!')),
+    );
+    UserProfile.data["claim"] = 1;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => RootPage(fullName: UserProfile.data["full_name"],),
+      ),
+      (Route<dynamic> route) => false,
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OwnedRestaurantPage(),
+      ),
     );
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -60,76 +77,53 @@ class _ClaimPageState extends State<ClaimPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Claim a Restaurant'),
+        centerTitle: true,
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Center(
-              child: Column(
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: const Column(
                 children: [
-                  Text(
-                    'Claim a Restaurant',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF6F4E37),
-                    ),
-                  ),
-                  SizedBox(height: 16),
                   Text(
                     'Find a restaurant to claim and become its owner!',
                     style: TextStyle(
-                      fontSize: 18,
-                      color: Color(0xFF6F4E37),
+                      fontSize: 16,
+                      color: Color(0xFFF5F5DC),
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
 
-            const Text(
-              'Available Restaurants',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        hintText: 'Search restaurant',
-                        hintStyle: TextStyle(fontSize: 14),
-                        prefixIcon: Icon(Icons.search, size: 20),
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _claimFuture = Future.value(_originalMenus.where((menu) {
-                            return menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase());
-                          }).toList());
-                        });
-                      },
-                    ),
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(15),
                 ),
-              ],
+                child: TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Search restaurant',
+                    prefixIcon: const Icon(Icons.search),
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    hintStyle: TextStyle(color: Colors.grey[400]),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      _claimFuture = Future.value(_originalMenus.where((menu) {
+                        return menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase());
+                      }).toList());
+                    });
+                  },
+                ),
+              ),
             ),
 
             const SizedBox(height: 16),
@@ -140,36 +134,71 @@ class _ClaimPageState extends State<ClaimPage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error loading claimable restaurants.'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No restaurants available for claim.'));
-                } else {
-                  final menus = snapshot.data!;
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.75,
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        'Error loading restaurants: ${snapshot.error}',
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     ),
-                    itemCount: menus.length,
-                    itemBuilder: (context, index) {
-                      final menu = menus[index];
-                      return RestaurantCard(
-                        menu: menu,
-                        onClaim: () async {
-                          final request = Provider.of<CookieRequest>(context, listen: false);
-                          await claimRestaurant(context, request, menu.pk);
-                          setState(() {
-                            _claimFuture = fetchClaimResto(request);
-                          });
+                  );
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Text('No restaurants available for claim.'),
+                    ),
+                  );
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: (snapshot.data!.length / 2).ceil(),
+                        itemBuilder: (context, index) {
+                          return Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: RestaurantCard(
+                                  menu: snapshot.data![index * 2],
+                                  onClaim: () async {
+                                    final request = Provider.of<CookieRequest>(context, listen: false);
+                                    await claimRestaurant(context, request, snapshot.data![index * 2].pk);
+                                    setState(() {
+                                      _claimFuture = fetchClaimResto(request);
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(width: 16),
+                              if (index * 2 + 1 < snapshot.data!.length)
+                                Expanded(
+                                  child: RestaurantCard(
+                                    menu: snapshot.data![index * 2 + 1],
+                                    onClaim: () async {
+                                      final request = Provider.of<CookieRequest>(context, listen: false);
+                                      await claimRestaurant(context, request, snapshot.data![index * 2 + 1].pk);
+                                      setState(() {
+                                        _claimFuture = fetchClaimResto(request);
+                                      });
+                                    },
+                                  ),
+                                )
+                              else
+                                Expanded(child: Container()),
+                            ],
+                          );
                         },
                       );
                     },
-                  );
-                }
+                  ),
+                );
               },
             ),
           ],
@@ -187,64 +216,119 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Image.network(
-              menu.fields.image,
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Image.network(
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                  height: 120,
-                  width: double.infinity,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Image.network(
+                  menu.fields.image,
                   fit: BoxFit.cover,
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  menu.fields.restaurantName,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF6F4E37),
-                  ),
-                ),
-                Text('Category: ${menu.fields.category}'),
-                Text('City: ${menu.fields.city.name}'),
-                Text('Rating: ${menu.fields.rating}'),
-              ],
-            ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: onClaim,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFFFC107),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.network(
+                      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
-              child: const Text('Claim Restaurant'),
             ),
-          ),
-        ],
+            
+            // Restaurant Info
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    menu.fields.restaurantName,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF6F4E37),
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(Icons.category, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'Category: ${menu.fields.category}',
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.location_on, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'City: ${menu.fields.city.name}',
+                          style: const TextStyle(fontSize: 12),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(Icons.star, size: 16, color: Colors.amber),
+                      const SizedBox(width: 4),
+                      Text(
+                        menu.fields.rating.toString(),
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            
+            // Claim Button
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+              child: ElevatedButton(
+                onPressed: onClaim,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFC107),
+                  foregroundColor: Colors.black87,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Claim',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

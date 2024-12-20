@@ -59,6 +59,7 @@ class _MenuPageState extends State<MenuPage> {
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
         title: const Text('Steak Menu'),
+        centerTitle: true,
       ),
       drawer: LeftDrawer(),
       body: FutureBuilder<List<MenuList>>(

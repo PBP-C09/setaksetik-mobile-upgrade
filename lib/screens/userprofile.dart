@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/main.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/screens/login.dart';
+import 'package:setaksetikmobile/screens/welcome_page.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
@@ -25,11 +25,11 @@ class UserProfilePage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
-            _buildProfileInfo('Full Name', UserProfile.data["full_name"]),
+            _buildProfileInfo('You are', UserProfile.data["full_name"]),
             SizedBox(height: 10),
-            _buildProfileInfo('Username', UserProfile.data["username"]),
+            _buildProfileInfo('Your username is', UserProfile.data["username"]),
             SizedBox(height: 10),
-            _buildProfileInfo('Role', UserProfile.data["role"]),
+            _buildProfileInfo('You\'re here as', toTitleCase(UserProfile.data["role"])),
             SizedBox(height: 40),
             _buildLogoutButton(context),
           ],
@@ -81,7 +81,7 @@ class UserProfilePage extends StatelessWidget {
             ));
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const LoginPage()),
+              MaterialPageRoute(builder: (context) => const WelcomePage()),
             );
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -107,4 +107,16 @@ class UserProfilePage extends StatelessWidget {
       ),
     );
   }
+
+  String toTitleCase(String s) {
+    if (s == null || s.isEmpty) {
+      return '';
+    }
+    
+    return s.split(' ').map((word) {
+      if (word.isEmpty) return '';
+      return word[0].toUpperCase() + word.substring(1).toLowerCase();
+    }).join(' ');
+  }
 }
+

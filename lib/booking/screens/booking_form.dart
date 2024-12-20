@@ -71,7 +71,10 @@ class _BookingFormPageState extends State<BookingFormPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Booking Form')),
+      appBar: AppBar(
+        title: const Text('Booking Form'),
+        centerTitle: true,
+      ),
       body: Form(
         key: _formKey,
         child: Padding(

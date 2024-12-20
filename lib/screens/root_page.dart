@@ -34,7 +34,7 @@ class _RootPageState extends State<RootPage> {
         buttonBackgroundColor: Color(0xFF842323),
         backgroundColor: Color(0xFFF5F5DC),
         animationCurve: Curves.easeInOut,
-        animationDuration: Duration(milliseconds: 600),
+        animationDuration: Duration(milliseconds: 300),
         items: const <Widget>[
           Icon(Icons.home_outlined, size: 30, color: Color(0xFFF5F5DC)),
           Icon(Icons.person, size: 30, color: Color(0xFFF5F5DC)),

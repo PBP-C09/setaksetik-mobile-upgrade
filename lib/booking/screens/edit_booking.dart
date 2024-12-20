@@ -52,7 +52,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Edit Booking')),
+      appBar: AppBar(
+        title: const Text('Edit Booking'),
+        centerTitle: true,
+      ),
       body: Form(
         key: _formKey,
         child: Padding(

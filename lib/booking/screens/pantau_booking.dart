@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/booking/models/booking_entry.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
   try {
@@ -56,8 +57,10 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pantau Booking Owner'),
+        title: const Text('Pantau Booking'),
+        centerTitle: true,
       ),
+      drawer: LeftDrawer(),
       body: FutureBuilder<Map<String, dynamic>?>(
         future: _futureBookings,
         builder: (context, snapshot) {
@@ -68,7 +71,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
               child: Text('Error occurred: ${snapshot.error}'),
             );
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('No bookings available.'));
+            return const Center(child: Text('No bookings available yet!', style: TextStyle(color: Color(0xFFF5F5DC)),));
           }
 
           final restaurant = snapshot.data!['restaurant'] ?? {};
@@ -82,7 +85,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
               : [];
 
           if (bookings.isEmpty) {
-            return const Center(child: Text('No bookings available.'));
+            return const Center(child: Text('No bookings available yet!', style: TextStyle(color: Color(0xFFF5F5DC)),));
           }
 
           return ListView(
