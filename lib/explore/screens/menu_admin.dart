@@ -4,16 +4,18 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:setaksetikmobile/explore/screens/filter.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
-import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
+import 'package:setaksetikmobile/explore/screens/admin_detail.dart';
+import 'package:setaksetikmobile/explore/screens/menu_form.dart';
+import 'package:setaksetikmobile/explore/screens/edit_menu_form.dart';
 
-class MenuPage extends StatefulWidget {
-  const MenuPage({Key? key}) : super(key: key);
+class ExploreAdmin extends StatefulWidget {
+  const ExploreAdmin({Key? key}) : super(key: key);
 
   @override
-  State<MenuPage> createState() => _MenuPageState();
+  State<ExploreAdmin> createState() => _ExploreAdminState();
 }
 
-class _MenuPageState extends State<MenuPage> {
+class _ExploreAdminState extends State<ExploreAdmin> {
   late Future<List<MenuList>> _menuFuture;
   final TextEditingController _searchController = TextEditingController();
   List<MenuList> _originalMenus = [];
@@ -55,11 +57,11 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
         title: const Text('Steak Menu'),
-        centerTitle: true,
       ),
       drawer: LeftDrawer(),
       body: FutureBuilder<List<MenuList>>(
@@ -80,9 +82,9 @@ class _MenuPageState extends State<MenuPage> {
                         color: Color(0xFFF5F5DC),
                       ),
                       children: const [
-                        TextSpan(text: 'Makan apa '),
+                        TextSpan(text: 'Menu '),
                         TextSpan(
-                          text: 'Hari ini?',
+                          text: 'Admin',
                           style: TextStyle(fontStyle: FontStyle.italic),
                         ),
                       ],
@@ -164,6 +166,7 @@ class _MenuPageState extends State<MenuPage> {
               ],
             ),
           );
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
@@ -190,7 +193,7 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                 ],
               ),
-            );          
+            );
           } else {
             final menus = snapshot.data!;
             return ListView.builder(
@@ -213,9 +216,9 @@ class _MenuPageState extends State<MenuPage> {
                                 color: Color(0xFFF5F5DC),
                               ),
                               children: const [
-                                TextSpan(text: 'Makan apa '),
+                                TextSpan(text: 'Menu '),
                                 TextSpan(
-                                  text: 'Hari ini?',
+                                  text: 'Admin',
                                   style: TextStyle(fontStyle: FontStyle.italic),
                                 ),
                               ],
@@ -296,7 +299,34 @@ class _MenuPageState extends State<MenuPage> {
                               ),
                             ),
                           ],
-                        )
+                        ),
+                        const SizedBox(height: 20), // Spasi antara Filter/Search dan tombol Add Menu
+
+                        // Tombol Add Menu
+                        SizedBox(
+                          width: 160,
+                          height: 40,
+                          child: ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const MenuFormPage()),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFC62828), // Warna merah
+                              foregroundColor: Colors.white, // Warna teks putih
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8), // Radius sudut
+                              ),
+                            ),
+                            icon: const Icon(Icons.add),
+                            label: const Text(
+                              'Add Menu',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   );
@@ -307,7 +337,7 @@ class _MenuPageState extends State<MenuPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => MenuDetailPage(menuList: menuList),
+                          builder: (context) => AdminDetail(menuList: menuList),
                         ),
                       );
                     },
@@ -315,7 +345,9 @@ class _MenuPageState extends State<MenuPage> {
                       margin: const EdgeInsets.symmetric(vertical: 8),
                       color: const Color(0xFFF5F5DC),
                       clipBehavior: Clip.antiAlias,
-                      child: Column(
+                      child: Stack(
+                        children: [
+                      Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AspectRatio(
@@ -455,7 +487,7 @@ class _MenuPageState extends State<MenuPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => MenuDetailPage(menuList: menuList),
+                                        builder: (context) => AdminDetail(menuList: menuList),
                                       ),
                                     );
                                   },
@@ -480,6 +512,101 @@ class _MenuPageState extends State<MenuPage> {
                           ),
                         ],
                       ),
+                       Positioned(
+                            top: 8,
+                            left: 8,
+                            child: Row(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.yellow[300],
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditMenuFormPage(menuToEdit: menuList),
+                                        ),
+                                      ).then((_) {
+                                        setState(() {
+                                          _menuFuture = fetchMenu(
+                                            Provider.of<CookieRequest>(context, listen: false)
+                                          );
+                                        });
+                                      });
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width:8),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[400],
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text('Delete Menu'),
+                                            content: const Text('Are you sure you want to delete this menu?'),
+                                            actions: [
+                                              TextButton(
+                                                child: const Text('Cancel'),
+                                                onPressed: () => Navigator.of(context).pop(),
+                                              ),
+                                              TextButton(
+                                                child: const Text(
+                                                  'Delete',
+                                                  style: TextStyle(color: Colors.red),
+                                                ),
+                                                onPressed: () async {                  
+                                                  _deleteMenu(request, menuList.pk);
+                                                  setState(() {
+                                                    _menuFuture = fetchMenu(request);
+                                                  });
+                                                  Navigator.pop(context);
+                                                }         
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 }
@@ -489,6 +616,13 @@ class _MenuPageState extends State<MenuPage> {
         },
       ),
     );
+  }
+
+  _deleteMenu(CookieRequest request, int pk) {
+    request.get('http://127.0.0.1:8000/explore/delete/$pk');
+    setState(() {
+      _menuFuture = fetchMenu(request);
+    });
   }
 
   void _applyFilters(String? namaMenu, City? kota, String? jenisBeef, int? hargaMax) {

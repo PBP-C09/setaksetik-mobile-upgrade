@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
+import 'package:setaksetikmobile/main.dart';
+import 'package:setaksetikmobile/screens/root_page.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class OwnedRestaurantPage extends StatefulWidget {
   const OwnedRestaurantPage({super.key});
@@ -52,7 +55,9 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Owned Restaurant'),
+        centerTitle: true,
       ),
+      drawer: LeftDrawer(),
       body: FutureBuilder<MenuList?>(
         future: fetchOwnedRestaurant(request),
         builder: (context, snapshot) {
@@ -73,19 +78,11 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                     child: Column(
                       children: [
                         const Text(
-                          'Owned Restaurant',
+                          'You are the One True Owner of',
                           style: TextStyle(
-                            fontSize: 40,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF6F4E37),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        const Text(
-                          'You are the proud owner of this restaurant!',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color(0xFF6F4E37),
+                            color: Color(0xFFF5F5DC),
                           ),
                         ),
                       ],
@@ -118,17 +115,22 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
                                 menu.fields.restaurantName,
                                 style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
+                                  fontFamily: 'Playfair Display',
+                                  fontStyle: FontStyle.italic
                                 ),
                               ),
+                              const SizedBox(height: 8),
                               Text('Category: ${menu.fields.category}'),
+                              const SizedBox(height: 8),
                               Text('City: ${menu.fields.city.name}'),
+                              const SizedBox(height: 8),
                               Text('Rating: ${menu.fields.rating}'),
                               const SizedBox(height: 16),
                               Center(
@@ -136,12 +138,19 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                                   onPressed: () async {
                                     final success = await deleteOwnership(request, menu.pk);
                                     if (success) {
+                                      UserProfile.data["claim"] = 0;
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                           content: Text('Ownership deleted successfully.'),
                                         ),
                                       );
                                       Navigator.pop(context); // Kembali ke halaman sebelumnya
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                RootPage(fullName:UserProfile.data["full_name"]),
+                                      ));
                                       setState(() {}); // Refresh halaman
                                     } else {
                                       ScaffoldMessenger.of(context).showSnackBar(
@@ -152,17 +161,20 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFF0000), // Warna merah untuk tombol
+                                    backgroundColor: const Color(0xFF842323), // Warna merah untuk tombol
                                     padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
                                   child: const Text(
-                                    'Delete Ownership',
+                                    'Disown Restaurant',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
+                                      fontFamily: 'Playfair Display',
+                                      fontStyle: FontStyle.italic,
+                                      color: Color(0xFFF5F5DC) 
                                     ),
                                   ),
                                 ),

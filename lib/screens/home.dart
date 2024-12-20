@@ -1,40 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/claim/screens/claim_home.dart';
-import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
-import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-
 import 'package:setaksetikmobile/main.dart';
+
+import 'package:setaksetikmobile/claim/screens/claim_home.dart';
+import 'package:setaksetikmobile/claim/screens/manage_ownership.dart';
+import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
+import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
+
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
 import 'package:setaksetikmobile/review/screens/review_admin.dart';
 import 'package:setaksetikmobile/review/screens/review_entry.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
-import 'package:setaksetikmobile/review/screens/review_list.dart';
+import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/review/screens/user_review.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
-import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
-import 'package:setaksetikmobile/screens/login.dart';
 import 'package:setaksetikmobile/booking/screens/booking_home.dart';
-
-import 'package:pbp_django_auth/pbp_django_auth.dart';
-import 'package:provider/provider.dart';
-
-Future<Map<String, dynamic>?> fetchOwnedRestaurant(CookieRequest request) async {
-  try {
-    final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
-
-    print('Response fetchOwnedRestaurant: $response'); // Debugging log
-    
-    if (response == null || response.isEmpty) {
-      return null; // Jika user tidak memiliki restoran
-    }
-
-    return response;
-  } catch (e) {
-    print('Error fetching owned restaurant: $e');
-    return null; // Handle error dengan return null
-  }
-}
+import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 
 class HomePage extends StatelessWidget {
   final String fullName;
@@ -62,10 +43,17 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildButtonWithInfo(BuildContext context, String label, Widget page,
-      Color backgroundColor, Color textColor, String description) {
+      Color backgroundColor, Color textColor, String description, IconData icon, bool odd) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        if (odd)
+        IconButton(
+          icon: Icon(icon, color: backgroundColor),
+          onPressed: () {
+            _showFeatureDescription(context, label, description);
+          },
+        ),
         ElevatedButton(
           onPressed: () {
             Navigator.push(
@@ -86,8 +74,9 @@ class HomePage extends StatelessWidget {
             style: TextStyle(fontFamily: 'Playfair Display', color: textColor),
           ),
         ),
+        if (!odd)
         IconButton(
-          icon: Icon(Icons.info_outline, color: Color(0xFF842323)),
+          icon: Icon(icon, color: backgroundColor),
           onPressed: () {
             _showFeatureDescription(context, label, description);
           },
@@ -98,18 +87,20 @@ class HomePage extends StatelessWidget {
 
   List<Widget> _buildRoleSpecificButtons(BuildContext context) {
     final role = UserProfile.data["role"];
+    final claim = UserProfile.data["claim"];
     final buttons = <Widget>[];
 
     if (role == "admin") {
       buttons.addAll([
         _buildButtonWithInfo(
           context,
-          'Manage Menus - blm diubah',
-          // TODO: EXPLORE ADMIN
-          const SpinPage(),
+          'Manage Menus',
+          const ExploreAdmin(),
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
           'Manage steakhouse listings and menus.',
+          Icons.menu_book,
+          true
         ),
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
@@ -120,63 +111,80 @@ class HomePage extends StatelessWidget {
           const Color(0xFF842323),
           const Color(0xFFF5F5DC),
           'Manage customer reviews.',
+          Icons.rate_review,
+          false
         ),
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
           context,
-          'Manage Ownership - blm diubah',
-          // TODO: BOOKING ADMIN
-          const SpinPage(),
+          'Manage Ownership',
+          const ManageOwnershipPage(),
           const Color(0xFF6D4C41),
           const Color(0xFFF5F5DC),
           'Manage the ownership of each restaurants, revoke an ownership if necessary!',
+          Icons.admin_panel_settings,
+          true
         ),
       ]);
     } else if (role == "steakhouse owner") {
+      if (claim == 0) {
+        buttons.addAll([
+          // Tombol untuk claim restoran
+          _buildButtonWithInfo(
+            context,
+            'Claim a Steakhouse',
+            const ClaimPage(),
+            const Color(0xFF3E2723),
+            const Color(0xFFF5F5DC),
+            'Claim a steakhouse!',
+            Icons.store,
+            false,
+          ),
+          SizedBox(height: 16.0),
+        ]);
+      } else {
+        buttons.addAll([
+          // Tombol untuk melihat restoran yang dimiliki
+          _buildButtonWithInfo(
+            context,
+            'My Restaurant',
+            const OwnedRestaurantPage(),
+            const Color(0xFF3E2723),
+            const Color(0xFFF5F5DC),
+            'Lihat restoran yang Anda miliki!',
+            Icons.restaurant,
+            false,
+          ),
+          SizedBox(height: 16.0),
+        ]);
+      }
+
       buttons.addAll([
-      // Tombol untuk claim restoran
-      _buildButtonWithInfo(
-        context,
-        'Claim a Steakhouse',
-        const ClaimPage(),
-        const Color(0xFF3E2723),
-        const Color(0xFFF5F5DC),
-        'Claim a steakhouse!',
-      ),
-      SizedBox(height: 16.0),
+        // Tombol untuk memantau review
+        _buildButtonWithInfo(
+          context,
+          'Pantau Review',
+          const ReviewOwner(),
+          const Color(0xFF842323),
+          const Color(0xFFF5F5DC),
+          'View customer reviews and answer them',
+          Icons.rate_review,
+          true,
+        ),
+        SizedBox(height: 16.0),
 
-      // Tombol untuk melihat restoran yang dimiliki
-      _buildButtonWithInfo(
-        context,
-        'My Restaurant',
-        const OwnedRestaurantPage(),
-        const Color(0xFF3E2723),
-        const Color(0xFFF5F5DC),
-        'Lihat restoran yang Anda miliki!',
-      ),
-      SizedBox(height: 16.0),
-
-      // Tombol untuk memantau review
-      _buildButtonWithInfo(
-        context,
-        'Pantau Review',
-        const ReviewOwner(),
-        const Color(0xFF842323),
-        const Color(0xFFF5F5DC),
-        'View customer reviews and answer them',
-      ),
-      SizedBox(height: 16.0),
-
-      // Tombol untuk memantau booking
-      _buildButtonWithInfo(
-        context,
-        'Pantau Booking',
-        const SpinPage(),
-        const Color(0xFF6D4C41),
-        const Color(0xFFF5F5DC),
-        'Pantau booking di restoranmu!',
-      ),
-    ]);
+        // Tombol untuk memantau booking
+        _buildButtonWithInfo(
+          context,
+          'Pantau Booking',
+          const PantauBookingPage(),
+          const Color(0xFF6D4C41),
+          const Color(0xFFF5F5DC),
+          'Pantau booking di restoranmu!',
+          Icons.book_online,
+          false,
+        ),
+      ]);
     } else {
       buttons.addAll([
         _buildButtonWithInfo(
@@ -186,6 +194,8 @@ class HomePage extends StatelessWidget {
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
           'Discover various steakhouse options and their menus.',
+          Icons.find_in_page,
+        true
         ),
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
@@ -195,6 +205,8 @@ class HomePage extends StatelessWidget {
           const Color(0xFF6D4C41),
           const Color(0xFFF5F5DC),
           'Spin the wheel to get random steak recommendations!',
+          Icons.casino,
+          false
         ),
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
@@ -204,6 +216,8 @@ class HomePage extends StatelessWidget {
           const Color(0xFF842323),
           const Color(0xFFF5F5DC),
           'Share and read reviews from other steak lovers.',
+          Icons.chat,
+          true
         ),
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
@@ -213,6 +227,8 @@ class HomePage extends StatelessWidget {
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
           'Connect with fellow steak enthusiasts!',
+          Icons.call,
+          false
         ),
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
@@ -222,6 +238,8 @@ class HomePage extends StatelessWidget {
           const Color(0xFF6D4C41),
           const Color(0xFFF5F5DC),
           'Make reservations at your favorite steakhouse.',
+          Icons.restaurant,
+          true
         ),
       ]);
     }

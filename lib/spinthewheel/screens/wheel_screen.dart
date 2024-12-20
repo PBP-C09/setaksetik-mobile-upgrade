@@ -279,6 +279,17 @@ class _WheelViewState extends State<WheelView> {
         _showResultDialog(request, _selectedMenuName!, _selectedItem!); 
       });
     }
+
+    else {
+      ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(
+                              SnackBar(
+                                  backgroundColor: Color(0xFF3E2723),
+                                  content:
+                                      Text("Please add at least two items to the wheel!")),
+                            );
+    }
   }
 
   void _clearWheel() {

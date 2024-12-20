@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:setaksetikmobile/screens/welcome_page.dart';
 import 'screens/login.dart';
 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
           ),
           useMaterial3: true,
           ),
-        home: const LoginPage(),
+        home: const WelcomePage(),
       ),
     );
   }
