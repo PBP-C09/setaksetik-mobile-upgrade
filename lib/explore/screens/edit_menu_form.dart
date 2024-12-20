@@ -104,13 +104,48 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
       appBar: AppBar(
         title: const Text('Edit Menu'),
       ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      body: Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9, // Lebar 90% layar
+        margin: const EdgeInsets.symmetric(vertical: 16.0),
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white, // Latar belakang form
+          borderRadius: BorderRadius.circular(16.0),
+          border: Border.all(
+            color: Colors.brown.shade400, // Border cokelat
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8.0,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+      
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text(
+                    "Edit Menu",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: const Color(0xFF4E342E),
+                      fontFamily: 'Playfair Display', // Gaya font elegan
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Divider(color: Colors.brown.shade300, thickness: 1.5),
+
               // Menu Name Input
               _buildTextField(
                 label: "Menu Name",
@@ -156,12 +191,15 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
               // Price Input
               _buildTextField(
                 label: "Price",
-                hint: "Masukkan harga menu",
+                hint: "Add price (1000 - 1800000)",
                 isNumeric: true,
                 onChanged: (value) => setState(() => _price = int.tryParse(value) ?? 0),
                 validator: (value) {
                   if (value == null || value.isEmpty) return "Harga menu tidak boleh kosong!";
                   if (int.tryParse(value) == null) return "Harga harus berupa angka!";
+                  if (_price < 1000 || _price > 1800000) {
+                    return "Rating harus antara 1000 dan 1800000!";
+                  }
                   return null;
                 },
               ),
@@ -169,7 +207,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
               // Rating Input
               _buildTextField(
                 label: "Rating",
-                hint: "Masukkan rating (0.0 - 5.0)",
+                hint: "Add rating (0.0 - 5.0)",
                 isNumeric: true,
                 onChanged: (value) {
                   setState(() {
@@ -178,6 +216,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) return "Rating tidak boleh kosong!";
+                  if (double.tryParse(value) == null) return "Harga harus berupa angka!";
                   double? rating = double.tryParse(value);
                   if (rating == null || rating < 0.0 || rating > 5.0) {
                     return "Rating harus antara 0.0 dan 5.0!";
@@ -189,7 +228,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
               // Image URL Input
               _buildTextField(
                 label: "Image URL",
-                hint: "Masukkan URL gambar menu",
+                hint: "Add image URL",
                 onChanged: (value) => setState(() => _imageUrl = value),
                 validator: (value) =>
                     value == null || value.isEmpty ? "Gambar menu tidak boleh kosong!" : null,
@@ -222,62 +261,100 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                 onChanged: (value) => setState(() => _wifi = value!),
               ),
 
-              // Submit Button
-              Align(
-                alignment: Alignment.center,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFFFD54F),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  ),
-                  onPressed: () async {
-    if (_formKey.currentState!.validate()) {
-      final response = await request.postJson(
-        "http://127.0.0.1:8000/explore/edit-flutter/${widget.menuToEdit.pk}/",
-
-       jsonEncode(<String, String>{
-          "menu": _menuName,
-          "category": _selectedCategory ?? "",
-          "restaurant_name": _restaurantName,
-          "city": _selectedCity ?? "",
-          "price": _price.toString(),
-          "rating": _rating.toString(),
-          "specialized": _selectedSpecialized ?? "",
-          "image": _imageUrl,
-          "takeaway": _takeaway.toString(),
-          "delivery": _delivery.toString(),
-          "outdoor": _outdoor.toString(),
-          "smoking_area": _smokingArea.toString(),
-          "wifi": _wifi.toString(),
-        }),
-       );
-        if (context.mounted) {
-                        if (response['status'] == 'success') {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                            content: Text("Produk baru berhasil disimpan!"),
-                            ));
-                            Navigator.pushReplacement(
+             Column(
+                children: [
+                  // Update Menu Button
+                  SizedBox(
+                    width: double.infinity,  // Membuat tombol selebar layar
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFC62828),
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          final response = await request.postJson(
+                            "http://127.0.0.1:8000/explore/edit-flutter/${widget.menuToEdit.pk}/",
+                            jsonEncode(<String, String>{
+                              "menu": _menuName,
+                              "category": _selectedCategory ?? "",
+                              "restaurant_name": _restaurantName,
+                              "city": _selectedCity ?? "",
+                              "price": _price.toString(),
+                              "rating": _rating.toString(),
+                              "specialized": _selectedSpecialized ?? "",
+                              "image": _imageUrl,
+                              "takeaway": _takeaway.toString(),
+                              "delivery": _delivery.toString(),
+                              "outdoor": _outdoor.toString(),
+                              "smoking_area": _smokingArea.toString(),
+                              "wifi": _wifi.toString(),
+                            }),
+                          );
+                          if (context.mounted) {
+                            if (response['status'] == 'success') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                              );
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(builder: (context) => ExploreAdmin()),
-                            );
-                        } else {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content:
-                                    Text("Terdapat kesalahan, silakan coba lagi."),
-                            ));
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("Terdapat kesalahan, silakan coba lagi.")),
+                              );
+                            }
+                          }
                         }
-                    }
-                }
-            },
-        
-                  child: const Text("Save"),
-                ),
+                      },
+                      child: const Text(
+                        "Update Menu",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  
+                  const SizedBox(height: 12),  // Spasi antara dua tombol
+                  
+                  // Back to Menu List Button
+                  SizedBox(
+                    width: double.infinity,  // Membuat tombol selebar layar
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF3E2723),
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Back to Menu List",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
+      ),
+      ),
       ),
     );
   }
@@ -310,11 +387,16 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
+        style: const TextStyle(color: Colors.black),
         initialValue: initialValue,
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
+          borderRadius: BorderRadius.circular(8.0),
+        ),
         ),
         keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
         onChanged: onChanged,
@@ -323,40 +405,42 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
     );
   }
 }
-  
-
-  // Helper Widget: Dropdown
-  Widget _buildDropdown({
-    required String label,
-    required String? value,
-    required List<DropdownMenuItem<String>> items,
-    required void Function(String?) onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: DropdownButtonFormField<String>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+// Helper Widget: Dropdown
+Widget _buildDropdown({
+  required String label,
+  required String? value,
+  required List<DropdownMenuItem<String>> items,
+  required void Function(String?) onChanged,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: DropdownButtonFormField<String>(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        items: items,
-        onChanged: onChanged,
-        validator: (value) => value == null || value.isEmpty ? "$label harus dipilih!" : null,
       ),
-    );
-  }
+      items: items,
+      onChanged: onChanged,
+      validator: (value) => value == null || value.isEmpty ? "$label harus dipilih!" : null,
+    ),
+  );
+}
 
 Widget _buildCheckbox({
-  required String label,
-  required bool value,
-  required void Function(bool?) onChanged,
+required String label,
+required bool value,
+required void Function(bool?) onChanged,
 }) {
-  return CheckboxListTile(
-    title: Text(label),
-    value: value,
-    onChanged: onChanged,
-    controlAffinity: ListTileControlAffinity.leading,
-    contentPadding: EdgeInsets.zero,
-  );
+return CheckboxListTile(
+  title: Text(label),
+  value: value,
+  onChanged: onChanged,
+  controlAffinity: ListTileControlAffinity.leading,
+  contentPadding: EdgeInsets.zero,
+);
 }

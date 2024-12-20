@@ -51,7 +51,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
       _originalMenus = listMenu; 
       return listMenu;
     } catch (e, stackTrace) {
-      return []; // Return empty list instead of throwing
+      return []; 
     }
   }
 
@@ -300,7 +300,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16), // Spasi antara Filter/Search dan tombol Add Menu
+                        const SizedBox(height: 20), // Spasi antara Filter/Search dan tombol Add Menu
 
                         // Tombol Add Menu
                         SizedBox(
@@ -314,7 +314,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red, // Warna merah
+                              backgroundColor: Color(0xFFC62828), // Warna merah
                               foregroundColor: Colors.white, // Warna teks putih
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8), // Radius sudut
