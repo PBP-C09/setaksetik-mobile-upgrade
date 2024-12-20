@@ -31,8 +31,6 @@ class _BookingListPageState extends State<BookingListPage> {
   Future<List<dynamic>> fetchBookings(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/booking/json/all/');
-      
-      // Debug the response
 
       if (response == null || response.isEmpty) {
         return [];
@@ -50,6 +48,7 @@ class _BookingListPageState extends State<BookingListPage> {
           'booking_date': fields['booking_date'],
           'number_of_people': fields['number_of_people'],
           'menu_items': fields['menu_items'],
+          'menu_image': fields['menu_image'], // Menu image URL
           'status': fields['status'],
         };
       }).toList();
@@ -63,7 +62,6 @@ class _BookingListPageState extends State<BookingListPage> {
   Future<void> deleteBooking(int bookingId) async {
     final request = Provider.of<CookieRequest>(context, listen: false);
     try {
-      // Gunakan string interpolasi untuk memasukkan bookingId ke URL
       final url = 'http://127.0.0.1:8000/booking/delete_flutter/$bookingId/';
       await request.post(
         url,
@@ -92,6 +90,7 @@ class _BookingListPageState extends State<BookingListPage> {
       appBar: AppBar(
         title: const Text('Your Bookings'),
         centerTitle: true,
+        backgroundColor: const Color(0xFF6F4E37),
       ),
       body: FutureBuilder<List<dynamic>>(
         future: _bookingsFuture,
@@ -99,7 +98,6 @@ class _BookingListPageState extends State<BookingListPage> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            // Handle errors such as not logged in or server issues
             return Center(
               child: Text(
                 'Error: ${snapshot.error}',
@@ -107,7 +105,6 @@ class _BookingListPageState extends State<BookingListPage> {
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            // Show message when there are no bookings
             return const Center(
               child: Text('No bookings found. Please log in or add a booking.'),
             );
@@ -118,36 +115,79 @@ class _BookingListPageState extends State<BookingListPage> {
             itemCount: bookings.length,
             itemBuilder: (context, index) {
               final booking = bookings[index];
-              return Card(
-                elevation: 3,
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: ListTile(
-                  title: Text('Date: ${booking['booking_date']}'),
-                  subtitle: Column(
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('People: ${booking['number_of_people']}'),
-                      Text('Status: ${booking['status']}'),
-                      Text('Menu ID: ${booking['menu_items']}'),
-                    ],
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.blue),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditBookingPage(bookingId: booking['id']),
-                            ),
-                          );
-                        },
+                      // Display menu image
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        child: Image.network(
+                          booking['menu_image'] ?? '',
+                          height: 180,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.network(
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => deleteBooking(booking['id']),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Date: ${booking['booking_date']}',
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'People: ${booking['number_of_people']}',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Status: ${booking['status']}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: booking['status'] == 'approved' ? Colors.green : Colors.red,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditBookingPage(bookingId: booking['id']),
+                                ),
+                              );
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => deleteBooking(booking['id']),
+                          ),
+                        ],
                       ),
                     ],
                   ),
