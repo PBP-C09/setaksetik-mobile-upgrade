@@ -65,17 +65,7 @@ class _MessageFormPageState extends State<MessageFormPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3E2723),
-        title: Text(
-          widget.messageToEdit != null ? 'Edit Meat Up Request' : 'Mau meat up sama siapa?',
-          style: const TextStyle(
-            fontFamily: 'Playfair Display',
-            color: Colors.white,
-            fontSize: 24,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(widget.messageToEdit != null ? 'Edit Meat Up Request' : 'Mau meat up sama siapa?'),
         centerTitle: true,
       ),
       body: _isLoading

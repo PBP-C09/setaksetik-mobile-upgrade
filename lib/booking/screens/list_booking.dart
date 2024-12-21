@@ -114,17 +114,8 @@ class _BookingListPageState extends State<BookingListPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text(
-          'Your Bookings',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF3E2723),
-          ),
-        ),
+        title: const Text('Your Bookings'),
         centerTitle: true,
-        backgroundColor: const Color(0xFFF5F5DC), 
-        iconTheme: const IconThemeData(color: Color(0xFF3E2723)), 
       ),
       body: FutureBuilder<List<dynamic>>(
         future: _bookingsFuture,

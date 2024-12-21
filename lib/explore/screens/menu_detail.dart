@@ -13,17 +13,8 @@ class MenuDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: const BackButton(color: const Color(0xFF3E2723)),
-        title: const Text(
-          'Detail Menu',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16.0,
-            color: const Color(0xFF3E2723),
-          ),
-        ),
-        elevation: 0.0,
+        title: const Text('Detail Menu'),
+        centerTitle: true,
       ),
       backgroundColor: const Color(0xFF6D4C41),
       body: SingleChildScrollView(
