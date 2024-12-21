@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class ReviewMainPage extends StatefulWidget {
   const ReviewMainPage({super.key});
@@ -45,13 +46,10 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Review',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        title: const Text('Add Review'),
+        centerTitle: true,
       ),
+      drawer: const LeftDrawer(),
       body: reviews.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -232,7 +230,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                               ],
                             ),
                             onTap: () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => ReviewPage(),

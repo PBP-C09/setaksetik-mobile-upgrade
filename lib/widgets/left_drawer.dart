@@ -3,7 +3,6 @@ import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 import 'package:setaksetikmobile/claim/screens/claim_home.dart';
 import 'package:setaksetikmobile/claim/screens/manage_ownership.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
-
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/screens/root_page.dart';
@@ -11,7 +10,6 @@ import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
 import 'package:setaksetikmobile/review/screens/user_review.dart';
-import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
 import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 
@@ -23,11 +21,41 @@ class LeftDrawer extends StatelessWidget {
     final claim = UserProfile.data["claim"];
     final tiles = <Widget>[];
 
-    // Always add Home ListTile for all roles
+    const List<Color> alternatingColors = [
+      Color(0xFF3E2723),
+      Color(0xFF6D4C41), 
+      Color(0xFF842323),
+    ];
+
+    int colorIndex = 0;
+
+    Widget createStyledListTile({
+      required IconData icon,
+      required String title,
+      required VoidCallback onTap,
+    }) {
+      Color textIconColor = alternatingColors[colorIndex];
+      colorIndex = (colorIndex + 1) % alternatingColors.length;
+
+      return ListTile(
+        leading: Icon(icon, color: textIconColor, size: 26),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: textIconColor,
+          ),
+        ),
+        onTap: onTap,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
+      );
+    }
+
     tiles.add(
-      ListTile(
-        leading: const Icon(Icons.home_outlined),
-        title: const Text('Home'),
+      createStyledListTile(
+        icon: Icons.home_outlined,
+        title: 'Home',
         onTap: () {
           Navigator.pushAndRemoveUntil(
             context,
@@ -42,9 +70,9 @@ class LeftDrawer extends StatelessWidget {
 
     if (role == "admin") {
       tiles.addAll([
-        ListTile(
-          leading: const Icon(Icons.menu_book),
-          title: const Text('Manage Menus'),
+        createStyledListTile(
+          icon: Icons.menu_book,
+          title: 'Manage Menus',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -52,19 +80,19 @@ class LeftDrawer extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.rate_review),
-          title: const Text('Manage Reviews'),
+        createStyledListTile(
+          icon: Icons.rate_review,
+          title: 'Manage Reviews',
           onTap: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const SpinPage()), // TODO: Replace with AdminReviewPage
+              MaterialPageRoute(builder: (context) => const SpinPage()),
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.admin_panel_settings),
-          title: const Text('Manage Ownership'),
+        createStyledListTile(
+          icon: Icons.admin_panel_settings,
+          title: 'Manage Ownership',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -74,11 +102,11 @@ class LeftDrawer extends StatelessWidget {
         ),
       ]);
     } else if (role == "steakhouse owner") {
-      if (claim == 0){
-        tiles.addAll([
-          ListTile(
-            leading: const Icon(Icons.store),
-            title: const Text('Claim a Steakhouse'),
+      if (claim == 0) {
+        tiles.add(
+          createStyledListTile(
+            icon: Icons.store,
+            title: 'Claim a Steakhouse',
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -86,12 +114,12 @@ class LeftDrawer extends StatelessWidget {
               );
             },
           ),
-        ]);
+        );
       } else {
-        tiles.addAll([
-          ListTile(
-            leading: const Icon(Icons.restaurant),
-            title: const Text('My Restaurant'),
+        tiles.add(
+          createStyledListTile(
+            icon: Icons.restaurant,
+            title: 'My Restaurant',
             onTap: () {
               Navigator.pushReplacement(
                 context,
@@ -99,12 +127,12 @@ class LeftDrawer extends StatelessWidget {
               );
             },
           ),
-        ]);
+        );
       }
       tiles.addAll([
-        ListTile(
-          leading: const Icon(Icons.rate_review),
-          title: const Text('Pantau Review'),
+        createStyledListTile(
+          icon: Icons.rate_review,
+          title: 'Pantau Review',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -112,9 +140,9 @@ class LeftDrawer extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.book_online),
-          title: const Text('Pantau Booking'),
+        createStyledListTile(
+          icon: Icons.book_online,
+          title: 'Pantau Booking',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -124,11 +152,11 @@ class LeftDrawer extends StatelessWidget {
         ),
       ]);
     } else {
-      // Regular user
+      // Steak Lover
       tiles.addAll([
-        ListTile(
-          leading: const Icon(Icons.find_in_page),
-          title: const Text('Explore'),
+        createStyledListTile(
+          icon: Icons.find_in_page,
+          title: 'Explore',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -136,9 +164,9 @@ class LeftDrawer extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.casino),
-          title: const Text('Spin'),
+        createStyledListTile(
+          icon: Icons.casino,
+          title: 'Spin',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -146,9 +174,9 @@ class LeftDrawer extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.chat),
-          title: const Text('Review'),
+        createStyledListTile(
+          icon: Icons.chat,
+          title: 'Review',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -156,9 +184,9 @@ class LeftDrawer extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.call),
-          title: const Text('Meat Up'),
+        createStyledListTile(
+          icon: Icons.call,
+          title: 'Meat Up',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -166,9 +194,9 @@ class LeftDrawer extends StatelessWidget {
             );
           },
         ),
-        ListTile(
-          leading: const Icon(Icons.restaurant),
-          title: const Text('Booking'),
+        createStyledListTile(
+          icon: Icons.restaurant,
+          title: 'Booking',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -185,37 +213,50 @@ class LeftDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
+      backgroundColor: Color(0xFFF5F5DC),
+      child: Column(
         children: [
           DrawerHeader(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            child: const Column(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'SetakSetik',
-                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 24,
+                    fontFamily: 'Playfair Display',
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    fontStyle: FontStyle.italic,
+                    color: const Color(0xFF3E2723),
+                    letterSpacing: 1.2,
                   ),
                 ),
-                Padding(padding: EdgeInsets.all(8)),
-                Text(
+                const SizedBox(height: 12),
+                const Text(
                   "Specially Curated™",
-                  textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 15.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
+                    fontSize: 16,
+                    color: Color(0xFF3E2723),
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.5,
                   ),
                 ),
               ],
             ),
+            decoration: const BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Color(0xFF6D4C41),
+                ),
+              ),
+            ),
           ),
-          ..._buildRoleSpecificListTiles(context),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: _buildRoleSpecificListTiles(context),
+            ),
+          ),
         ],
       ),
     );

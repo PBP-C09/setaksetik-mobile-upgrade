@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
+import 'package:setaksetikmobile/review/screens/user_review.dart';
 
 class ReviewEntryFormPage extends StatefulWidget {
   final MenuList menu;
@@ -39,12 +39,8 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text('Form Tambah Review',
-              style: TextStyle(color: Color(0xFFF5F5DC))),
-        ),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
+        title: const Text('Form Tambah Review'),
+        centerTitle: true,
       ),
       body: Container(
         color: const Color(0xFF6D4C41), // Brown background color
@@ -250,7 +246,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => ReviewPage()),
+                                        builder: (context) => ReviewMainPage()),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(

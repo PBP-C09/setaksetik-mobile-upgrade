@@ -44,14 +44,9 @@ class _ReviewPageState extends State<ReviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Add Review',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        title: const Text('Review'),
+        centerTitle: true,
       ),
-      drawer: LeftDrawer(),
       body: menus.isEmpty
           ? const Center(child: CircularProgressIndicator()) // Loading state
           : Padding(

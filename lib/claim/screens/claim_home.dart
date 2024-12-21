@@ -104,16 +104,16 @@ class _ClaimPageState extends State<ClaimPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: Color(0xFF3E2723),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search restaurant',
-                    prefixIcon: const Icon(Icons.search),
+                    prefixIcon: const Icon(Icons.search, color: Color(0xFFF5F5DC),),
                     border: InputBorder.none,
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    hintStyle: TextStyle(color: Colors.grey[400]),
+                    hintStyle: TextStyle(color: Colors.grey[100]),
                   ),
                   onChanged: (value) {
                     setState(() {
@@ -233,7 +233,6 @@ class RestaurantCard extends StatelessWidget {
                 menu.fields.image,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  // Create a list of placeholder images
                   List<String> placeholderImages = [
                     "assets/images/placeholder-image-1.png",
                     "assets/images/placeholder-image-2.png",

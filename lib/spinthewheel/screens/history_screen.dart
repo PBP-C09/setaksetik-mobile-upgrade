@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
-import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 import 'package:setaksetikmobile/spinthewheel/models/spin_history.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';

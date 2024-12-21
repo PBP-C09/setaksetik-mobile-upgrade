@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:setaksetikmobile/review/models/review.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class ReviewOwner extends StatefulWidget {
   const ReviewOwner({super.key});
@@ -79,13 +80,10 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Owner Reviews',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        title: const Text('Owner Reviews'),
+        centerTitle: true,
       ),
+      drawer: const LeftDrawer(),
       body: reviews.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(
@@ -175,7 +173,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                       const Text(
                                         'Balasan Anda:',
                                         style: TextStyle(
-                                          color: Colors.brown,
+                                          color: Color(0xFFF5F5DC),
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -235,7 +233,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                         await submitReply(request, review.pk.toString(), reply);
                                       }
                                     },
-                                    child: const Text('Reply'),
+                                    child: const Text('Reply', style: TextStyle(color: Color(0xFFF5F5DC)),),
                                   ),
                               ],
                             ),
