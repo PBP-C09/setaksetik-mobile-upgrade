@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
+// Class untuk filter
 class Filter extends StatefulWidget {
   final Function(String?, City?, String?, int?) onFilter;
 
@@ -10,13 +11,14 @@ class Filter extends StatefulWidget {
   State<Filter> createState() => _FilterState();
 }
 
-// Ubah bagian build filter menjadi
+// State untuk filter
 class _FilterState extends State<Filter> {
   final _formKey = GlobalKey<FormState>();
   City? selectedCity;
   String? selectedCategory;
   String? maxPrice;
 
+  // List kategori
   final List<String> categories = [
     'Beef', 'Chicken', 'Fish', 'Lamb', 'Pork',
     'Rib Eye', 'Sirloin', 'T-Bone', 'Tenderloin',
@@ -38,6 +40,7 @@ class _FilterState extends State<Filter> {
           top: Radius.circular(32),
         ),
       ),
+      // Form untuk filter
       child: Form(
         key: _formKey,
         child: Column(
@@ -56,6 +59,7 @@ class _FilterState extends State<Filter> {
           ),
           const SizedBox(height: 24),
           
+          // City Dropdown
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
