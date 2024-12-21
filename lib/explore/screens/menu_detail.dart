@@ -45,10 +45,18 @@ class MenuDetailPage extends StatelessWidget {
                     height: 250,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return Image.network(
-                        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                        width: double.infinity,
-                        height: 250,
+                      List<String> placeholderImages = [
+                        "assets/images/placeholder-image-1.png",
+                        "assets/images/placeholder-image-2.png",
+                        "assets/images/placeholder-image-3.png",
+                        "assets/images/placeholder-image-4.png",
+                        "assets/images/placeholder-image-5.png",
+                      ];
+
+                      int index = menuList.pk % placeholderImages.length;
+
+                      return Image.asset(
+                        placeholderImages[index],
                         fit: BoxFit.cover,
                       );
                     },

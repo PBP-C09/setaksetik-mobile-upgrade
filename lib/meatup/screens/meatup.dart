@@ -69,16 +69,8 @@ class MeatUpPageState extends State<MeatUpPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3E2723),
-        title: const Text(
-          'Meat Up',
-          style: TextStyle(
-            color: Color(0xFFF5F5DC),
-            fontFamily: 'Playfair Display',
-            fontSize: 24,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Color(0xFFF5F5DC)),
+      title: const Text('Meat Up'),
+      centerTitle: true,
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
@@ -135,7 +127,7 @@ class MeatUpPageState extends State<MeatUpPage> {
 
   Widget _buildSection(String title, List<Map<String, dynamic>> messages, bool isReceived, CookieRequest request) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           title,
@@ -160,7 +152,7 @@ class MeatUpPageState extends State<MeatUpPage> {
               )
             : LayoutBuilder(
                 builder: (context, constraints) {
-                  final cardWidth = (constraints.maxWidth - 40) / 3;
+                  final cardWidth = (constraints.maxWidth - 40) / 2;
                   return Wrap(
                     spacing: 20,
                     runSpacing: 20,
@@ -243,38 +235,67 @@ class MeatUpPageState extends State<MeatUpPage> {
               ),
             ),
             const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (!isReceived)
-                  ElevatedButton(
-                    onPressed: () async {
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MessageFormPage(messageToEdit: message),
-                        ),
-                      );
-                      if (result == true) fetchMessages();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFFFD700),
-                      foregroundColor: const Color(0xFF3E2723),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            if (!isReceived) 
+              ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MessageFormPage(messageToEdit: message),
                     ),
-                    child: const Text('Edit'),
-                  ),
-                ElevatedButton(
-                  onPressed: () => _deleteMessage(request, message['id']),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF842323),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  ),
-                  child: Text(isReceived ? 'Reject Meat Up' : 'Cancel Meat Up'),
+                  );
+                  if (result == true) fetchMessages();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFD700),
+                  foregroundColor: const Color(0xFF3E2723),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
-              ],
+                child: const Text('Edit'),
+              ),
+            if (!isReceived) 
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => _deleteMessage(request, message['id']),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF842323),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+              child: Text(isReceived ? 'Reject Meat Up' : 'Cancel Meat Up'),
             ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     if (!isReceived)
+            //       ElevatedButton(
+            //         onPressed: () async {
+            //           final result = await Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (context) => MessageFormPage(messageToEdit: message),
+            //             ),
+            //           );
+            //           if (result == true) fetchMessages();
+            //         },
+            //         style: ElevatedButton.styleFrom(
+            //           backgroundColor: const Color(0xFFFFD700),
+            //           foregroundColor: const Color(0xFF3E2723),
+            //           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            //         ),
+            //         child: const Text('Edit'),
+            //       ),
+            //     ElevatedButton(
+            //       onPressed: () => _deleteMessage(request, message['id']),
+            //       style: ElevatedButton.styleFrom(
+            //         backgroundColor: const Color(0xFF842323),
+            //         foregroundColor: Colors.white,
+            //         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            //       ),
+            //       child: Text(isReceived ? 'Reject Meat Up' : 'Cancel Meat Up'),
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),
