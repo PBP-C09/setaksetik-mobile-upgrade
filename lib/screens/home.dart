@@ -9,8 +9,6 @@ import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
 import 'package:setaksetikmobile/review/screens/review_admin.dart';
-import 'package:setaksetikmobile/review/screens/review_entry.dart';
-import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/review/screens/user_review.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';

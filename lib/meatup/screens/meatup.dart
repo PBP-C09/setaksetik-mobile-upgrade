@@ -68,8 +68,8 @@ class MeatUpPageState extends State<MeatUpPage> {
     final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
-      title: const Text('Meat Up'),
-      centerTitle: true,
+        title: const Text('Meat Up'),
+        centerTitle: true,
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
