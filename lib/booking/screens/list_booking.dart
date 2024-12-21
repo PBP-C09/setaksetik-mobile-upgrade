@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:provider/provider.dart';
-import 'edit_booking.dart'; // Import halaman edit_booking
+import 'edit_booking.dart';
+
+/// Fungsi untuk memformat tanggal
+String formatBookingDate(String dateString) {
+  try {
+    final dateTime = DateTime.parse(dateString);
+    return DateFormat('dd MMM yyyy').format(dateTime);
+  } catch (e) {
+    print('Error formatting date: $e');
+    return 'Invalid date';
+  }
+}
 
 class BookingListPage extends StatefulWidget {
   const BookingListPage({super.key});
@@ -30,25 +43,37 @@ class _BookingListPageState extends State<BookingListPage> {
   /// Fetch the list of bookings from the server
   Future<List<dynamic>> fetchBookings(CookieRequest request) async {
     try {
+      // First fetch the bookings
       final response = await request.get('http://127.0.0.1:8000/booking/json/all/');
-
+      
       if (response == null || response.isEmpty) {
         return [];
       }
 
-      // Ensure we're getting JSON data
-      if (response is! List && response is! Map) {
-        throw FormatException('Invalid response format: Expected JSON but got ${response.runtimeType}');
-      }
+      // Then fetch all menus
+      final menuResponse = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      final menus = menuResponse != null ? 
+        menuResponse.map((item) => MenuList.fromJson(item)).toList() : 
+        <MenuList>[];
+
+      // Create a map of menu ID to menu details for faster lookup
+      final menuMap = {
+        for (var menu in menus) 
+        menu.pk: menu
+      };
 
       return response.map((item) {
         final fields = item['fields'];
+        final menuId = fields['menu_items'];
+        final menu = menuMap[menuId];
+        
         return {
           'id': item['pk'],
           'booking_date': fields['booking_date'],
           'number_of_people': fields['number_of_people'],
           'menu_items': fields['menu_items'],
-          'menu_image': fields['menu_image'], // Menu image URL
+          'menu_image': menu?.fields.image ?? '', // Get image from menu
+          'restaurant_name': menu?.fields.restaurantName ?? 'Unknown Restaurant',
           'status': fields['status'],
         };
       }).toList();
@@ -87,10 +112,19 @@ class _BookingListPageState extends State<BookingListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text('Your Bookings'),
+        title: const Text(
+          'Your Bookings',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF3E2723),
+          ),
+        ),
         centerTitle: true,
-        backgroundColor: const Color(0xFF6F4E37),
+        backgroundColor: const Color(0xFFF5F5DC), 
+        iconTheme: const IconThemeData(color: Color(0xFF3E2723)), 
       ),
       body: FutureBuilder<List<dynamic>>(
         future: _bookingsFuture,
@@ -106,70 +140,96 @@ class _BookingListPageState extends State<BookingListPage> {
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(
-              child: Text('No bookings found. Please log in or add a booking.'),
+              child: Text(
+                'No bookings found. Please log in or add a booking.',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
             );
           }
 
           final bookings = snapshot.data!;
           return ListView.builder(
+            padding: const EdgeInsets.all(16),
             itemCount: bookings.length,
             itemBuilder: (context, index) {
               final booking = bookings[index];
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Card(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Display menu image
-                      ClipRRect(
+              final formattedDate = formatBookingDate(booking['booking_date']);
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF5F5DC),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: ClipRRect(
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                         child: Image.network(
-                          booking['menu_image'] ?? '',
-                          height: 180,
+                          booking['menu_image'],
                           width: double.infinity,
+                          height: 200,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return Image.network(
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                              height: 180,
+                            return Container(
                               width: double.infinity,
-                              fit: BoxFit.cover,
+                              height: 200,
+                              color: Colors.grey,
+                              child: const Icon(Icons.error),
                             );
                           },
-                        ),
+                        )
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Date: ${booking['booking_date']}',
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            booking['restaurant_name'], // Add this line
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'People: ${booking['number_of_people']}',
-                              style: const TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Date: $formattedDate',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF3E2723),
                             ),
-                            const SizedBox(height: 8),
-                            Text(
-                              'Status: ${booking['status']}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: booking['status'] == 'approved' ? Colors.green : Colors.red,
-                              ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'People: ${booking['number_of_people']}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF3E2723),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Status: ${booking['status']}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: booking['status'] == 'approved'
+                                  ? Colors.green
+                                  : Colors.red,
+                            ),
+                          ),
+                        ],
                       ),
-                      Row(
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
@@ -189,8 +249,8 @@ class _BookingListPageState extends State<BookingListPage> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             },

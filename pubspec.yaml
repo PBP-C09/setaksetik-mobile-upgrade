@@ -41,6 +41,7 @@ dependencies:
   provider: ^6.1.2
   pbp_django_auth: ^0.4.0
   curved_navigation_bar: ^1.0.6
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:
