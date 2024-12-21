@@ -3,6 +3,7 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
 import 'package:setaksetikmobile/review/screens/review_entry.dart';
 
+//Class untuk detail menu (bisa review dan booking dari sini)
 class MenuDetailPage extends StatelessWidget {
   final MenuList menuList;
 
@@ -45,10 +46,19 @@ class MenuDetailPage extends StatelessWidget {
                     height: 250,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return Image.network(
-                        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                        width: double.infinity,
-                        height: 250,
+                      // Tampilkan placeholder image jika gagal memuat gambar
+                      List<String> placeholderImages = [
+                        "assets/images/placeholder-image-1.png",
+                        "assets/images/placeholder-image-2.png",
+                        "assets/images/placeholder-image-3.png",
+                        "assets/images/placeholder-image-4.png",
+                        "assets/images/placeholder-image-5.png",
+                      ];
+
+                      int index = menuList.pk % placeholderImages.length;
+
+                      return Image.asset(
+                        placeholderImages[index],
                         fit: BoxFit.cover,
                       );
                     },
@@ -56,7 +66,6 @@ class MenuDetailPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                // Menu Title
                 Text(
                   menuList.fields.menu,
                   style: const TextStyle(
@@ -222,6 +231,7 @@ class MenuDetailPage extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    // Button kembali ke halaman menu list
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF3E2723),
@@ -244,6 +254,7 @@ class MenuDetailPage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    // Button untuk review
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFF7B32B), // Warna oranye untuk Review
@@ -273,6 +284,7 @@ class MenuDetailPage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    // Button untuk booking
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFC62828), // Warna merah untuk Booking
@@ -312,6 +324,7 @@ class MenuDetailPage extends StatelessWidget {
     );
   }
 
+  // Widget untuk menampilkan bullet info
   Widget _buildBulletInfo(String label, bool value) {
     return Row(
       children: [

@@ -8,6 +8,7 @@ import 'package:setaksetikmobile/explore/screens/admin_detail.dart';
 import 'package:setaksetikmobile/explore/screens/menu_form.dart';
 import 'package:setaksetikmobile/explore/screens/edit_menu_form.dart';
 
+// Class menu untuk admin
 class ExploreAdmin extends StatefulWidget {
   const ExploreAdmin({Key? key}) : super(key: key);
 
@@ -29,6 +30,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
     _searchController.dispose();
     super.dispose();
   }
+  // Fungsi untuk mengambil data menu
   Future<List<MenuList>> fetchMenu(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
@@ -92,6 +94,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                // Search Bar
                 Row(
                   children: [
                     Expanded(
@@ -125,6 +128,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                       ),
                     ),
                     const SizedBox(width: 12),
+                    // Filter Button
                     Expanded(
                       flex: 2,
                       child: ElevatedButton.icon(
@@ -171,6 +175,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error fetching menu data.'));
+            // Untuk menu yang tidak ada saat pencarian
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return SingleChildScrollView(
               child: Column(
@@ -300,7 +305,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20), // Spasi antara Filter/Search dan tombol Add Menu
+                        const SizedBox(height: 20), 
 
                         // Tombol Add Menu
                         SizedBox(
@@ -314,10 +319,10 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFC62828), // Warna merah
-                              foregroundColor: Colors.white, // Warna teks putih
+                              backgroundColor: Color(0xFFC62828), 
+                              foregroundColor: Colors.white, 
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8), // Radius sudut
+                                borderRadius: BorderRadius.circular(8), 
                               ),
                             ),
                             icon: const Icon(Icons.add),
@@ -330,6 +335,8 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                       ],
                     ),
                   );
+
+                  // Tampilan menu
                 } else {
                   final menuList = menus[index - 1];
                   return GestureDetector(
@@ -350,6 +357,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Image
                           AspectRatio(
                             aspectRatio: 2.0,
                             child: SizedBox(
@@ -358,7 +366,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                 menuList.fields.image,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  // Create a list of placeholder images
+                                  // Jika gagal load image, tampilkan placeholder
                                   List<String> placeholderImages = [
                                     "assets/images/placeholder-image-1.png",
                                     "assets/images/placeholder-image-2.png",
@@ -492,6 +500,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
+                                // Button See Details
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -522,11 +531,13 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                           ),
                         ],
                       ),
+                      // Edit dan Delete Button
                        Positioned(
                             top: 8,
                             left: 8,
                             child: Row(
                               children: [
+                                // Edit Button
                                 Container(
                                   decoration: BoxDecoration(
                                     color: Colors.yellow[300],
@@ -562,6 +573,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                   ),
                                 ),
                                 const SizedBox(width:8),
+                                // Delete Button
                                 Container(
                                   decoration: BoxDecoration(
                                     color: Colors.red[400],
@@ -581,6 +593,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
+                                      // Tampilkan dialog konfirmasi
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -588,11 +601,13 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                             title: const Text('Delete Menu'),
                                             content: const Text('Are you sure you want to delete this menu?'),
                                             actions: [
+                                              // bali ke halaman sebelumnya kalau cancel
                                               TextButton(
                                                 child: const Text('Cancel'),
                                                 onPressed: () => Navigator.of(context).pop(),
                                               ),
                                               TextButton(
+                                                // Panggil fungsi delete
                                                 child: const Text(
                                                   'Delete',
                                                   style: TextStyle(color: Colors.red),
@@ -628,6 +643,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
     );
   }
 
+  // Fungsi untuk menghapus menu
   _deleteMenu(CookieRequest request, int pk) {
     request.get('http://127.0.0.1:8000/explore/delete/$pk');
     setState(() {
@@ -635,6 +651,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
     });
   }
 
+  // Fungsi untuk menerapkan filter
   void _applyFilters(String? namaMenu, City? kota, String? jenisBeef, int? hargaMax) {
     setState(() {
       _menuFuture = Future.value(_originalMenus.where((menuList) {
@@ -647,6 +664,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
     });
   }
 
+  // Fungsi untuk handle search
   void _handleSearch(String value) {
     if (value.isEmpty) {
       setState(() {
