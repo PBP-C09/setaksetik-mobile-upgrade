@@ -8,6 +8,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+// Class untuk menu form
 class MenuFormPage extends StatefulWidget {
   const MenuFormPage({super.key});
 
@@ -78,6 +79,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
 
+    // Scaffold untuk menampilkan form
     return Scaffold(
       backgroundColor: const Color(0xFFFEFBEA),
       appBar: AppBar(
@@ -103,6 +105,8 @@ class _MenuFormPageState extends State<MenuFormPage> {
             ),
           ],
         ),
+
+      // Form untuk menambahkan menu
       child: Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -222,7 +226,6 @@ class _MenuFormPageState extends State<MenuFormPage> {
                   color: const Color(0xFF4E342E),
                 ),
               ),
-              // Checkboxes for Additional Features
               _buildCheckbox(
                 label: "Takeaway",
                 value: _takeaway,
@@ -280,14 +283,16 @@ class _MenuFormPageState extends State<MenuFormPage> {
                         // Add Menu Button
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFFD54F), // Warna kuning
+                            backgroundColor: const Color(0xFFFFD54F), 
                             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                        
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
+                              // Kirim data menu ke django
                               final response = await request.postJson(
                                 "http://127.0.0.1:8000/explore/create-flutter/",
                                 jsonEncode(<String, String>{
@@ -306,6 +311,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
                                   "wifi": _wifi.toString(),
                                 }),
                               );
+                              // Tampilkan pesan sukses atau gagal
                               if (context.mounted) {
                                 if (response['status'] == 'success') {
                                   ScaffoldMessenger.of(context).showSnackBar(
@@ -346,7 +352,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
   }
 }
 
-// Helper Widget: TextField
+// Helper Widget: Text Field
 Widget _buildTextField({
   required String label,
   required String hint,
@@ -401,6 +407,7 @@ Widget _buildDropdown({
   );
 }
 
+// Helper Widget: Checkbox
 Widget _buildCheckbox({
   required String label,
   required bool value,
