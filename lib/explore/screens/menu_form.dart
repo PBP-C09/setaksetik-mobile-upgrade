@@ -117,7 +117,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: const Color(0xFF4E342E),
-                    fontFamily: 'PlayfairDisplay', 
+                    fontFamily: 'Playfair Display', 
                   ),
                 ),
               ),

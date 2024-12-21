@@ -358,10 +358,20 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                 menuList.fields.image,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return Image.network(
-                                    "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                                    width: 200,
-                                    height: 100,
+                                  // Create a list of placeholder images
+                                  List<String> placeholderImages = [
+                                    "assets/images/placeholder-image-1.png",
+                                    "assets/images/placeholder-image-2.png",
+                                    "assets/images/placeholder-image-3.png",
+                                    "assets/images/placeholder-image-4.png",
+                                    "assets/images/placeholder-image-5.png",
+                                  ];
+
+                                  int index = menuList.pk % placeholderImages.length;
+
+                                  return Image.asset(
+                                    placeholderImages[index],
+                                    fit: BoxFit.cover,
                                   );
                                 },
                               ),
@@ -387,7 +397,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                 Row(
                                   children: [
                                     const Icon(
-                                      Icons.location_on_outlined,
+                                      Icons.location_on,
                                       size: 16,
                                       color: Color(0xFF3E2723),
                                     ),
@@ -409,9 +419,9 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                 Row(
                                   children: [
                                     const Icon(
-                                      Icons.star,
-                                      size: 16,
-                                      color: Color(0xFF3E2723),
+                                      Icons.star, 
+                                      size: 16, 
+                                      color: Colors.amber
                                     ),
                                     const SizedBox(width: 8),
                                     Text(
