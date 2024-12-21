@@ -23,8 +23,8 @@ class _BookingFormPageState extends State<BookingFormPage> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime.now(), 
-      lastDate: DateTime(2100), 
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
     );
 
     if (picked != null) {
@@ -39,9 +39,9 @@ class _BookingFormPageState extends State<BookingFormPage> {
     final userId = request.jsonData['user_id'];
 
     final data = {
-      'user_id': userId.toString(), 
-      'booking_date': "${_dateController.text}T00:00:00", 
-      'number_of_people': _peopleController.text, 
+      'user_id': userId.toString(),
+      'booking_date': "${_dateController.text}T00:00:00",
+      'number_of_people': _peopleController.text,
     };
 
     try {
@@ -54,7 +54,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['message'])),
         );
-        Navigator.pop(context); 
+        Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to submit booking. Please try again.')),
@@ -70,43 +70,85 @@ class _BookingFormPageState extends State<BookingFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Booking Form'),
         centerTitle: true,
       ),
-      body: Form(
-        key: _formKey,
-        child: Padding(
+      body: Center(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              TextFormField(
-                controller: _dateController,
-                readOnly: true, 
-                onTap: () => _selectDate(context),
-                decoration: const InputDecoration(
-                  labelText: 'Booking Date',
-                  suffixIcon: Icon(Icons.calendar_today), 
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 500),
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Make a Reservation',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF6F4E37),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _dateController,
+                        readOnly: true,
+                        onTap: () => _selectDate(context),
+                        decoration: InputDecoration(
+                          labelText: 'Booking Date',
+                          suffixIcon: const Icon(Icons.calendar_today),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        validator: (value) => value!.isEmpty ? 'Please select a booking date' : null,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _peopleController,
+                        decoration: InputDecoration(
+                          labelText: 'Number of People',
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) => value!.isEmpty ? 'Please enter number of people' : null,
+                      ),
+                      const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _submitBooking();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFC107),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          ),
+                          child: const Text(
+                            'Submit Booking',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                validator: (value) => value!.isEmpty ? 'Please select a booking date' : null,
               ),
-              TextFormField(
-                controller: _peopleController,
-                decoration: const InputDecoration(labelText: 'Number of People'),
-                keyboardType: TextInputType.number,
-                validator: (value) => value!.isEmpty ? 'Please enter number of people' : null,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _submitBooking();
-                  }
-                },
-                child: const Text('Submit Booking'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
