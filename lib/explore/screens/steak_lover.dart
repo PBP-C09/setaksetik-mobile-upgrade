@@ -76,20 +76,25 @@ class _MenuPageState extends State<MenuPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Center(
-                  child: RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontSize: 42,
-                        fontFamily: 'Playfair Display',
-                        color: Color(0xFFF5F5DC),
-                      ),
-                      children: const [
-                        TextSpan(text: 'Makan apa '),
-                        TextSpan(
-                          text: 'Hari ini?',
-                          style: TextStyle(fontStyle: FontStyle.italic),
+                  child: Container(
+                    width: double.infinity,  // Menggunakan lebar penuh
+                    alignment: Alignment.center,  // Memastikan konten berada di tengah
+                    child: RichText(
+                      textAlign: TextAlign.center,  // Menambahkan textAlign
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 42,
+                          fontFamily: 'Playfair Display',
+                          color: Color(0xFFF5F5DC),
                         ),
-                      ],
+                        children: const [
+                          TextSpan(text: 'Makan apa '),
+                          TextSpan(
+                            text: 'Hari ini?',
+                            style: TextStyle(fontStyle: FontStyle.italic),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
