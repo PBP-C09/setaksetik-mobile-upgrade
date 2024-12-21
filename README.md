@@ -118,9 +118,9 @@ Berikut langkah-langkah implementasinya:
 https://drive.google.com/drive/folders/1O0XBPTdz9gD1TJ1LrmA1kOUIPMY3dUva?usp=drive_link
 
 
-
-
 # Tautan Deployment
 Tautan deployment aplikasi **Setaksetik**. (TBA)
 
 
+# Build Status
+[![First Build Status](https://build.appcenter.ms/v0.1/apps/d0521cd5-2741-484b-a967-362ec5301bba/branches/main/badge)](https://appcenter.ms)
