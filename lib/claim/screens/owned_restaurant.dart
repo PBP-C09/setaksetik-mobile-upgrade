@@ -16,7 +16,7 @@ class OwnedRestaurantPage extends StatefulWidget {
 Future<bool> deleteOwnership(CookieRequest request, int restaurantId) async {
   try {
     final response = await request.post(
-      'http://127.0.0.1:8000/claim/delete_flutter/$restaurantId/',
+      'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/claim/delete_flutter/$restaurantId/',
       {}, // Tambahkan parameter data kosong
     );
 
@@ -35,7 +35,7 @@ Future<bool> deleteOwnership(CookieRequest request, int restaurantId) async {
 class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
   Future<MenuList?> fetchOwnedRestaurant(CookieRequest request) async {
     try {
-      final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
+      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/claim/owned_flutter/');
 
       if (response == null || response['status'] == 'failed') {
         return null;

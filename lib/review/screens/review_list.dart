@@ -26,7 +26,7 @@ class _ReviewPageState extends State<ReviewPage> {
   // Fetch menus dari API Django
   Future<void> fetchMenus(CookieRequest request) async {
     try {
-      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
       if (response != null) { // Pastikan response tidak null
         setState(() {
           menus = menuListFromJson(jsonEncode(response)); // Konversi JSON sesuai format

@@ -44,14 +44,14 @@ class _BookingListPageState extends State<BookingListPage> {
   Future<List<dynamic>> fetchBookings(CookieRequest request) async {
     try {
       // First fetch the bookings
-      final response = await request.get('http://127.0.0.1:8000/booking/json/all/');
+      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/json/all/');
       
       if (response == null || response.isEmpty) {
         return [];
       }
 
       // Then fetch all menus
-      final menuResponse = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      final menuResponse = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
       final menus = menuResponse != null ? 
         menuResponse.map((item) => MenuList.fromJson(item)).toList() : 
         <MenuList>[];
@@ -87,7 +87,7 @@ class _BookingListPageState extends State<BookingListPage> {
   Future<void> deleteBooking(int bookingId) async {
     final request = Provider.of<CookieRequest>(context, listen: false);
     try {
-      final url = 'http://127.0.0.1:8000/booking/delete_flutter/$bookingId/';
+      final url = 'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/delete_flutter/$bookingId/';
       await request.post(
         url,
         {}, // Empty body
