@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:setaksetikmobile/booking/screens/list_booking.dart';
 
 class EditBookingPage extends StatefulWidget {
   final int bookingId;
@@ -35,7 +36,11 @@ class _EditBookingPageState extends State<EditBookingPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(response['message'])),
         );
-        Navigator.pop(context);
+        // Replace the current screen with BookingListPage
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BookingListPage()),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to edit booking. Please try again.')),
@@ -48,6 +53,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +88,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
                       controller: _dateController,
                       readOnly: true,
                       onTap: () => _selectDate(context),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'Booking Date',
                         suffixIcon: const Icon(Icons.calendar_today),
@@ -94,6 +104,10 @@ class _EditBookingPageState extends State<EditBookingPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _peopleController,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'Number of People',
                         border: OutlineInputBorder(

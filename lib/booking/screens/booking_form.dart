@@ -104,6 +104,10 @@ class _BookingFormPageState extends State<BookingFormPage> {
                         controller: _dateController,
                         readOnly: true,
                         onTap: () => _selectDate(context),
+                          style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                         decoration: InputDecoration(
                           labelText: 'Booking Date',
                           suffixIcon: const Icon(Icons.calendar_today),
@@ -114,6 +118,10 @@ class _BookingFormPageState extends State<BookingFormPage> {
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _peopleController,
+                          style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
                         decoration: InputDecoration(
                           labelText: 'Number of People',
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),

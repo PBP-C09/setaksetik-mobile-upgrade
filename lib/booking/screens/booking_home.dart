@@ -44,258 +44,255 @@ class _BookingPageState extends State<BookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
         title: const Text('Book a Restaurant'),
         centerTitle: true,
       ),
       drawer: const LeftDrawer(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Center(
+      body: FutureBuilder<List<MenuList>>(
+        future: _menuFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return const Center(child: Text('Error loading menus.'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return SingleChildScrollView(
               child: Column(
                 children: [
-                  Text(
-                    'Book a Restaurant',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF6F4E37),
-                    ),
+                  _buildSearchAndFilterSection(),
+                  const SizedBox(height: 40),
+                  const Icon(
+                    Icons.sentiment_dissatisfied,
+                    size: 80,
+                    color: Color(0xFFF5F5DC),
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Choose your favorite restaurant and make your reservation now!',
+                  const SizedBox(height: 16),
+                  const Text(
+                    'No menus available.',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Color(0xFF6F4E37),
+                      color: Color(0xFFF5F5DC),
+                      fontFamily: 'Playfair Display',
                     ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 24),
-
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BookingListPage(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFC107),
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  'Atur Booking',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            const Text(
-              'Restaurant Menus',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  flex: 4,
-                  child: Container(
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        hintText: 'Cari nama menu atau nama restoran',
-                        hintStyle: TextStyle(fontSize: 14),
-                        prefixIcon: Icon(Icons.search, size: 20),
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(vertical: 12),
-                        border: InputBorder.none,
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          _menuFuture = Future.value(_originalMenus.where((menu) {
-                            return (menu.fields.menu.toLowerCase().contains(value.toLowerCase()) || menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase()));
-                          }).toList());
-                        });
-                      },
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(32),
-                          ),
-                        ),
-                        showDragHandle: true,
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                          return FilterWidget(
-                            onFilter: (filterOptions) {
-                              setState(() {
-                                _menuFuture = Future.value(_originalMenus.where((menu) {
-                                  final hasActiveFilter = filterOptions['city'] != null ||
-                                      filterOptions['takeaway'] == true ||
-                                      filterOptions['delivery'] == true ||
-                                      filterOptions['outdoor'] == true ||
-                                      filterOptions['wifi'] == true;
-
-                                  if (!hasActiveFilter) {
-                                    return true;
-                                  }
-
-                                  final isCityMatch = filterOptions['city'] == null || 
-                                      menu.fields.city.name == filterOptions['city'];
-                                  final isTakeaway = filterOptions['takeaway'] == null || 
-                                      filterOptions['takeaway'] == false || 
-                                      menu.fields.takeaway;
-                                  final isDelivery = filterOptions['delivery'] == null || 
-                                      filterOptions['delivery'] == false || 
-                                      menu.fields.delivery;
-                                  final isOutdoor = filterOptions['outdoor'] == null || 
-                                      filterOptions['outdoor'] == false || 
-                                      menu.fields.outdoor;
-                                  final isWifi = filterOptions['wifi'] == null || 
-                                      filterOptions['wifi'] == false || 
-                                      menu.fields.wifi;
-
-                                  return isCityMatch && isTakeaway && isDelivery && 
-                                      isOutdoor && isWifi;
-                                }).toList());
-                              });
-                            },
-                          );
-                        },
-                      );
-                    },
-                    icon: const Icon(Icons.filter_alt_outlined),
-                    label: const Text('Filter'),
-                  ),
-                ),
-              ],
-            ),
-
-            FutureBuilder<List<MenuList>>(
-              future: _menuFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return const Center(child: Text('Error loading menus.'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No menus available.'));
+            );
+          } else {
+            final menus = snapshot.data!;
+            return ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: menus.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return _buildSearchAndFilterSection();
                 } else {
-                  final menus = snapshot.data!;
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                      childAspectRatio: 0.75,
-                    ),
-                    itemCount: menus.length,
-                    itemBuilder: (context, index) {
-                      final menu = menus[index];
-                      return RestaurantCard(
-                        menu: menu,
-                        onSelect: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookingFormPage(menuId: menu.pk),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
+                  final menu = menus[index - 1];
+                  return _buildMenuCard(menu);
                 }
               },
-            ),
-          ],
-        ),
+            );
+          }
+        },
       ),
     );
   }
-}
 
-class RestaurantCard extends StatelessWidget {
-  final MenuList menu;
-  final VoidCallback onSelect;
+  Widget _buildSearchAndFilterSection() {
+    return Container(
+      color: const Color(0xFF3E2723),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Center(
+            child: RichText(
+              text: TextSpan(
+                style: const TextStyle(
+                  fontSize: 42,
+                  fontFamily: 'Playfair Display',
+                  color: Color(0xFFF5F5DC),
+                ),
+                children: const [
+                  TextSpan(text: 'Book a '),
+                  TextSpan(
+                    text: 'Restaurant',
+                    style: TextStyle(fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                flex: 4,
+                child: Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Search menu or restaurant',
+                      hintStyle: const TextStyle(fontSize: 14),
+                      prefixIcon: const Icon(Icons.search, size: 20),
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      border: InputBorder.none,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear, size: 20),
+                        onPressed: () {
+                          setState(() {
+                            _menuFuture = Future.value(_originalMenus);
+                          });
+                        },
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _menuFuture = Future.value(_originalMenus.where((menu) {
+                          return (menu.fields.menu.toLowerCase().contains(value.toLowerCase()) ||
+                              menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase()));
+                        }).toList());
+                      });
+                    },
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(32),
+                        ),
+                      ),
+                      showDragHandle: true,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return FilterWidget(
+                          onFilter: (filterOptions) {
+                            setState(() {
+                              _menuFuture = Future.value(_originalMenus.where((menu) {
+                                final hasActiveFilter = filterOptions['city'] != null ||
+                                    filterOptions['takeaway'] == true ||
+                                    filterOptions['delivery'] == true ||
+                                    filterOptions['outdoor'] == true ||
+                                    filterOptions['wifi'] == true;
 
-  const RestaurantCard({required this.menu, required this.onSelect, Key? key}) : super(key: key);
+                                if (!hasActiveFilter) {
+                                  return true;
+                                }
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+                                final isCityMatch = filterOptions['city'] == null ||
+                                    menu.fields.city.name == filterOptions['city'];
+                                final isTakeaway = filterOptions['takeaway'] == null ||
+                                    filterOptions['takeaway'] == false ||
+                                    menu.fields.takeaway;
+                                final isDelivery = filterOptions['delivery'] == null ||
+                                    filterOptions['delivery'] == false ||
+                                    menu.fields.delivery;
+                                final isOutdoor = filterOptions['outdoor'] == null ||
+                                    filterOptions['outdoor'] == false ||
+                                    menu.fields.outdoor;
+                                final isWifi = filterOptions['wifi'] == null ||
+                                    filterOptions['wifi'] == false ||
+                                    menu.fields.wifi;
+
+                                return isCityMatch && isTakeaway && isDelivery && isOutdoor && isWifi;
+                              }).toList());
+                            });
+                          },
+                        );
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  icon: const Icon(Icons.tune, color: Colors.black),
+                  label: const Text(
+                    'Filter',
+                    style: TextStyle(color: Colors.black, fontSize: 14),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16), // Add spacing between filter and button
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const BookingListPage(),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF6D4C41),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Your Bookings',
+              style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMenuCard(MenuList menu) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BookingFormPage(menuId: menu.pk),
+          ),
+        );
+      },
       child: Card(
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        color: const Color(0xFFF5F5DC),
+        clipBehavior: Clip.antiAlias,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
+            AspectRatio(
+              aspectRatio: 2.0,
+              child: SizedBox(
+                width: double.infinity,
                 child: Image.network(
                   menu.fields.image,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                    // Placeholder images
-                    List<String> placeholderImages = [
-                      "assets/images/placeholder-image-1.png",
-                      "assets/images/placeholder-image-2.png",
-                      "assets/images/placeholder-image-3.png",
-                      "assets/images/placeholder-image-4.png",
-                      "assets/images/placeholder-image-5.png",
-                    ];
-
-                    // Select placeholder image based on `menu.pk`
-                    int index = menu.pk % placeholderImages.length;
-
-                    return Image.asset(
-                      placeholderImages[index],
-                      fit: BoxFit.cover,
+                    return Image.network(
+                      "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
+                      width: 200,
+                      height: 100,
                     );
                   },
                 ),
               ),
             ),
-
-            // Restaurant Info
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
@@ -306,7 +303,8 @@ class RestaurantCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF6F4E37),
+                      fontFamily: 'Playfair Display',
+                      color: Color(0xFF3E2723),
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -314,88 +312,128 @@ class RestaurantCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      const Icon(Icons.restaurant, size: 16),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          'Menu: ${menu.fields.menu}',
-                          style: const TextStyle(fontSize: 12),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                      const Icon(
+                        Icons.restaurant,
+                        size: 16,
+                        color: Color(0xFF3E2723),
                       ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const Icon(Icons.food_bank, size: 16),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          'Category: ${menu.fields.category}',
-                          style: const TextStyle(fontSize: 12),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.location_on, size: 16),
-                      const SizedBox(width: 4),
-                      Expanded(
-                        child: Text(
-                          'City: ${menu.fields.city.name}',
-                          style: const TextStyle(fontSize: 12),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      const Icon(Icons.star, size: 16, color: Colors.amber),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: 8),
                       Text(
-                        menu.fields.rating.toString(),
-                        style: const TextStyle(fontSize: 12),
+                        '${menu.fields.menu}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF3E2723),
+                        ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Price: Rp ${menu.fields.price}',
-                    style: const TextStyle(fontSize: 12),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on_outlined,
+                        size: 16,
+                        color: Color(0xFF3E2723),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '${menu.fields.city.name}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF3E2723),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        size: 16,
+                        color: Color(0xFF3E2723),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${menu.fields.rating} / 5',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF3E2723),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.payments_outlined,
+                        size: 16,
+                        color: Color(0xFF3E2723),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Rp ${menu.fields.price}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Color(0xFF3E2723),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF7B32B),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          menu.fields.category,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BookingFormPage(menuId: menu.pk),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF6D4C41),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      'Book Now',
+                      style: TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ],
-              ),
-            ),
-
-            // Select Button
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-              child: ElevatedButton(
-                onPressed: onSelect,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFC107),
-                  foregroundColor: Colors.black87,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  'Select Restaurant',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
               ),
             ),
           ],
