@@ -3,6 +3,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:setaksetikmobile/review/models/review.dart';
+import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class ReviewAdmin extends StatefulWidget {
   const ReviewAdmin({super.key});
@@ -67,13 +68,10 @@ class _ReviewAdminState extends State<ReviewAdmin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Admin Reviews',
-          style: TextStyle(color: Colors.white),
-        ),
-        backgroundColor: Colors.brown,
-        foregroundColor: Colors.white,
+        title: const Text('Admin Reviews'),
+        centerTitle: true,
       ),
+      drawer: const LeftDrawer(),
       body: reviews.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Padding(

@@ -24,19 +24,94 @@ class HomePage extends StatelessWidget {
   void _showFeatureDescription(BuildContext context, String title, String description) {
     showDialog(
       context: context,
+      barrierDismissible: true,
+      barrierColor: const Color(0xFF3E2723).withOpacity(0.8),
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(description),
-          backgroundColor: Color(0xFFF5F5DC),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close', style: TextStyle(color: Color(0xFF842323))),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F5DC),
+              borderRadius: BorderRadius.circular(16.0),
+              border: Border.all(
+                color: const Color(0xFF6D4C41),
+                width: 2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xFF3E2723).withOpacity(0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontFamily: 'Playfair Display',
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF3E2723),
+                    height: 1.2,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Container(
+                  height: 1,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF6D4C41),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: SingleChildScrollView(
+                    child: Text(
+                      description,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF3E2723),
+                        height: 1.5,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                    backgroundColor: const Color(0xFF842323),
+                    foregroundColor: const Color(0xFFF5F5DC),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                  child: const Text(
+                    'Close',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
@@ -255,18 +330,23 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset(
+              'assets/images/setaksetik-bg.png',
+              height: 120,
+              width: 120,
+            ),
             const Text(
-              'Hello,',
+              'SetakSetik Says Hi,',
               style: TextStyle(
                 fontFamily: 'Raleway',
-                fontSize: 36.0,
+                fontSize: 24.0,
               ),
             ),
             Text(
               fullName,
               style: const TextStyle(
                 fontFamily: 'Playfair Display',
-                fontSize: 48.0,
+                fontSize: 24.0,
                 fontStyle: FontStyle.italic,
               ),
             ),
