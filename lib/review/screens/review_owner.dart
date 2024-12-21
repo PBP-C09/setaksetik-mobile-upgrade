@@ -25,6 +25,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
   Future<void> fetchReviews(CookieRequest request) async {
     try {
       final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      // final response = await request.get('http://127.0.0.1:8000/review/get_review/');
       if (response != null) {
         setState(() {
           reviews = reviewListFromJson(response);
