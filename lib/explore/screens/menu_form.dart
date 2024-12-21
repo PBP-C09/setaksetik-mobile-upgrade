@@ -8,7 +8,6 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 class MenuFormPage extends StatefulWidget {
   const MenuFormPage({super.key});
 
