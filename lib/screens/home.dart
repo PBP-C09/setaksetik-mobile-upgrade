@@ -180,7 +180,7 @@ class HomePage extends StatelessWidget {
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
           context,
-          'Mange Reviews - blm diubah',
+          'Manage Reviews',
           // TODO: REVIEW ADMIN
           const ReviewAdmin(),
           const Color(0xFF842323),

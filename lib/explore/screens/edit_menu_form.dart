@@ -8,7 +8,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
+// Class untuk edit menu
 class EditMenuFormPage extends StatefulWidget {
   final MenuList menuToEdit;
   const EditMenuFormPage({super.key, required this.menuToEdit});
@@ -106,7 +106,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
       ),
       body: Center(
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.9, // Lebar 90% layar
+        width: MediaQuery.of(context).size.width * 0.9, 
         margin: const EdgeInsets.symmetric(vertical: 16.0),
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
@@ -139,7 +139,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF4E342E),
-                        fontFamily: 'Playfair Display', // Gaya font elegan
+                        fontFamily: 'Playfair Display', 
                       ),
                     ),
                   ),
@@ -321,11 +321,11 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                         ),
                       ),
                   
-                      const SizedBox(height: 12),  // Spasi antara dua tombol
+                      const SizedBox(height: 12), 
                   
                       // Back to Menu List Button
                       SizedBox(
-                        width: double.infinity,  // Membuat tombol selebar layar
+                        width: double.infinity,  
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF3E2723),

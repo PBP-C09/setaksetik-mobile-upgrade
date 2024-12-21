@@ -6,6 +6,7 @@ import 'package:setaksetikmobile/explore/screens/filter.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 
+// Class untuk menampilkan halaman explore steak lover
 class MenuPage extends StatefulWidget {
   const MenuPage({Key? key}) : super(key: key);
 
@@ -14,19 +15,21 @@ class MenuPage extends StatefulWidget {
 }
 
 class _MenuPageState extends State<MenuPage> {
-  late Future<List<MenuList>> _menuFuture;
+  late Future<List<MenuList>> _menuFuture; // Menyimpan data menu yang akan diambil dari API
   final TextEditingController _searchController = TextEditingController();
   List<MenuList> _originalMenus = [];
   @override
   void initState() {
     super.initState();
-    _menuFuture = fetchMenu(Provider.of<CookieRequest>(context, listen: false));
+    _menuFuture = fetchMenu(Provider.of<CookieRequest>(context, listen: false)); // Untuk mengambil data menu
   }
   @override
   void dispose() {
+    // Membersihkan controller saat widget dihapus
     _searchController.dispose();
     super.dispose();
   }
+  // Mengambil data menu dari backend API
   Future<List<MenuList>> fetchMenu(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
@@ -65,6 +68,7 @@ class _MenuPageState extends State<MenuPage> {
       body: FutureBuilder<List<MenuList>>(
         future: _menuFuture,
         builder: (context, snapshot) {
+          // Search bar dan filter
           Widget searchAndFilterSection = Container(
             color: const Color(0xFF3E2723),
             padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
@@ -92,6 +96,7 @@ class _MenuPageState extends State<MenuPage> {
                 const SizedBox(height: 16),
                 Row(
                   children: [
+                    // Search Bar
                     Expanded(
                       flex: 4,
                       child: Container(
@@ -123,10 +128,12 @@ class _MenuPageState extends State<MenuPage> {
                       ),
                     ),
                     const SizedBox(width: 12),
+                    // Filter Button
                     Expanded(
                       flex: 2,
                       child: ElevatedButton.icon(
                         onPressed: () {
+                          // Tampilkan modal bottom sheet untuk filter
                           showModalBottomSheet(
                             context: context,
                             shape: const RoundedRectangleBorder(
@@ -137,6 +144,7 @@ class _MenuPageState extends State<MenuPage> {
                             showDragHandle: true,
                             isScrollControlled: true,
                             builder: (BuildContext context) {
+                              // Tampilkan filter
                               return Filter(
                                 onFilter: (namaMenu, kota, jenisBeef, hargaMax) {
                                   _applyFilters(namaMenu, kota, jenisBeef, hargaMax);
@@ -164,11 +172,13 @@ class _MenuPageState extends State<MenuPage> {
               ],
             ),
           );
+          
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(child: Text('Error fetching menu data.'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              // Tampilkan pesan jika data kosong
               return SingleChildScrollView(
               child: Column(
                 children: [
@@ -192,11 +202,13 @@ class _MenuPageState extends State<MenuPage> {
               ),
             );          
           } else {
+            // Tampilkan daftar menu
             final menus = snapshot.data!;
             return ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: menus.length + 1,
+              itemCount: menus.length + 1, // +1 untuk search bar dan filter
               itemBuilder: (BuildContext context, int index) {
+               // Tampilkan search bar dan filter di index 0
                 if (index == 0) {
                   return Container(
                     color: const Color(0xFF3E2723),
@@ -301,6 +313,7 @@ class _MenuPageState extends State<MenuPage> {
                     ),
                   );
                 } else {
+                  // Tampilkan menu
                   final menuList = menus[index - 1];
                   return GestureDetector(
                     onTap: () {
@@ -318,6 +331,7 @@ class _MenuPageState extends State<MenuPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // Gambar menu
                           AspectRatio(
                             aspectRatio: 2.0,
                             child: SizedBox(
@@ -326,7 +340,7 @@ class _MenuPageState extends State<MenuPage> {
                                 menuList.fields.image,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  // Create a list of placeholder images
+                                  // Tampilkan placeholder image jika gagal memuat gambar
                                   List<String> placeholderImages = [
                                     "assets/images/placeholder-image-1.png",
                                     "assets/images/placeholder-image-2.png",
@@ -345,11 +359,13 @@ class _MenuPageState extends State<MenuPage> {
                               ),
                             ),
                           ),
+                          // Deskripsi menu
                           Padding(
                             padding: const EdgeInsets.all(12),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Nama menu
                                 Text(
                                   menuList.fields.menu,
                                   style: const TextStyle(
@@ -362,6 +378,7 @@ class _MenuPageState extends State<MenuPage> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 8),
+                                // Nama restoran dan kota
                                 Row(
                                   children: [
                                     const Icon(
@@ -384,6 +401,7 @@ class _MenuPageState extends State<MenuPage> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
+                                // Rating
                                 Row(
                                   children: [
                                     const Icon(
@@ -393,6 +411,7 @@ class _MenuPageState extends State<MenuPage> {
                                     ),
                                 
                                     const SizedBox(width: 8),
+                                    // Rating
                                     Text(
                                       '${menuList.fields.rating} / 5',
                                       style: const TextStyle(
@@ -403,6 +422,7 @@ class _MenuPageState extends State<MenuPage> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
+                                // Harga
                                 Row(
                                   children: [
                                     const Icon(
@@ -421,6 +441,7 @@ class _MenuPageState extends State<MenuPage> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
+                                // Kategori dan spesialisasi
                                 Row(
                                   children: [
                                     Container(
@@ -461,6 +482,8 @@ class _MenuPageState extends State<MenuPage> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
+
+                                // Tombol see details
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -502,6 +525,7 @@ class _MenuPageState extends State<MenuPage> {
     );
   }
 
+  // Fungsi untuk menerapkan filter
   void _applyFilters(String? namaMenu, City? kota, String? jenisBeef, int? hargaMax) {
     setState(() {
       _menuFuture = Future.value(_originalMenus.where((menuList) {
@@ -514,6 +538,7 @@ class _MenuPageState extends State<MenuPage> {
     });
   }
 
+  // Fungsi untuk menghandle search
   void _handleSearch(String value) {
     if (value.isEmpty) {
       setState(() {

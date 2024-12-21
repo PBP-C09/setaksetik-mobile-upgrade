@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
-// import 'package:setaksetikmobile/review/screens/review_form.dart';
 
 class ReviewMainPage extends StatefulWidget {
   const ReviewMainPage({super.key});
@@ -15,24 +14,23 @@ class ReviewMainPage extends StatefulWidget {
 }
 
 class _ReviewMainPageState extends State<ReviewMainPage> {
-  List<ReviewList> reviews = [];  // Daftar review yang di-fetch dari API
+  List<ReviewList> reviews = []; // Daftar review yang di-fetch dari API
 
   @override
   void initState() {
     super.initState();
     final request = context.read<CookieRequest>();
-    fetchReviews(request);  // Panggil fungsi untuk fetch reviews
+    fetchReviews(request); // Panggil fungsi untuk fetch reviews
   }
 
   // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/review/get_review/');
-      
-      // Cek apakah response-nya tidak null
+
       if (response != null) {
         setState(() {
-          reviews = reviewListFromJson(response);  // Asumsi response sudah berupa List JSON
+          reviews = reviewListFromJson(response);
         });
       } else {
         throw Exception('Response is null');
@@ -55,50 +53,77 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
         foregroundColor: Colors.white,
       ),
       body: reviews.isEmpty
-          ? const Center(child: CircularProgressIndicator()) // Loading state
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Add the text before the review list
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
+                      padding: const EdgeInsets.only(bottom: 12.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text(
-                            'Apa kata mereka?',
-                            style: TextStyle(
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                          RichText(
+                            text: const TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Apa kata ',
+                                  style: TextStyle(
+                                    fontFamily: 'Playfair Display',
+                                    fontSize: 30.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: Color(0xFFF5F5DC),
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: 'mereka?',
+                                  style: TextStyle(
+                                    fontFamily: 'Playfair Display',
+                                    fontSize: 30.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontStyle: FontStyle.italic,
+                                    color: Color(0xFFF5F5DC),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                                                    const SizedBox(height: 16.0),
+                          const SizedBox(height: 12.0),
                           Divider(
                             color: Colors.white,
                             thickness: 1.0,
                           ),
-                          const SizedBox(height: 16.0),
-
-                          const SizedBox(height: 8.0),
-                          Text(
-                            'Dengar cerita dan rekomendasi dari steak enthusiasts di seluruh penjuru',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.white,
-                            ),
+                          const SizedBox(height: 12.0),
+                          Column(
+                            children: const [
+                              Text(
+                                'Dengar cerita dan rekomendasi dari',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Raleway',
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                'steak enthusiasts di seluruh penjuru',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Raleway',
+                                  fontSize: 14.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
-
                         ],
                       ),
                     ),
-                    // Now display the reviews
                     Column(
                       children: reviews.map((review) {
                         return Card(
+                          color: const Color(0xFFF5F5DC),
                           elevation: 4.0,
                           margin: const EdgeInsets.symmetric(vertical: 8.0),
                           shape: RoundedRectangleBorder(
@@ -109,26 +134,56 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                             title: Text(
                               review.fields.menu,
                               style: const TextStyle(
-                                fontSize: 18,
+                                fontSize: 16, // Font size reduced
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Rating
                                 Row(
-                                  children: List.generate(
-                                    review.fields.rating, // assuming rating is an integer from 1 to 5
-                                    (index) => const Icon(
-                                      Icons.star,
-                                      color: Colors.yellow,
-                                      size: 20,
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on,
+                                      color: Colors.brown, // Dark brown color
+                                      size: 16,
                                     ),
-                                  ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      review.fields.place,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.brown, // Darker brown
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 4),
-                                // Review text
+                                Row(
+                                  children: [
+                                    Row(
+                                      children: List.generate(
+                                        review.fields.rating,
+                                        (index) => const Icon(
+                                          Icons.star,
+                                          color: Color(0xFFE5B700),
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${review.fields.rating}/5',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
                                 Text(
                                   review.fields.description,
                                   style: const TextStyle(
@@ -137,21 +192,46 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                // Owner reply
-                                if (review.fields.ownerReply != null)
-                                  Text(
-                                    'Owner Reply: ${review.fields.ownerReply}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.grey,
+                                  if (review.fields.ownerReply != null &&
+                                    review.fields.ownerReply!.isNotEmpty)
+                                  Container(
+                                    width: double.infinity, // Ensures full width inside the card
+                                    margin: const EdgeInsets.only(top: 8.0), // Space above the reply box
+                                    padding: const EdgeInsets.all(12.0), // Inner padding for the box
+                                    decoration: BoxDecoration(
+                                      color: Colors.white, // White background for the reply box
+                                      borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Balasan Pemilik:',
+                                          style: const TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.brown, // Dark brown text color
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4), // Space between title and reply text
+                                        Text(
+                                          review.fields.ownerReply!,
+                                          style: const TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w400,
+                                            color: Colors.black, // Black text for reply content
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  
+
+
                               ],
                             ),
                             onTap: () {
-                              // Navigate to review form for the selected menu
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -167,14 +247,12 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                 ),
               ),
             ),
-      // FloatingActionButton for adding a review (Original position)
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate to review form
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const ReviewPage(), // Review form page
+              builder: (context) => const ReviewPage(),
             ),
           );
         },
