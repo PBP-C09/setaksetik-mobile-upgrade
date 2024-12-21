@@ -8,7 +8,6 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-
 class MenuFormPage extends StatefulWidget {
   const MenuFormPage({super.key});
 
@@ -277,60 +276,60 @@ class _MenuFormPageState extends State<MenuFormPage> {
                       ),
                     ),
                     
-                     const SizedBox(width: 16),
-                    // Add Menu Button
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD54F), // Warna kuning
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          final response = await request.postJson(
-                            "http://127.0.0.1:8000/explore/create-flutter/",
-                            jsonEncode(<String, String>{
-                              "menu": _menuName,
-                              "category": _selectedCategory ?? "",
-                              "restaurant_name": _restaurantName,
-                              "city": _selectedCity ?? "",
-                              "price": _price.toString(),
-                              "rating": _rating.toString(),
-                              "specialized": _selectedSpecialized ?? "",
-                              "image": _imageUrl,
-                              "takeaway": _takeaway.toString(),
-                              "delivery": _delivery.toString(),
-                              "outdoor": _outdoor.toString(),
-                              "smoking_area": _smokingArea.toString(),
-                              "wifi": _wifi.toString(),
-                            }),
-                          );
-                          if (context.mounted) {
-                            if (response['status'] == 'success') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                        const SizedBox(width: 16),
+                        // Add Menu Button
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFFD54F), // Warna kuning
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              final response = await request.postJson(
+                                "http://127.0.0.1:8000/explore/create-flutter/",
+                                jsonEncode(<String, String>{
+                                  "menu": _menuName,
+                                  "category": _selectedCategory ?? "",
+                                  "restaurant_name": _restaurantName,
+                                  "city": _selectedCity ?? "",
+                                  "price": _price.toString(),
+                                  "rating": _rating.toString(),
+                                  "specialized": _selectedSpecialized ?? "",
+                                  "image": _imageUrl,
+                                  "takeaway": _takeaway.toString(),
+                                  "delivery": _delivery.toString(),
+                                  "outdoor": _outdoor.toString(),
+                                  "smoking_area": _smokingArea.toString(),
+                                  "wifi": _wifi.toString(),
+                                }),
                               );
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => ExploreAdmin()),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Terdapat kesalahan, silakan coba lagi."),
-                                ),
-                              );
+                              if (context.mounted) {
+                                if (response['status'] == 'success') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                                  );
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ExploreAdmin()),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Terdapat kesalahan, silakan coba lagi."),
+                                    ),
+                                  );
+                                }
+                              }
                             }
-                          }
-                        }
-                      },
-                      child: const Text(
-                        "Add Menu",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
+                          },
+                          child: const Text(
+                            "Add Menu",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
                             ),
                           ),
                         ),
@@ -338,68 +337,69 @@ class _MenuFormPageState extends State<MenuFormPage> {
                     ),
                   ),
                 ],
-               ),
               ),
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
   }
-  // Helper Widget: TextField
-  Widget _buildTextField({
-    required String label,
-    required String hint,
-    required void Function(String) onChanged,
-    required String? Function(String?) validator,
-    bool isNumeric = false,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        style: const TextStyle(color: Colors.black),
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
+}
+
+// Helper Widget: TextField
+Widget _buildTextField({
+  required String label,
+  required String hint,
+  required void Function(String) onChanged,
+  required String? Function(String?) validator,
+  bool isNumeric = false,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: TextFormField(
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      
+      ),
+      keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
+      onChanged: onChanged,
+      validator: validator,
+    ),
+  );
+}
+
+// Helper Widget: Dropdown
+Widget _buildDropdown({
+  required String label,
+  required String? value,
+  required List<DropdownMenuItem<String>> items,
+  required void Function(String?) onChanged,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: DropdownButtonFormField<String>(
+      value: value,
+      decoration: InputDecoration(
+        labelText: label,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
           borderRadius: BorderRadius.circular(8.0),
         ),
-        
-        ),
-        keyboardType: isNumeric ? TextInputType.number : TextInputType.text,
-        onChanged: onChanged,
-        validator: validator,
       ),
-    );
-  }
-
-  // Helper Widget: Dropdown
-  Widget _buildDropdown({
-    required String label,
-    required String? value,
-    required List<DropdownMenuItem<String>> items,
-    required void Function(String?) onChanged,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: DropdownButtonFormField<String>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-        ),
-        items: items,
-        onChanged: onChanged,
-        validator: (value) => value == null || value.isEmpty ? "$label harus dipilih!" : null,
-      ),
-    );
-  }
+      items: items,
+      onChanged: onChanged,
+      validator: (value) => value == null || value.isEmpty ? "$label harus dipilih!" : null,
+    ),
+  );
+}
 
 Widget _buildCheckbox({
   required String label,

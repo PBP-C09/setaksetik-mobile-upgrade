@@ -129,235 +129,235 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
           key: _formKey,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    "Edit Menu",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF4E342E),
-                      fontFamily: 'Playfair Display', // Gaya font elegan
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Divider(color: Colors.brown.shade300, thickness: 1.5),
-
-              // Menu Name Input
-              _buildTextField(
-                label: "Menu Name",
-                hint: "Menu name (max length: 50)",
-                onChanged: (value) => setState(() => _menuName = value),
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Nama menu tidak boleh kosong!" : null,
-              ),
-
-              // Restaurant Name Input
-              _buildTextField(
-                label: "Restaurant",
-                hint: "Restaurant name (max length: 50)",
-                onChanged: (value) => setState(() => _restaurantName = value),
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Nama restoran tidak boleh kosong!" : null,
-              ),
-
-              // Dropdown for City
-              _buildDropdown(
-                label: "City",
-                value: _selectedCity,
-                items: cityChoices,
-                onChanged: (value) => setState(() => _selectedCity = value),
-              ),
-
-              // Dropdown for Category
-              _buildDropdown(
-                label: "Category",
-                value: _selectedCategory,
-                items: categoryChoices,
-                onChanged: (value) => setState(() => _selectedCategory = value),
-              ),
-
-              // Dropdown for Specialized
-              _buildDropdown(
-                label: "Specialized",
-                value: _selectedSpecialized,
-                items: specializedChoices,
-                onChanged: (value) => setState(() => _selectedSpecialized = value),
-              ),
-
-              // Price Input
-              _buildTextField(
-                label: "Price",
-                hint: "Add price (1000 - 1800000)",
-                isNumeric: true,
-                onChanged: (value) => setState(() => _price = int.tryParse(value) ?? 0),
-                validator: (value) {
-                  if (value == null || value.isEmpty) return "Harga menu tidak boleh kosong!";
-                  if (int.tryParse(value) == null) return "Harga harus berupa angka!";
-                  if (_price < 1000 || _price > 1800000) {
-                    return "Rating harus antara 1000 dan 1800000!";
-                  }
-                  return null;
-                },
-              ),
-
-              // Rating Input
-              _buildTextField(
-                label: "Rating",
-                hint: "Add rating (0.0 - 5.0)",
-                isNumeric: true,
-                onChanged: (value) {
-                  setState(() {
-                    _rating = double.tryParse(value) ?? 0.0;
-                  });
-                },
-                validator: (value) {
-                  if (value == null || value.isEmpty) return "Rating tidak boleh kosong!";
-                  if (double.tryParse(value) == null) return "Harga harus berupa angka!";
-                  double? rating = double.tryParse(value);
-                  if (rating == null || rating < 0.0 || rating > 5.0) {
-                    return "Rating harus antara 0.0 dan 5.0!";
-                  }
-                  return null;
-                },
-              ),
-
-              // Image URL Input
-              _buildTextField(
-                label: "Image URL",
-                hint: "Add image URL",
-                onChanged: (value) => setState(() => _imageUrl = value),
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Gambar menu tidak boleh kosong!" : null,
-              ),
-
-              // Checkboxes for Additional Features
-              _buildCheckbox(
-                label: "Takeaway",
-                value: _takeaway,
-                onChanged: (value) => setState(() => _takeaway = value!),
-              ),
-              _buildCheckbox(
-                label: "Delivery",
-                value: _delivery,
-                onChanged: (value) => setState(() => _delivery = value!),
-              ),
-              _buildCheckbox(
-                label: "Outdoor Seating",
-                value: _outdoor,
-                onChanged: (value) => setState(() => _outdoor = value!),
-              ),
-              _buildCheckbox(
-                label: "Smoking Area",
-                value: _smokingArea,
-                onChanged: (value) => setState(() => _smokingArea = value!),
-              ),
-              _buildCheckbox(
-                label: "WiFi",
-                value: _wifi,
-                onChanged: (value) => setState(() => _wifi = value!),
-              ),
-
-             Column(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Update Menu Button
-                  SizedBox(
-                    width: double.infinity,  // Membuat tombol selebar layar
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFC62828),
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          final response = await request.postJson(
-                            "http://127.0.0.1:8000/explore/edit-flutter/${widget.menuToEdit.pk}/",
-                            jsonEncode(<String, String>{
-                              "menu": _menuName,
-                              "category": _selectedCategory ?? "",
-                              "restaurant_name": _restaurantName,
-                              "city": _selectedCity ?? "",
-                              "price": _price.toString(),
-                              "rating": _rating.toString(),
-                              "specialized": _selectedSpecialized ?? "",
-                              "image": _imageUrl,
-                              "takeaway": _takeaway.toString(),
-                              "delivery": _delivery.toString(),
-                              "outdoor": _outdoor.toString(),
-                              "smoking_area": _smokingArea.toString(),
-                              "wifi": _wifi.toString(),
-                            }),
-                          );
-                          if (context.mounted) {
-                            if (response['status'] == 'success') {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Produk baru berhasil disimpan!")),
-                              );
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => ExploreAdmin()),
-                              );
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Terdapat kesalahan, silakan coba lagi.")),
-                              );
-                            }
-                          }
-                        }
-                      },
-                      child: const Text(
-                        "Update Menu",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                  Center(
+                    child: Text(
+                      "Edit Menu",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: const Color(0xFF4E342E),
+                        fontFamily: 'Playfair Display', // Gaya font elegan
                       ),
                     ),
                   ),
-                  
-                  const SizedBox(height: 12),  // Spasi antara dua tombol
-                  
-                  // Back to Menu List Button
-                  SizedBox(
-                    width: double.infinity,  // Membuat tombol selebar layar
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3E2723),
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  const SizedBox(height: 16),
+                  Divider(color: Colors.brown.shade300, thickness: 1.5),
+
+                // Menu Name Input
+                _buildTextField(
+                  label: "Menu Name",
+                  hint: "Menu name (max length: 50)",
+                  onChanged: (value) => setState(() => _menuName = value),
+                  validator: (value) =>
+                    value == null || value.isEmpty ? "Nama menu tidak boleh kosong!" : null,
+                ),
+
+                // Restaurant Name Input
+                _buildTextField(
+                  label: "Restaurant",
+                  hint: "Restaurant name (max length: 50)",
+                  onChanged: (value) => setState(() => _restaurantName = value),
+                  validator: (value) =>
+                    value == null || value.isEmpty ? "Nama restoran tidak boleh kosong!" : null,
+                ),
+
+                // Dropdown for City
+                _buildDropdown(
+                  label: "City",
+                  value: _selectedCity,
+                  items: cityChoices,
+                  onChanged: (value) => setState(() => _selectedCity = value),
+                ),
+
+                // Dropdown for Category
+                _buildDropdown(
+                  label: "Category",
+                  value: _selectedCategory,
+                  items: categoryChoices,
+                  onChanged: (value) => setState(() => _selectedCategory = value),
+                ),
+
+                // Dropdown for Specialized
+                _buildDropdown(
+                  label: "Specialized",
+                  value: _selectedSpecialized,
+                  items: specializedChoices,
+                  onChanged: (value) => setState(() => _selectedSpecialized = value),
+                ),
+
+                // Price Input
+                _buildTextField(
+                  label: "Price",
+                  hint: "Add price (1000 - 1800000)",
+                  isNumeric: true,
+                  onChanged: (value) => setState(() => _price = int.tryParse(value) ?? 0),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return "Harga menu tidak boleh kosong!";
+                    if (int.tryParse(value) == null) return "Harga harus berupa angka!";
+                    if (_price < 1000 || _price > 1800000) {
+                      return "Rating harus antara 1000 dan 1800000!";
+                    }
+                    return null;
+                  },
+                ),
+
+                // Rating Input
+                _buildTextField(
+                  label: "Rating",
+                  hint: "Add rating (0.0 - 5.0)",
+                  isNumeric: true,
+                  onChanged: (value) {
+                    setState(() {
+                      _rating = double.tryParse(value) ?? 0.0;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return "Rating tidak boleh kosong!";
+                    if (double.tryParse(value) == null) return "Harga harus berupa angka!";
+                    double? rating = double.tryParse(value);
+                    if (rating == null || rating < 0.0 || rating > 5.0) {
+                      return "Rating harus antara 0.0 dan 5.0!";
+                    }
+                    return null;
+                  },
+                ),
+
+                // Image URL Input
+                _buildTextField(
+                  label: "Image URL",
+                  hint: "Add image URL",
+                  onChanged: (value) => setState(() => _imageUrl = value),
+                  validator: (value) =>
+                    value == null || value.isEmpty ? "Gambar menu tidak boleh kosong!" : null,
+                ),
+
+                // Checkboxes for Additional Features
+                _buildCheckbox(
+                  label: "Takeaway",
+                  value: _takeaway,
+                  onChanged: (value) => setState(() => _takeaway = value!),
+                ),
+                _buildCheckbox(
+                  label: "Delivery",
+                  value: _delivery,
+                  onChanged: (value) => setState(() => _delivery = value!),
+                ),
+                _buildCheckbox(
+                  label: "Outdoor Seating",
+                  value: _outdoor,
+                  onChanged: (value) => setState(() => _outdoor = value!),
+                ),
+                _buildCheckbox(
+                  label: "Smoking Area",
+                  value: _smokingArea,
+                  onChanged: (value) => setState(() => _smokingArea = value!),
+                ),
+                _buildCheckbox(
+                  label: "WiFi",
+                  value: _wifi,
+                  onChanged: (value) => setState(() => _wifi = value!),
+                ),
+                Column(
+                    children: [
+                      // Update Menu Button
+                      SizedBox(
+                        width: double.infinity,  // Membuat tombol selebar layar
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFC62828),
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              final response = await request.postJson(
+                                "http://127.0.0.1:8000/explore/edit-flutter/${widget.menuToEdit.pk}/",
+                                jsonEncode(<String, String>{
+                                  "menu": _menuName,
+                                  "category": _selectedCategory ?? "",
+                                  "restaurant_name": _restaurantName,
+                                  "city": _selectedCity ?? "",
+                                  "price": _price.toString(),
+                                  "rating": _rating.toString(),
+                                  "specialized": _selectedSpecialized ?? "",
+                                  "image": _imageUrl,
+                                  "takeaway": _takeaway.toString(),
+                                  "delivery": _delivery.toString(),
+                                  "outdoor": _outdoor.toString(),
+                                  "smoking_area": _smokingArea.toString(),
+                                  "wifi": _wifi.toString(),
+                                }),
+                              );
+                              if (context.mounted) {
+                                if (response['status'] == 'success') {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                                  );
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => ExploreAdmin()),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Terdapat kesalahan, silakan coba lagi.")),
+                                  );
+                                }
+                              }
+                            }
+                          },
+                          child: const Text(
+                            "Update Menu",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "Back to Menu List",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                  
+                      const SizedBox(height: 12),  // Spasi antara dua tombol
+                  
+                      // Back to Menu List Button
+                      SizedBox(
+                        width: double.infinity,  // Membuat tombol selebar layar
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF3E2723),
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text(
+                            "Back to Menu List",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
-      ),
-      ),
     );
   }
+
   // Helper Widget: TextField
   Widget _buildTextField({
     required String label,
@@ -405,6 +405,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
     );
   }
 }
+
 // Helper Widget: Dropdown
 Widget _buildDropdown({
   required String label,
@@ -432,15 +433,15 @@ Widget _buildDropdown({
 }
 
 Widget _buildCheckbox({
-required String label,
-required bool value,
-required void Function(bool?) onChanged,
+  required String label,
+  required bool value,
+  required void Function(bool?) onChanged,
 }) {
-return CheckboxListTile(
-  title: Text(label),
-  value: value,
-  onChanged: onChanged,
-  controlAffinity: ListTileControlAffinity.leading,
-  contentPadding: EdgeInsets.zero,
-);
+  return CheckboxListTile(
+    title: Text(label),
+    value: value,
+    onChanged: onChanged,
+    controlAffinity: ListTileControlAffinity.leading,
+    contentPadding: EdgeInsets.zero,
+  );
 }
