@@ -1,16 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/booking/models/booking_entry.dart';
+import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
+import 'package:intl/intl.dart';
 
 Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
   try {
     final response = await request.get('http://127.0.0.1:8000/booking/pantau_flutter/');
-    if (response != null && response['status'] == 'success') {
+    final menuResponse = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+
+    if (response != null && menuResponse != null) {
+      // Convert menu response to MenuList objects
+      final menus = menuResponse.map((item) => MenuList.fromJson(item)).toList();
+      
+      // Find the restaurant owned by user
+      final restaurant = response['restaurant'];
+      // Find matching menu for the restaurant
+      final matchingMenu = menus.firstWhere(
+        (menu) => menu.fields.restaurantName == restaurant['restaurant_name'],
+        orElse: () => MenuList(pk: 0, model: Model.EXPLORE_MENU, fields: Fields(
+          menu: '', category: '', restaurantName: '', image: '', 
+          city: City.CENTRAL_JAKARTA, price: 0, rating: 0.0, 
+          specialized: '', takeaway: false, delivery: false, 
+          outdoor: false, smokingArea: false, wifi: false, claimedBy: ''
+        )),
+      );
+
+      // Update restaurant data with image
+      response['restaurant'] = {
+        ...restaurant,
+        'image_url': matchingMenu.fields.image,
+      };
+
       return response;
     }
-    print('Failed to fetch bookings: ${response['message']}');
     return null;
   } catch (e) {
     print('Error fetching bookings: $e');
@@ -36,6 +60,16 @@ Future<bool> approveBooking(CookieRequest request, int bookingId) async {
   }
 }
 
+String formatBookingDate(String dateString) {
+  try {
+    final dateTime = DateTime.parse(dateString);
+    return DateFormat('dd MMM yyyy').format(dateTime);
+  } catch (e) {
+    print('Error formatting date: $e');
+    return 'Invalid date';
+  }
+}
+
 class PantauBookingPage extends StatefulWidget {
   const PantauBookingPage({super.key});
 
@@ -56,9 +90,19 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text('Monitor Bookings'),
+        title: const Text(
+          'Monitor Bookings',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF3E2723),
+          ),
+        ),
         centerTitle: true,
+        backgroundColor: const Color(0xFFF5F5DC),
+        iconTheme: const IconThemeData(color: Color(0xFF3E2723)),
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder<Map<String, dynamic>?>(
@@ -74,7 +118,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
             return const Center(
               child: Text(
                 'No bookings available yet!',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             );
           }
@@ -85,7 +129,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
 
           final bookings = snapshot.data!.containsKey('bookings')
               ? (snapshot.data!['bookings'] as List)
-                  .map((booking) => BookingEntry.fromJson(booking))
+                  .map((booking) => booking as Map<String, dynamic>)
                   .toList()
               : [];
 
@@ -93,7 +137,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
             return const Center(
               child: Text(
                 'No bookings available yet!',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             );
           }
@@ -103,30 +147,56 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Owned Restaurant:',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F5DC),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                        child: Image.network(
+                          restaurant['image_url'] ?? 'https://via.placeholder.com/150', // URL gambar restoran
+                          fit: BoxFit.cover,
+                          height: 200,
+                          width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              height: 200,
+                              width: double.infinity,
+                              color: Colors.grey,
+                              child: const Icon(Icons.broken_image, size: 50, color: Colors.white),
+                            );
+                          },
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          '$restaurantName - $city',
-                          style: const TextStyle(fontSize: 16),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Owned Restaurant:',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF3E2723),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              '$restaurantName - $city',
+                              style: const TextStyle(fontSize: 16, color: Color(0xFF3E2723)),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
+
                 const SizedBox(height: 16),
                 ListView.builder(
                   shrinkWrap: true,
@@ -134,87 +204,108 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                   itemCount: bookings.length,
                   itemBuilder: (context, index) {
                     final booking = bookings[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
+                    final formattedDate = formatBookingDate(booking['booking_date']);
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5DC),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Icon(Icons.person, color: Colors.blue, size: 20),
-                                const SizedBox(width: 8),
-                                Text('User: ${booking.user}',
-                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.person, color: Colors.blue, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text('User: ${booking['user']}',
+                                        style: const TextStyle(
+                                            fontSize: 16, fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.restaurant_menu, color: Colors.green, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text('Menu: ${booking['menu']}',
+                                        style: const TextStyle(fontSize: 16)),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.date_range, color: Colors.orange, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text('Date: $formattedDate',
+                                        style: const TextStyle(fontSize: 16)),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.group, color: Colors.purple, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text('People: ${booking['number_of_people']}',
+                                        style: const TextStyle(fontSize: 16)),
+                                  ],
+                                ),
                               ],
                             ),
-                            const SizedBox(height: 8),
-                            Row(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                const Icon(Icons.restaurant_menu, color: Colors.green, size: 20),
-                                const SizedBox(width: 8),
-                                Text('Menu: ${booking.menu}', style: const TextStyle(fontSize: 16)),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(Icons.date_range, color: Colors.orange, size: 20),
-                                const SizedBox(width: 8),
-                                Text('Date: ${booking.bookingDate}', style: const TextStyle(fontSize: 16)),
-                              ],
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              children: [
-                                const Icon(Icons.group, color: Colors.purple, size: 20),
-                                const SizedBox(width: 8),
-                                Text('People: ${booking.numberOfPeople}', style: const TextStyle(fontSize: 16)),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: booking.status == 'waiting'
-                                  ? ElevatedButton(
-                                      onPressed: () async {
-                                        final request = Provider.of<CookieRequest>(context, listen: false);
-                                        final success = await approveBooking(request, booking.id);
-                                        if (success) {
-                                          setState(() {
-                                            booking.status = 'approved';
-                                          });
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Booking approved successfully!')),
-                                          );
-                                        } else {
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text('Failed to approve booking')),
-                                          );
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(8),
+                                booking['status'] == 'waiting'
+                                    ? ElevatedButton(
+                                        onPressed: () async {
+                                          final request =
+                                              Provider.of<CookieRequest>(context, listen: false);
+                                          final success =
+                                              await approveBooking(request, booking['id']);
+                                          if (success) {
+                                            setState(() {
+                                              booking['status'] = 'approved';
+                                            });
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                  content: Text('Booking approved successfully!')),
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(
+                                                  content: Text('Failed to approve booking')),
+                                            );
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.green,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        child: const Text('Approve'),
+                                      )
+                                    : const Text(
+                                        'Approved',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green,
                                         ),
                                       ),
-                                      child: const Text('Approve'),
-                                    )
-                                  : const Text(
-                                      'Approved',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
-                                    ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   },
