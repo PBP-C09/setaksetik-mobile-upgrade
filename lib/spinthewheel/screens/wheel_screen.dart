@@ -45,10 +45,12 @@ class _WheelViewState extends State<WheelView> {
       _fetchMenuOptions(request, _selectedCategory);
     });
     Future.delayed(const Duration(seconds: 5), () {
-      setState(() {
-        _buttonsEnabled = true;
-        _allMenu = List.from(_menuOptions);
-      });
+      if (mounted) {
+        setState(() {
+          _buttonsEnabled = true;
+          _allMenu = List.from(_menuOptions);
+        });
+      }
     });
   }
 
@@ -177,14 +179,16 @@ class _WheelViewState extends State<WheelView> {
           'http://127.0.0.1:8000/spinthewheel/option-json/$category/');
       var data = response;
 
-      setState(() {
-        _menuOptions.clear();
-        for (var option in data) {
-          if (option != null) {
-            _menuOptions.add(MenuList.fromJson(option));
+      if (mounted) {
+        setState(() {
+          _menuOptions.clear();
+          for (var option in data) {
+            if (option != null) {
+              _menuOptions.add(MenuList.fromJson(option));
+            }
           }
-        }
-      });
+        });
+      }
   }
 
   Widget _buildOptionRow(String menuName, int optionIndex, int menuIndex) {
