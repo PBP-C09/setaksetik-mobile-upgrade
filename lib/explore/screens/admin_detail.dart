@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
+// Class menu detail untuk admin
 class AdminDetail extends StatelessWidget {
   final MenuList menuList;
 
