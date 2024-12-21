@@ -4,7 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
-import 'package:setaksetikmobile/review/screens/review_list.dart';  // Make sure the models are correctly imported
+import 'package:setaksetikmobile/review/screens/review_list.dart';
 
 class ReviewEntryFormPage extends StatefulWidget {
   final MenuList menu;
@@ -23,6 +23,15 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
   int _rating = 0;
   String _description = "";
   String _ownerReply = "";
+
+  // List of placeholder images
+  List<String> placeholderImages = [
+    "assets/images/placeholder-image-1.png",
+    "assets/images/placeholder-image-2.png",
+    "assets/images/placeholder-image-3.png",
+    "assets/images/placeholder-image-4.png",
+    "assets/images/placeholder-image-5.png",
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -48,30 +57,56 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,  // Align text and image at the top
                   children: [
-                    // Image widget
-                    Image.network(
-                      widget.menu.fields.image,  // Image URL from widget.menu.fields.image
-                      width: 50,  // Set the width of the image (adjust as necessary)
-                      height: 50,  // Set the height of the image (adjust as necessary)
-                      fit: BoxFit.cover,  // Ensures the image fits within the specified width/height
+                    // Image widget with error handling
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.network(
+                        widget.menu.fields.image,
+                        width: 50,  // Set the width of the image (adjust as necessary)
+                        height: 50,  // Set the height of the image (adjust as necessary)
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Return a placeholder image if image not found
+                          int index = widget.menu.pk % placeholderImages.length;
+                          return Image.asset(
+                            placeholderImages[index],
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      ),
                     ),
                     const SizedBox(width: 10),  // Space between the image and text
                     // Text widget
-                    Expanded(  // To make the text take up the remaining space
-                      child: Text(
-                        'Add Your Review for ${widget.menu.fields.menu}',
-                        style: TextStyle(
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        overflow: TextOverflow.ellipsis,  // Ensure text doesn't overflow
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Menu name with larger font size and brown color
+                          Text(
+                            widget.menu.fields.menu,
+                            style: const TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF3E2723),  // Brown color
+                            ),
+                            overflow: TextOverflow.ellipsis,  // Ensure text doesn't overflow
+                          ),
+                          const SizedBox(height: 4),
+                          // Restaurant name in smaller size
+                          Text(
+                            widget.menu.fields.restaurantName,
+                            style: const TextStyle(
+                              fontSize: 16.0,
+                              color: Color(0xFF6D4C41),  // Slightly lighter brown
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
 
-        
               // Rating Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -82,6 +117,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
                   onChanged: (String? value) {
                     setState(() {
@@ -99,16 +135,19 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                   },
                 ),
               ),
+
               // Description Field
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
+                  maxLines: 5,  // Allow multiple lines for description
                   decoration: InputDecoration(
                     hintText: "Review Description",
                     labelText: "Description",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   ),
                   onChanged: (String? value) {
                     setState(() {
@@ -123,7 +162,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                   },
                 ),
               ),
-        
+
               // Save Button
               Align(
                 alignment: Alignment.bottomCenter,
@@ -135,29 +174,11 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                           Theme.of(context).colorScheme.primary),
                     ),
                     onPressed: () async {
-                      print(jsonEncode({
-                        'menu': widget.menu.fields.menu,
-                        'place': widget.menu.fields.restaurantName,
-                        'rating': _rating.toString(),
-                        'description': _description,
-                        'owner_reply': _ownerReply,
-                      }));
-
                       if (_formKey.currentState!.validate()) {
-                        print("iya dia .!validate");
                         try {
-                          print({
-                              'menu': widget.menu.fields.menu,
-                              'place': widget.menu.fields.restaurantName,
-                              'rating': _rating.toString(),
-                              'description': _description,
-                              'owner_reply': _ownerReply,
-                            });
-                            
                           final response = await request.postJson(
                             "http://127.0.0.1:8000/review/create-review-flutter/",
-                            jsonEncode(<String, dynamic>
-                            {
+                            jsonEncode(<String, dynamic>{
                               'menu': widget.menu.fields.menu,
                               'place': widget.menu.fields.restaurantName,
                               'rating': _rating.toString(),
@@ -166,11 +187,6 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                             }),
                           );
 
-                          print("HELLO");
-                          print(response);
-
-
-                          
                           if (response['status'] == 'success') {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text("Review berhasil disimpan!")),
@@ -185,16 +201,12 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                             );
                           }
                         } catch (e) {
-                          print("HELLO");
-                          print("Error: $e");
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("Terjadi kesalahan: $e")),
                           );
                         }
                       }
                     },
-
-
                     child: const Text(
                       "Save",
                       style: TextStyle(color: Colors.white),
