@@ -62,7 +62,7 @@ class _BookingPageState extends State<BookingPage> {
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF6F4E37),
+                      color: Color(0xFFF5F5DC),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -70,7 +70,7 @@ class _BookingPageState extends State<BookingPage> {
                     'Choose your favorite restaurant and make your reservation now!',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Color(0xFF6F4E37),
+                      color: Color(0xFFF5F5DC),
                     ),
                   ),
                 ],
@@ -109,6 +109,7 @@ class _BookingPageState extends State<BookingPage> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
+                color: Color(0xFFF5F5DC)
               ),
             ),
             const SizedBox(height: 16),

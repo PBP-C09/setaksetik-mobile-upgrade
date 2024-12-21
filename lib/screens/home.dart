@@ -330,18 +330,23 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Image.asset(
+              'assets/images/setaksetik-bg.png',
+              height: 120,
+              width: 120,
+            ),
             const Text(
-              'Hello,',
+              'SetakSetik Says Hi,',
               style: TextStyle(
                 fontFamily: 'Raleway',
-                fontSize: 36.0,
+                fontSize: 24.0,
               ),
             ),
             Text(
               fullName,
               style: const TextStyle(
                 fontFamily: 'Playfair Display',
-                fontSize: 48.0,
+                fontSize: 24.0,
                 fontStyle: FontStyle.italic,
               ),
             ),

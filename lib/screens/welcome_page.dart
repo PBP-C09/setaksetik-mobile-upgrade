@@ -105,7 +105,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
               ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Image.asset(
-                  'assets/images/landing-image-0.png',
+                  'assets/images/setaksetik.png',
                   height: MediaQuery.of(context).size.height * 0.4,
                   width: double.infinity,
                   fit: BoxFit.contain,

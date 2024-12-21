@@ -67,7 +67,6 @@ class MeatUpPageState extends State<MeatUpPage> {
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
     return Scaffold(
-      backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
       title: const Text('Meat Up'),
       centerTitle: true,
@@ -99,7 +98,7 @@ class MeatUpPageState extends State<MeatUpPage> {
                   if (result == true) fetchMessages();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF6D4C41),
+                  backgroundColor: const Color(0xFF3E2723),
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
