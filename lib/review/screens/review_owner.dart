@@ -21,7 +21,6 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     fetchReviews(request);
   }
 
-  // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/review/get_review/');
@@ -38,24 +37,18 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     }
   }
 
-  // Fungsi untuk mengirim balasan ke API
   Future<void> submitReply(CookieRequest request, String review_id, String reply_text) async {
     try {
-      print('Review ID: $review_id');  // Debug print untuk memastikan pk tidak null
-      print('Reply Text: $reply_text');  // Debug print untuk memastikan reply tidak null
-
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
           'http://127.0.0.1:8000/review/submit-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {
-          fetchReviews(request); // Refresh daftar ulasan
+          fetchReviews(request);
         } else {
           throw Exception('Failed to submit reply');
         }
-      } else {
-        print('Error: Review ID or reply text is empty');
       }
     } catch (e) {
       print('Error: $e');
@@ -66,24 +59,19 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     try {
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
-          'http://127.0.0.1:8000/review/update-reply-flutter/',  // Use the Django endpoint
+          'http://127.0.0.1:8000/review/update-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {
-          // Handle success (e.g., refresh the reviews or show a success message)
           fetchReviews(request);
-          print('Reply updated successfully');
         } else {
           throw Exception('Failed to update reply');
         }
-      } else {
-        print('Error: Review ID or reply text is empty');
       }
     } catch (e) {
       print('Error: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -106,92 +94,153 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                 child: Column(
                   children: reviews.map((review) {
                     return Card(
+                      color: const Color(0xFFF5F5DC),
                       elevation: 4.0,
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.all(16),
-                        title: Text(
-                          review.fields.menu,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: List.generate(
-                                review.fields.rating,
-                                (index) => const Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              review.fields.description,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            // Cek apakah ownerReply masih "No reply yet"
-                            if (review.fields.ownerReply == 'No reply yet' || review.fields.ownerReply == "") 
-                              ElevatedButton(
-                                onPressed: () async {
-                                  final reply = await showDialog<String>(
-                                    context: context,
-                                    builder: (context) => _ReplyDialog(),
-                                  );
-                                  print('Reply from dialog: $reply');  // Debug print untuk melihat balasan dari dialog
-                                  if (reply != null && reply.isNotEmpty) {
-                                    await submitReply(request, review.pk.toString(), reply);
-                                  }
-                                },
-                                child: const Text('Reply'),
-                              )
-                            else
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Owner Reply: ${review.fields.ownerReply}',
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      fontStyle: FontStyle.italic,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      // Buka dialog untuk mengedit balasan
-                                      final updatedReply = await showDialog<String>(
-                                        context: context,
-                                        builder: (context) => _ReplyDialog(
-                                          initialText: review.fields.ownerReply, // Kirim teks balasan yang ada ke dialog
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        review.fields.menu,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      );
-                                      print('Updated Reply from dialog: $updatedReply'); // Debug untuk melihat teks baru
-                                      if (updatedReply != null && updatedReply.isNotEmpty) {
-                                        print("masuk sini ya");
-                                        await updateReplyFlutter(request, review.pk.toString(), updatedReply);
-                                        setState(() {}); // Refresh UI setelah mengedit
+                                      ),
+                                    ),
+                                    Row(
+                                      children: List.generate(
+                                        review.fields.rating,
+                                        (index) => const Icon(
+                                          Icons.star,
+                                          color: Color(0xFFE5B700),
+                                          size: 20,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${review.fields.rating}/5',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on,
+                                      color: Colors.brown,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      review.fields.place,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.brown,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  review.fields.description,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                if (review.fields.ownerReply != null &&
+                                    review.fields.ownerReply!.isNotEmpty)
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Balasan Anda:',
+                                        style: TextStyle(
+                                          color: Colors.brown,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        color: Colors.white, // White background for the reply
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                review.fields.ownerReply!,
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.edit,
+                                                color: Colors.blue, // Blue color for the edit icon
+                                              ),
+                                              onPressed: () async {
+                                                final updatedReply = await showDialog<String>(
+                                                  context: context,
+                                                  builder: (context) => _ReplyDialog(
+                                                    initialText: review.fields.ownerReply,
+                                                  ),
+                                                );
+                                                if (updatedReply != null && updatedReply.isNotEmpty) {
+                                                  await updateReplyFlutter(
+                                                    request, review.pk.toString(), updatedReply);
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                else
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.brown,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      minimumSize: const Size(180, 45),
+                                    ),
+                                    onPressed: () async {
+                                      final reply = await showDialog<String>(context: context, builder: (context) => _ReplyDialog());
+                                      if (reply != null && reply.isNotEmpty) {
+                                        await submitReply(request, review.pk.toString(), reply);
                                       }
                                     },
-                                    child: const Text('Edit Reply'),
+                                    child: const Text('Reply'),
                                   ),
-                                ],
-                              )
-                          ],
-                        ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   }).toList(),
@@ -202,7 +251,6 @@ class _ReviewOwnerState extends State<ReviewOwner> {
   }
 }
 
-// Dialog untuk memasukkan balasan
 class _ReplyDialog extends StatelessWidget {
   final TextEditingController _controller;
   final String? initialText;
@@ -217,23 +265,43 @@ class _ReplyDialog extends StatelessWidget {
       content: TextField(
         controller: _controller,
         maxLines: 3,
-        decoration: const InputDecoration(hintText: 'Write your reply here'),
+        style: const TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+          hintText: 'Write your reply here',
+          fillColor: Colors.brown[50],
+          filled: true,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+        ),
       ),
       actions: [
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Tutup dialog tanpa mengirim balasan
+            Navigator.of(context).pop();
           },
-          child: const Text('Cancel'),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.brown),
+          ),
         ),
         ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.brown,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
           onPressed: () {
-            Navigator.of(context).pop(_controller.text); // Kirim balasan
+            Navigator.of(context).pop(_controller.text);
           },
-          child: const Text('Save'),
+          child: const Text(
+            'Save',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );
   }
 }
-
