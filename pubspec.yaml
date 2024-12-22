@@ -50,8 +50,9 @@ dev_dependencies:
 
 flutter_icons:
   android: true
-  ios: true
   image_path: "assets/images/setaksetik-icon.png"
+  adaptive_icon_foreground: "assets/images/setaksetik-icon-foreground.png"
+  adaptive_icon_background: "#F5F5DC"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
