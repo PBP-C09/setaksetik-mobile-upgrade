@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
@@ -28,7 +26,6 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   Future<void> fetchReviews(CookieRequest request) async {
     try {
       final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
-      // final response = await request.get('http://127.0.0.1:8000/review/get_review/');
 
       if (response != null) {
         setState(() {

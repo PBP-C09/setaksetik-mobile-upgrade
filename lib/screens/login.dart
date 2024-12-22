@@ -140,7 +140,6 @@ class _LoginPageState extends State<LoginPage> {
 
                                   final response = await request.login(
                                       "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/login-mobile/", {
-                                      // "http://127.0.0.1:8000/login-mobile/", {
                                     'username': username,
                                     'password': password,
                                   });
