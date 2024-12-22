@@ -6,8 +6,13 @@ import 'package:provider/provider.dart';
 
 class BookingFormPage extends StatefulWidget {
   final int menuId;
+  final String restaurantName;
 
-  const BookingFormPage({required this.menuId, Key? key}) : super(key: key);
+  const BookingFormPage({
+    required this.menuId, 
+    required this.restaurantName,
+    Key? key
+  }) : super(key: key);
 
   @override
   State<BookingFormPage> createState() => _BookingFormPageState();
@@ -46,7 +51,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
 
     try {
       final response = await request.postJson(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/add_flutter/${widget.menuId}/',
+        'http://127.0.0.1:8000/booking/add_flutter/${widget.menuId}/',
         jsonEncode(data),
       );
 
@@ -72,6 +77,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
   Widget build(BuildContext context) {
     final isMobile = MediaQuery.of(context).size.width < 600;
     return Scaffold(
+      backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
         title: const Text('Booking Form'),
         centerTitle: true,
@@ -83,6 +89,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
             constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 500),
             child: Card(
               elevation: 4,
+              color: const Color(0xFFF5F5DC),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               child: Padding(
                 padding: const EdgeInsets.all(24.0),
@@ -92,10 +99,22 @@ class _BookingFormPageState extends State<BookingFormPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Make a Reservation',
+                        'Make a Reservation at',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          fontFamily: 'Playfair Display',
+                          color: Color(0xFF6F4E37),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        widget.restaurantName,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Playfair Display',
+                          fontStyle: FontStyle.italic,
                           color: Color(0xFF6F4E37),
                         ),
                       ),
@@ -139,13 +158,17 @@ class _BookingFormPageState extends State<BookingFormPage> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFFC107),
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            backgroundColor: const Color(0xFF6D4C41),
+                            foregroundColor: Colors.black87,
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                            shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                        ),
                           ),
                           child: const Text(
                             'Submit Booking',
                             style: TextStyle(
+                              color: Colors.white,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),

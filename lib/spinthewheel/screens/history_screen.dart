@@ -133,7 +133,10 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              BookingFormPage(menuId: history.fields.winnerId),
+                                              BookingFormPage(
+                                                menuId: history.fields.winnerId,
+                                                restaurantName: history.fields.winner,
+                                              ),
                                         ),
                                       );
                                     },

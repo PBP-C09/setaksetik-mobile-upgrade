@@ -238,7 +238,10 @@ class MenuDetailPage extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => BookingFormPage(menuId: menuList.pk),
+                              builder: (context) => BookingFormPage(
+                                menuId: menuList.pk,
+                                restaurantName: menuList.fields.restaurantName,
+                              ),
                             ),
                           );
                         },

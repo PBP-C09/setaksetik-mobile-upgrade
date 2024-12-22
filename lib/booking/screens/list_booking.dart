@@ -183,8 +183,10 @@ class _BookingListPageState extends State<BookingListPage> {
                           Text(
                             booking['restaurant_name'], // Add this line
                             style: const TextStyle(
-                              fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: 'Playfair Display',
+                              color: Color(0xFF6F4E37),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -229,7 +231,10 @@ class _BookingListPageState extends State<BookingListPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EditBookingPage(bookingId: booking['id']),
+                                  builder: (context) => EditBookingPage(
+                                    bookingId: booking['id'],
+                                    restaurantName: booking['restaurant_name'],
+                                  ),
                                 ),
                               );
                             },
