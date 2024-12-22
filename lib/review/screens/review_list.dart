@@ -165,7 +165,7 @@ class _ReviewPageState extends State<ReviewPage> {
                             maxCrossAxisExtent: constraints.maxWidth / 2,
                             crossAxisSpacing: 16,
                             mainAxisSpacing: 16,
-                            mainAxisExtent: 280,
+                            mainAxisExtent: 320,
                           ),
                           itemCount: filteredMenus.length,
                           itemBuilder: (context, index) {
