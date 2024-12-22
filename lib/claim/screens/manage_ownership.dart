@@ -254,7 +254,7 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
                                     );
                                 }
                               },
-                              icon: const Icon(Icons.delete_forever, size: 24),
+                              icon: const Icon(Icons.delete_forever, size: 24, color: Color(0xFFF5F5DC)),
                               label: const Text(
                                 'Revoke Ownership',
                                 style: TextStyle(
