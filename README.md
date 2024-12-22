@@ -13,9 +13,9 @@ Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web](http://muhammad-
 4. [Initial Dataset](#initial-dataset)
 5. [Role atau Peran Pengguna](#role-atau-peran-pengguna)
 6. [Alur Pengintegrasian](#alur-pengintegrasian-dengan-web-service)
-7. [Desain](#desain)
+7. [Rancangan](#rancangan-desain)
 8. [Tautan Deployment](#tautan-deployment)
-9. [Video Storyline](#video-storyline)
+9. [Video Storyline](#dokumentasi)
 
 ---
 
@@ -131,17 +131,16 @@ Saat ini, aplikasi ini dirancang untuk pecinta _steak_ berbasis Jakarta. Dataset
 
 ---
 
-## Desain
-- **Rancangan Awal:** [Google Drive](https://drive.google.com/drive/folders/1O0XBPTdz9gD1TJ1LrmA1kOUIPMY3dUva?usp=drive_link).
-- **Finalisasi:** [Google Drive](https://drive.google.com/drive/folders/1RZED_cz4inNtOVT0_EubHG1Jb0msE876?usp=drive_link).
+## Rancangan Desain
+**Rancangan Awal:** [Google Drive](https://drive.google.com/drive/folders/1O0XBPTdz9gD1TJ1LrmA1kOUIPMY3dUva?usp=drive_link).
 
 ---
 
 ## Tautan Deployment
-**Aplikasi via App Center:** [SetakSetik Mobile](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/6).
+**Aplikasi via App Center:** [SetakSetik Mobile](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/9).
 
 ---
 
-## Video Storyline
-**Storyline SetakSetik:** [YouTube](https://youtu.be/KW6MbHLqILY?si=hb9QnD6wYGYt6XDk).
-
+## Dokumentasi
+- **Video Storyline:** [YouTube](https://youtu.be/KW6MbHLqILY?si=hb9QnD6wYGYt6XDk).
+- **Dokumentasi Aplikasi**: [Google Drive](https://drive.google.com/drive/folders/1RZED_cz4inNtOVT0_EubHG1Jb0msE876?usp=drive_link).
