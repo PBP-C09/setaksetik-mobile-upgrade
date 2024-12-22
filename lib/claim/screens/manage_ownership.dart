@@ -72,7 +72,18 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
                 child: Text('Error occurred: ${snapshot.error}'),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(child: Text('No claimed restaurants found.'));
+              return const Center(
+              child: Text(
+                "No claimed restaurants found!",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFFF5F5DC),
+                  fontFamily: 'Playfair Display',
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            );
             }
 
             final claimedRestaurants = snapshot.data!;

@@ -263,7 +263,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text("Error occurred: $e"),
-                                  backgroundColor: Colors.red,
+                                  backgroundColor: Color(0xFF842323),
                                 ),
                               );
                             }

@@ -172,7 +172,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                               review.fields.rating,
                                               (index) => const Icon(
                                                 Icons.star,
-                                                color: Color(0xFFE5B700),
+                                                color: Color(0xFFFFD54F),
                                                 size: 20,
                                               ),
                                             ),

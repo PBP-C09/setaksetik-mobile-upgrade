@@ -136,7 +136,7 @@ class _BookingListPageState extends State<BookingListPage> {
             return Center(
               child: Text(
                 'Error: ${snapshot.error}',
-                style: const TextStyle(color: Colors.red),
+                style: const TextStyle(color: Color(0xFF842323)),
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -223,8 +223,8 @@ class _BookingListPageState extends State<BookingListPage> {
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: booking['status'] == 'approved'
-                                  ? Colors.green
-                                  : Colors.red,
+                                  ? Color(0xFFFFD54F)
+                                  : Color(0xFF842323),
                             ),
                           ),
                         ],
@@ -236,7 +236,7 @@ class _BookingListPageState extends State<BookingListPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            icon: const Icon(Icons.edit, color: Color(0xFFFFD54F)),
                             onPressed: () {
                               Navigator.push(
                                 context,
@@ -250,7 +250,7 @@ class _BookingListPageState extends State<BookingListPage> {
                             },
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
+                            icon: const Icon(Icons.delete, color: Color(0xFF842323)),
                             onPressed: () => deleteBooking(booking['id']),
                           ),
                         ],

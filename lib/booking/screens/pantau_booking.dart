@@ -213,7 +213,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                               children: [
                                 Row(
                                   children: [
-                                    const Icon(Icons.person, color: Colors.blue, size: 20),
+                                    const Icon(Icons.person, color: Color(0xFF3E2723), size: 20),
                                     const SizedBox(width: 8),
                                     Text('User: ${booking['user']}',
                                         style: const TextStyle(
@@ -223,7 +223,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    const Icon(Icons.restaurant_menu, color: Colors.green, size: 20),
+                                    const Icon(Icons.restaurant_menu, color: Color(0xFF842323), size: 20),
                                     const SizedBox(width: 8),
                                     Text('Menu: ${booking['menu']}',
                                         style: const TextStyle(fontSize: 16)),
@@ -232,7 +232,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    const Icon(Icons.date_range, color: Colors.orange, size: 20),
+                                    const Icon(Icons.date_range, color: Color(0xFFFFD54F), size: 20),
                                     const SizedBox(width: 8),
                                     Text('Date: $formattedDate',
                                         style: const TextStyle(fontSize: 16)),
@@ -241,7 +241,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    const Icon(Icons.group, color: Colors.purple, size: 20),
+                                    const Icon(Icons.group, color: Color(0xFF6D4C41), size: 20),
                                     const SizedBox(width: 8),
                                     Text('People: ${booking['number_of_people']}',
                                         style: const TextStyle(fontSize: 16)),
@@ -290,7 +290,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                           }
                                         },
                                         style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.green,
+                                          backgroundColor: Color(0xFFFFD54F),
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(8),
                                           ),
@@ -302,7 +302,8 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.green,
+                                          fontStyle: FontStyle.italic,
+                                          color: Color(0xFF6D4C41),
                                         ),
                                       ),
                               ],

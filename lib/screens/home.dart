@@ -179,7 +179,6 @@ class HomePage extends StatelessWidget {
         _buildButtonWithInfo(
           context,
           'Manage Reviews',
-          // TODO: REVIEW ADMIN
           const ReviewAdmin(),
           const Color(0xFF842323),
           const Color(0xFFF5F5DC),

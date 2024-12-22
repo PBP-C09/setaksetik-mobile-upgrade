@@ -320,13 +320,13 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFC62828), 
+                              backgroundColor: Color(0xFF842323), 
                               foregroundColor: Colors.white, 
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8), 
                               ),
                             ),
-                            icon: const Icon(Icons.add),
+                            icon: const Icon(Icons.add, color: Colors.white,),
                             label: const Text(
                               'Add Menu',
                               style: TextStyle(fontWeight: FontWeight.bold),
@@ -541,7 +541,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                 // Edit Button
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.yellow[300],
+                                    color: Color(0xFFFFD54F),
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
@@ -577,7 +577,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                 // Delete Button
                                 Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.red[400],
+                                    color: Color(0xFF842323),
                                     borderRadius: BorderRadius.circular(20),
                                     boxShadow: [
                                       BoxShadow(
@@ -611,7 +611,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                                 // Panggil fungsi delete
                                                 child: const Text(
                                                   'Delete',
-                                                  style: TextStyle(color: Colors.red),
+                                                  style: TextStyle(color: Color(0xFF842323)),
                                                 ),
                                                 onPressed: () async {                  
                                                   _deleteMenu(request, menuList.pk);
