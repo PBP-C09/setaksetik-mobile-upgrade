@@ -266,14 +266,26 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                             setState(() {
                                               booking['status'] = 'approved';
                                             });
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                  content: Text('Booking approved successfully!')),
+                                            ScaffoldMessenger.of(context)
+                                            ..hideCurrentSnackBar()
+                                            ..showSnackBar(
+                                              SnackBar(
+                                                  backgroundColor: Color(0xFF3E2723),
+                                                  content:
+                                                      Text('Booking approved successfully!')),
                                             );
                                           } else {
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               const SnackBar(
                                                   content: Text('Failed to approve booking')),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                            ..hideCurrentSnackBar()
+                                            ..showSnackBar(
+                                              SnackBar(
+                                                  backgroundColor: Color(0xFF3E2723),
+                                                  content:
+                                                      Text('Failed to approve booking')),
                                             );
                                           }
                                         },

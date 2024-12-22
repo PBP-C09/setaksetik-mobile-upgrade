@@ -29,9 +29,6 @@ Future<void> claimRestaurant(BuildContext context, CookieRequest request, int me
   );
 
   if (response['status'] == 'success') {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Successfully claimed the restaurant!')),
-    );
     ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
     ..showSnackBar(

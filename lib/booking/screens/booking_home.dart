@@ -264,7 +264,7 @@ class _BookingPageState extends State<BookingPage> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BookingFormPage(menuId: menu.pk),
+            builder: (context) => BookingFormPage(menuId: menu.pk, restaurantName: menu.fields.restaurantName),
           ),
         );
       },
@@ -421,7 +421,7 @@ class _BookingPageState extends State<BookingPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BookingFormPage(menuId: menu.pk),
+                          builder: (context) => BookingFormPage(menuId: menu.pk, restaurantName: menu.fields.restaurantName),
                         ),
                       );
                     },

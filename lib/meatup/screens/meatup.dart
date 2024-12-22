@@ -87,24 +87,31 @@ class MeatUpPageState extends State<MeatUpPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Mau meat up',
-              style: TextStyle(
-                color: Color(0xFFF5F5DC),
-                fontSize: 42,
-                fontFamily: 'Playfair Display',
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center, // Center the column vertically
+                children: [
+                  const Text(
+                    'Mau Meat Up',
+                    style: TextStyle(
+                      color: Color(0xFFF5F5DC),
+                      fontSize: 42,
+                      fontFamily: 'Playfair Display',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const Text(
+                    'sama siapa?',
+                    style: TextStyle(
+                      color: Color(0xFFF5F5DC),
+                      fontSize: 42,
+                      fontStyle: FontStyle.italic,
+                      fontFamily: 'Playfair Display',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
-              textAlign: TextAlign.center,
-            ),
-            const Text(
-              'sama siapa?',
-              style: TextStyle(
-                color: Color(0xFFF5F5DC),
-                fontSize: 42,
-                fontStyle: FontStyle.italic,
-                fontFamily: 'Playfair Display',
-              ),
-              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32),
             Center(

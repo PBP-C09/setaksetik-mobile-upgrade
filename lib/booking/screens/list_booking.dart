@@ -98,14 +98,24 @@ class _BookingListPageState extends State<BookingListPage> {
         _bookingsFuture = fetchBookings(request);
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Booking deleted successfully!')),
-      );
+      ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                backgroundColor: Color(0xFF3E2723),
+                content:
+                    Text('Booking deleted successfully!')),
+          );
     } catch (e) {
       print('Error deleting booking: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to delete booking.')),
-      );
+      ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                backgroundColor: Color(0xFF3E2723),
+                content:
+                    Text('Failed to delete booking')),
+          );
     }
   }
 
@@ -183,8 +193,10 @@ class _BookingListPageState extends State<BookingListPage> {
                           Text(
                             booking['restaurant_name'], // Add this line
                             style: const TextStyle(
-                              fontSize: 18,
                               fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              fontFamily: 'Playfair Display',
+                              color: Color(0xFF6F4E37),
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -229,7 +241,10 @@ class _BookingListPageState extends State<BookingListPage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => EditBookingPage(bookingId: booking['id']),
+                                  builder: (context) => EditBookingPage(
+                                    bookingId: booking['id'],
+                                    restaurantName: booking['restaurant_name'],
+                                  ),
                                 ),
                               );
                             },
