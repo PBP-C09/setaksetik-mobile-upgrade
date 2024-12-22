@@ -118,9 +118,5 @@ Berikut langkah-langkah implementasinya:
 https://drive.google.com/drive/folders/1O0XBPTdz9gD1TJ1LrmA1kOUIPMY3dUva?usp=drive_link
 
 
-
-
 # Tautan Deployment
-Tautan deployment aplikasi **Setaksetik**. (TBA)
-
-
+Tautan deployment aplikasi [**SetakSetik**](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/1).

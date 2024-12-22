@@ -27,6 +27,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
     try {
       final response = await request.post(
         'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/delete-review-flutter/',
+        // 'http://127.0.0.1:8000/review/delete-review-flutter/',
         jsonEncode({'review_id': reviewId}),
       );
 
