@@ -1,8 +1,8 @@
-# Setaksetik Mobile
+# SetakSetik Mobile
 
 Sebuah aplikasi yang didekasikan untuk pecinta dan calon pecinta steak!
 
-Versi _mobile_ dari aplikasi yang sudah ada di [Setaksetik Web](http://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/)
+Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web](http://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/)
 
 ---
 
@@ -14,6 +14,7 @@ Versi _mobile_ dari aplikasi yang sudah ada di [Setaksetik Web](http://muhammad-
 5. [Role atau Peran Pengguna](#role-atau-peran-pengguna)
 6. [Alur Pengintegrasian](#alur-pengintegrasian-dengan-web-service)
 7. [Tautan Deployment](#tautan-deployment)
+8. [Video Storyline](#video-storyline)
 
 
 # Anggota Kelompok
@@ -29,7 +30,7 @@ Untuk menjawab kebingungan pengguna dalam memilih menu steak yang tepat, **Setak
 
 **SetakSetik** dikembangkan dengan berbagai modul yang mendukung kemudahan dalam pemilihan menu serta kenyamanan pengguna. Fitur autentikasi memungkinkan pengguna untuk login dengan mudah. Pengguna dapat melakukan _explore_ dari banyaknya menu yang tersedia beserta filter, lalu selanjutnya melakukan _booking_ restoran dan memberikan _review_. Selain itu, terdapat juga fitur _spin the wheel_ yang merupakan elemen hiburan dalam menentukan pilihan menu, serta fitur _meat up_ untuk melihat pengguna lain dengan _public wishlist_ dan preferensi yang serupa.
 
-Saat ini, aplikasi ini dirancang untuk pecinta steak berbasis Jakarta. Dataset yang digunakan adalah menu dan _steakhouse_ yang tersebar di segala penjuru Jakarta. Jadi, jika menjejakkan kaki di Jakarta dan mendambakan steak, tak perlu bingung tak perlu ragu, **Setaksetik** akan membantu!
+Saat ini, aplikasi ini dirancang untuk pecinta steak berbasis Jakarta. Dataset yang digunakan adalah menu dan _steakhouse_ yang tersebar di segala penjuru Jakarta. Jadi, jika menjejakkan kaki di Jakarta dan mendambakan steak, tak perlu bingung tak perlu ragu, **SetakSetik** akan membantu!
 
 
 # Daftar Modul
@@ -119,9 +120,14 @@ https://drive.google.com/drive/folders/1O0XBPTdz9gD1TJ1LrmA1kOUIPMY3dUva?usp=dri
 
 
 # Tautan Deployment
-Tautan deployment aplikasi [**SetakSetik**](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/2)
+Tautan deployment aplikasi [**SetakSetik**](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/4)
 
 
-# Previous Version Releases
--  [**1st Release**](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/1).
+## Previous Version Releases
+-  [**1st Release**](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/1)
 -  [**2nd Release**](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/2)
+-  [**3rd Release**](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/4)
+
+
+# Video Storyline
+Storyline dari aplikasi SetakSetik dapat ditonton [**di sini**](https://youtu.be/KW6MbHLqILY?si=hb9QnD6wYGYt6XDk)
