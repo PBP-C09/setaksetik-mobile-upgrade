@@ -24,7 +24,7 @@ class _WheelViewState extends State<WheelView> {
   List<int> _menuInWheel = [];
   List<MenuList> _menuOptions = [];
   List<MenuList> _allMenu = [];
-  List<bool> _isAddedList = List.generate(106, (index) => false);
+  late List<bool> _isAddedList;
 
   String _selectedCategory = "All Categories";
   MenuList? _selectedItem;
@@ -40,6 +40,7 @@ class _WheelViewState extends State<WheelView> {
   @override
   void initState() {
     super.initState();
+    _isAddedList = [];
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final request = context.read<CookieRequest>();
       _fetchMenuOptions(request, _selectedCategory);
@@ -187,6 +188,8 @@ class _WheelViewState extends State<WheelView> {
               _menuOptions.add(MenuList.fromJson(option));
             }
           }
+          int maxMenuId = _menuOptions.fold(0, (max, menu) => menu.pk > max ? menu.pk : max);
+          _isAddedList = List.generate(maxMenuId + 1, (index) => false);
         });
       }
   }
@@ -302,7 +305,7 @@ class _WheelViewState extends State<WheelView> {
       _wheelItems.clear();
       _wheelItems
           .add(FortuneItem(child: const Text("Start Adding Items!")));
-      _isAddedList = List.generate(106, (index) => false);
+      _isAddedList = List.generate(_isAddedList.length, (index) => false);
     });
   }
 
