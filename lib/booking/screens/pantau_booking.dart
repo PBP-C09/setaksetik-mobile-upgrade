@@ -223,16 +223,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                 const SizedBox(height: 8),
                                 Row(
                                   children: [
-                                    const Icon(Icons.restaurant_menu, color: Color(0xFF842323), size: 20),
-                                    const SizedBox(width: 8),
-                                    Text('Menu: ${booking['menu']}',
-                                        style: const TextStyle(fontSize: 16)),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    const Icon(Icons.date_range, color: Color(0xFFFFD54F), size: 20),
+                                    const Icon(Icons.date_range, color: Color(0xFF842323), size: 20),
                                     const SizedBox(width: 8),
                                     Text('Date: $formattedDate',
                                         style: const TextStyle(fontSize: 16)),
@@ -295,7 +286,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                             borderRadius: BorderRadius.circular(8),
                                           ),
                                         ),
-                                        child: const Text('Approve'),
+                                        child: const Text('Approve', style: TextStyle(fontWeight: FontWeight.w600),),
                                       )
                                     : const Text(
                                         'Approved',

@@ -35,7 +35,7 @@ Future<void> claimRestaurant(BuildContext context, CookieRequest request, int me
       SnackBar(
         backgroundColor: Color(0xFF3E2723),
         content:
-        Text("Successfully claimed the restaurant!")),
+        Text("Successfully claimed the restaurant!", style: TextStyle(color: Color(0xFFF5F5DC)),)),
         );
     UserProfile.data["claim"] = 1;
     Navigator.pushAndRemoveUntil(

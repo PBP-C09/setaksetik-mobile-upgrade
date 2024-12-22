@@ -75,11 +75,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
               backgroundColor: const Color(0xFF3E2723),
               content: Text(
                 response['message'],
-                style: const TextStyle(color: Colors.white),
-              ),
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                style: TextStyle(color: Color(0xFFF5F5DC)),
               ),
             ),
           );
@@ -88,12 +84,8 @@ class _BookingFormPageState extends State<BookingFormPage> {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Failed to submit booking. Please try again.'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            content: const Text('Failed to submit booking. Please try again.', style: TextStyle(color: Color(0xFFF5F5DC)),),
+            backgroundColor: Color(0xFF842323),
           ),
         );
       }
@@ -157,13 +149,8 @@ class _BookingFormPageState extends State<BookingFormPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF6F4E37).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Text(
                                 'Make a Reservation at',
