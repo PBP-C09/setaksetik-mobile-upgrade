@@ -27,9 +27,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
   Future<void> fetchMenus(CookieRequest request) async {
     try {
-      //TODO: apusininjanganlupa
-      // final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
-      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
       if (response != null) {
         setState(() {
           menus = menuListFromJson(jsonEncode(response));
