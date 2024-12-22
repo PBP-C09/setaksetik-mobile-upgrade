@@ -158,123 +158,125 @@ class _ReviewPageState extends State<ReviewPage> {
                   const SizedBox(height: 16),
                   // Menu Grid
                   Expanded(
-                    child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.7, // Adjusted for better card proportions
-                      ),
-                      itemCount: filteredMenus.length,
-                      itemBuilder: (context, index) {
-                        final menu = filteredMenus[index];
-                        return Card(
-                          elevation: 4,
-                          color: const Color(0xFFF5F5DC),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return GridView.builder(
+                          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: constraints.maxWidth / 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            mainAxisExtent: 280,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              // Image Container with fixed height
-                              SizedBox(
-                                height: 120,
-                                child: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    top: Radius.circular(12)
-                                  ),
-                                  child: Image.network(
-                                    menu.fields.image,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      List<String> placeholderImages = [
-                                        "assets/images/placeholder-image-1.png",
-                                        "assets/images/placeholder-image-2.png",
-                                        "assets/images/placeholder-image-3.png",
-                                        "assets/images/placeholder-image-4.png",
-                                        "assets/images/placeholder-image-5.png",
-                                      ];
-                                      int index = menu.pk % placeholderImages.length;
-                                      return Image.asset(
-                                        placeholderImages[index],
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  ),
-                                ),
+                          itemCount: filteredMenus.length,
+                          itemBuilder: (context, index) {
+                            final menu = filteredMenus[index];
+                            return Card(
+                              elevation: 4,
+                              color: const Color(0xFFF5F5DC),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              // Content Container
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      // Text content
-                                      Column(
+                              child: Column(
+                                children: [
+                                  // Image Container
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(12)
+                                    ),
+                                    child: Image.network(
+                                      menu.fields.image,
+                                      height: 120,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        List<String> placeholderImages = [
+                                          "assets/images/placeholder-image-1.png",
+                                          "assets/images/placeholder-image-2.png",
+                                          "assets/images/placeholder-image-3.png",
+                                          "assets/images/placeholder-image-4.png",
+                                          "assets/images/placeholder-image-5.png",
+                                        ];
+                                        int index = menu.pk % placeholderImages.length;
+                                        return Image.asset(
+                                          placeholderImages[index],
+                                          height: 120,
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  // Content Container
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
-                                            menu.fields.menu,
-                                            style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Playfair Display',
-                                              color: Color(0xFF3E2723),
-                                              height: 1.2,
+                                          // Text content
+                                          Expanded(
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  menu.fields.menu,
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Playfair Display',
+                                                    color: Color(0xFF3E2723),
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  softWrap: true,
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  menu.fields.restaurantName,
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Color(0xFF3E2723),
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                  softWrap: true,
+                                                ),
+                                              ],
                                             ),
-                                            textAlign: TextAlign.center,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
                                           ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            menu.fields.restaurantName,
-                                            style: const TextStyle(
-                                              fontSize: 14,
-                                              color: Color(0xFF3E2723),
-                                              height: 1.2,
+                                          // Button
+                                          const SizedBox(height: 8),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => ReviewEntryFormPage(menu: menu),
+                                                ),
+                                              );
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              foregroundColor: Colors.white,
+                                              backgroundColor: const Color(0xFFF7B32B),
+                                              padding: const EdgeInsets.symmetric(vertical: 8),
+                                              minimumSize: const Size(double.infinity, 36),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(8),
+                                              ),
                                             ),
-                                            textAlign: TextAlign.center,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.ellipsis,
+                                            child: const Text(
+                                              'Add Review',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      // Button at the bottom
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => ReviewEntryFormPage(menu: menu),
-                                            ),
-                                          );
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          foregroundColor: Colors.white,
-                                          backgroundColor: const Color(0xFFF7B32B),
-                                          padding: const EdgeInsets.symmetric(vertical: 8),
-                                          minimumSize: const Size(double.infinity, 36),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                        ),
-                                        child: const Text(
-                                          'Add Review',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
+                            );
+                          },
                         );
                       },
                     ),
