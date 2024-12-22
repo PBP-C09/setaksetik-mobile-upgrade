@@ -9,7 +9,7 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
 Future<List<MenuList>> fetchClaimResto(CookieRequest request) async {
   try {
-    final response = await request.get('http://127.0.0.1:8000/claim/json/');
+    final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/claim/json/');
 
     if (response == null) {
       return [];
@@ -24,7 +24,7 @@ Future<List<MenuList>> fetchClaimResto(CookieRequest request) async {
 
 Future<void> claimRestaurant(BuildContext context, CookieRequest request, int menuId) async {
   final response = await request.post(
-    'http://127.0.0.1:8000/claim/claim_flutter/$menuId/',
+    'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/claim/claim_flutter/$menuId/',
     {},
   );
 
