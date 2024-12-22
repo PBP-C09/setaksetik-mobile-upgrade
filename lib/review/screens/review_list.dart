@@ -27,7 +27,9 @@ class _ReviewPageState extends State<ReviewPage> {
 
   Future<void> fetchMenus(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+      //TODO: apusininjanganlupa
+      // final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
       if (response != null) {
         setState(() {
           menus = menuListFromJson(jsonEncode(response));
@@ -51,6 +53,14 @@ class _ReviewPageState extends State<ReviewPage> {
     });
   }
 
+  void sortMenus(bool ascending) {
+    setState(() {
+      filteredMenus.sort((a, b) => ascending
+          ? a.fields.menu.toLowerCase().compareTo(b.fields.menu.toLowerCase())
+          : b.fields.menu.toLowerCase().compareTo(a.fields.menu.toLowerCase()));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,40 +74,88 @@ class _ReviewPageState extends State<ReviewPage> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // Search Bar
-                  Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5F5DC),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
+                  // Search Bar and Filter Buttons
+                  Row(
+                    children: [
+                      // Search Bar
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF5F5DC),
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: TextField(
+                            onChanged: updateSearch,
+                            decoration: InputDecoration(
+                              hintText: "Cari menu...",
+                              hintStyle: const TextStyle(
+                                color: Color(0xFF8D6E63),
+                              ),
+                              prefixIcon: const Icon(Icons.search, color: Color(0xFF8D6E63)),
+                              filled: true,
+                              fillColor: const Color(0xFFF5F5DC),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: BorderSide.none,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
-                      ],
-                    ),
-                    child: TextField(
-                      onChanged: updateSearch,
-                      decoration: InputDecoration(
-                        hintText: "Cari menu...",
-                        hintStyle: const TextStyle(
-                          color: Color(0xFF8D6E63),
-                        ),
-                        prefixIcon: const Icon(Icons.search, color: Color(0xFF8D6E63)),
-                        filled: true,
-                        fillColor: const Color(0xFFF5F5DC),
-                        border: OutlineInputBorder(
+                      ),
+                      const SizedBox(width: 8),
+                      // Filter Buttons
+                      Container(
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide.none,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        child: Row(
+                          children: [
+                            ElevatedButton(
+                              onPressed: () => sortMenus(true),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                backgroundColor: const Color(0xFFF7B32B),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: const Text('A to Z'),
+                            ),
+                            const SizedBox(width: 4),
+                            ElevatedButton(
+                              onPressed: () => sortMenus(false),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: const Color(0xFF8D6E63),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                              child: const Text('Z to A'),
+                            ),
+                          ],
+                        ),
                       ),
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
-                    ),
+                    ],
                   ),
                   const SizedBox(height: 16),
                   // Menu Grid

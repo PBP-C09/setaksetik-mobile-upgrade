@@ -140,7 +140,10 @@ class _LoginPageState extends State<LoginPage> {
                                   String password = _passwordController.text;
 
                                   final response = await request.login(
-                                      "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/login-mobile/", {
+                                      //TODO: apusinijanganlupa
+                                      // "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/login-mobile/", {
+                                      "http://127.0.0.1:8000/login-mobile/", {
+                                      
                                     'username': username,
                                     'password': password,
                                   });

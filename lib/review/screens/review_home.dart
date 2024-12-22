@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
+import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 
 class ReviewMainPage extends StatefulWidget {
   const ReviewMainPage({super.key});
@@ -14,6 +15,8 @@ class ReviewMainPage extends StatefulWidget {
 
 class _ReviewMainPageState extends State<ReviewMainPage> {
   List<ReviewList> reviews = []; // Daftar review yang di-fetch dari API
+  List<ReviewList> filteredReviews = []; // Daftar review yang difilter berdasarkan pencarian
+  String searchQuery = "";
 
   @override
   void initState() {
@@ -25,11 +28,14 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      //TODO: apusinijanganlupa
+      // final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('http://127.0.0.1:8000/review/get_review/');
 
       if (response != null) {
         setState(() {
           reviews = reviewListFromJson(response);
+          filteredReviews = reviews;
         });
       } else {
         throw Exception('Response is null');
@@ -38,6 +44,17 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
       print('Error: $e');
       throw Exception('Failed to load reviews');
     }
+  }
+
+  void updateSearch(String query) {
+    setState(() {
+      searchQuery = query;
+      filteredReviews = reviews
+          .where((review) =>
+              review.fields.menu.toLowerCase().contains(query.toLowerCase()) ||
+              review.fields.place.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
   }
 
   @override
@@ -127,8 +144,44 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                         ],
                       ),
                     ),
+                    // Search Bar
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        onChanged: updateSearch,
+                        decoration: InputDecoration(
+                          hintText: "Cari menu atau restoran...",
+                          hintStyle: const TextStyle(
+                            color: Color(0xFF8D6E63),
+                          ),
+                          prefixIcon: const Icon(Icons.search, color: Color(0xFF8D6E63)),
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                        ),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     Column(
-                      children: reviews.map((review) {
+                      children: filteredReviews.map((review) {
                         return Card(
                           color: const Color(0xFFF5F5DC),
                           elevation: 4.0,
@@ -199,7 +252,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                  if (review.fields.ownerReply != null &&
+                                if (review.fields.ownerReply != null &&
                                     review.fields.ownerReply!.isNotEmpty)
                                   Container(
                                     width: double.infinity, // Ensures full width inside the card
@@ -234,18 +287,8 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                       ],
                                     ),
                                   ),
-
-
                               ],
                             ),
-                            onTap: () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ReviewPage(),
-                                ),
-                              );
-                            },
                           ),
                         );
                       }).toList(),

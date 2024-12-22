@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
+import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_entry.dart';
 
 //Class untuk detail menu (bisa review dan booking dari sini)
@@ -323,6 +324,9 @@ class MenuDetailPage extends StatelessWidget {
       ),
     );
   }
+
+
+
 
   // Widget untuk menampilkan bullet info
   Widget _buildBulletInfo(String label, bool value) {
