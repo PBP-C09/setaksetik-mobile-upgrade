@@ -158,7 +158,7 @@ class _WheelViewState extends State<WheelView> {
           ),
           const SizedBox(height: 20),
           SizedBox(
-            height: 200,
+            height: MediaQuery.of(context).size.height * 0.4,
             child: SingleChildScrollView(
               child: Column(
                 children: _menuOptions.asMap().entries.map((entry) {
@@ -322,6 +322,8 @@ class _WheelViewState extends State<WheelView> {
                 color: Color(0xFF3E2723),
                 fontSize: 20.0,
               ),
+              textAlign: TextAlign.center,
+              softWrap: true,
             ),
           ),
 
@@ -361,6 +363,8 @@ class _WheelViewState extends State<WheelView> {
                   fontFamily: 'Raleway',
                   color: Color(0xFFF5F5DC),
                 ),
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
               ),
             ],
           ),

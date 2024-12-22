@@ -71,7 +71,6 @@ class UserProfilePage extends StatelessWidget {
       onPressed: () async {
         final response = await request.logout(
           "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/logout-mobile/");
-          // "http://127.0.0.1:8000/logout-mobile/");
 
         String message = response["message"];
         if (context.mounted) {
