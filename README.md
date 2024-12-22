@@ -137,7 +137,7 @@ Saat ini, aplikasi ini dirancang untuk pecinta _steak_ berbasis Jakarta. Dataset
 ---
 
 ## Tautan Deployment
-**Aplikasi via App Center:** [SetakSetik Mobile](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/9).
+**Aplikasi via App Center:** [SetakSetik Mobile](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/10).
 
 ---
 
