@@ -207,7 +207,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
 
   Future<List<SpinHistory>> _fetchSpinHistory(CookieRequest request) async {
     final response =
-        await request.get('http://127.0.0.1:8000/spinthewheel/history-json/');
+        await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/history-json/');
     var data = response;
     List<SpinHistory> listHistory = [];
     for (var d in data) {
@@ -219,7 +219,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
   }
 
   _deleteSpinHistory(CookieRequest request, String pk) {
-    request.get('http://127.0.0.1:8000/spinthewheel/delete/$pk');
+    request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/delete/$pk');
     // Refresh the spin history list
     setState(() {
       spinHistoryFuture = _fetchSpinHistory(request);
