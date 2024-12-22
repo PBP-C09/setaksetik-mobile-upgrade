@@ -42,6 +42,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                   fontStyle: FontStyle.italic,
                 ),
                 textAlign: TextAlign.center,
+                softWrap: true,
               ),
             );
           } else {
@@ -83,7 +84,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                               SizedBox(
                                 width: double.infinity,
                                 child: Text(
-                                  'Di-spin pada: ${history.fields.spinTime.toLocal().toString().split(' ')[0]}',
+                                  'Spinned on: ${history.fields.spinTime.toLocal().toString().split(' ')[0]}',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 14.0,
@@ -206,7 +207,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
 
   Future<List<SpinHistory>> _fetchSpinHistory(CookieRequest request) async {
     final response =
-        await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/history-json/');
+        await request.get('http://127.0.0.1:8000/spinthewheel/history-json/');
     var data = response;
     List<SpinHistory> listHistory = [];
     for (var d in data) {
@@ -218,7 +219,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
   }
 
   _deleteSpinHistory(CookieRequest request, String pk) {
-    request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/delete/$pk');
+    request.get('http://127.0.0.1:8000/spinthewheel/delete/$pk');
     // Refresh the spin history list
     setState(() {
       spinHistoryFuture = _fetchSpinHistory(request);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:provider/provider.dart';
 import 'edit_booking.dart';
@@ -44,14 +45,14 @@ class _BookingListPageState extends State<BookingListPage> {
   Future<List<dynamic>> fetchBookings(CookieRequest request) async {
     try {
       // First fetch the bookings
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/json/all/');
+      final response = await request.get('http://127.0.0.1:8000/booking/json/all/');
       
       if (response == null || response.isEmpty) {
         return [];
       }
 
       // Then fetch all menus
-      final menuResponse = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+      final menuResponse = await request.get('http://127.0.0.1:8000/explore/get_menu/');
       final menus = menuResponse != null ? 
         menuResponse.map((item) => MenuList.fromJson(item)).toList() : 
         <MenuList>[];
@@ -87,7 +88,7 @@ class _BookingListPageState extends State<BookingListPage> {
   Future<void> deleteBooking(int bookingId) async {
     final request = Provider.of<CookieRequest>(context, listen: false);
     try {
-      final url = 'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/delete_flutter/$bookingId/';
+      final url = 'http://127.0.0.1:8000/booking/delete_flutter/$bookingId/';
       await request.post(
         url,
         {}, // Empty body
@@ -140,11 +141,38 @@ class _BookingListPageState extends State<BookingListPage> {
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text(
-                'No bookings found. Please log in or add a booking.',
-                style: TextStyle(color: Colors.white, fontSize: 16),
-              ),
+            return Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                        const Text(
+                            'No bookings found :O, please make a booking :D',
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Color(0xFFF5F5DC),
+                              fontFamily: 'Playfair Display',
+                            ),
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromARGB(255, 166, 143, 140),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const BookingPage(),
+                                    ),
+                                );
+                            },
+                            child: const Text('Booking'),
+                        ),
+                    ],
+                ),
             );
           }
 

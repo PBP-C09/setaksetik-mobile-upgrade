@@ -33,7 +33,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
   // Fungsi untuk mengambil data menu
   Future<List<MenuList>> fetchMenu(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
 
       if (response == null) {
         return [];
@@ -354,191 +354,206 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                       color: const Color(0xFFF5F5DC),
                       clipBehavior: Clip.antiAlias,
                       child: Stack(
+                        alignment: Alignment.center,
                         children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Image
-                          AspectRatio(
-                            aspectRatio: 2.0,
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Image.network(
-                                menuList.fields.image,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  // Jika gagal load image, tampilkan placeholder
-                                  List<String> placeholderImages = [
-                                    "assets/images/placeholder-image-1.png",
-                                    "assets/images/placeholder-image-2.png",
-                                    "assets/images/placeholder-image-3.png",
-                                    "assets/images/placeholder-image-4.png",
-                                    "assets/images/placeholder-image-5.png",
-                                  ];
-
-                                  int index = menuList.pk % placeholderImages.length;
-
-                                  return Image.asset(
-                                    placeholderImages[index],
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // Image
+                              AspectRatio(
+                                aspectRatio: 2.0,
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Image.network(
+                                    menuList.fields.image,
                                     fit: BoxFit.cover,
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(12),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  menuList.fields.menu,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Playfair Display',
-                                    color: Color(0xFF3E2723),
+                                    errorBuilder: (context, error, stackTrace) {
+                                      List<String> placeholderImages = [
+                                        "assets/images/placeholder-image-1.png",
+                                        "assets/images/placeholder-image-2.png",
+                                        "assets/images/placeholder-image-3.png",
+                                        "assets/images/placeholder-image-4.png",
+                                        "assets/images/placeholder-image-5.png",
+                                      ];
+
+                                      int index = menuList.pk % placeholderImages.length;
+
+                                      return Image.asset(
+                                        placeholderImages[index],
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
                                   ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                const SizedBox(height: 8),
-                                Row(
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    const Icon(
-                                      Icons.location_on,
-                                      size: 16,
-                                      color: Color(0xFF3E2723),
+                                    Text(
+                                      menuList.fields.menu,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Playfair Display',
+                                        color: Color(0xFF3E2723),
+                                      ),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        '${menuList.fields.restaurantName}, ${menuList.fields.city.name}',
-                                        style: const TextStyle(
-                                          fontSize: 12,
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.location_on,
+                                          size: 16,
                                           color: Color(0xFF3E2723),
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
+                                        const SizedBox(width: 8),
+                                        Flexible(
+                                          child: Text(
+                                            '${menuList.fields.restaurantName}, ${menuList.fields.city.name}',
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Color(0xFF3E2723),
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star, 
-                                      size: 16, 
-                                      color: Colors.amber
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.star, 
+                                          size: 16, 
+                                          color: Colors.amber
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          '${menuList.fields.rating} / 5',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF3E2723),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      '${menuList.fields.rating} / 5',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF3E2723),
-                                      ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.payments_outlined,
+                                          size: 16,
+                                          color: Color(0xFF3E2723),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Rp ${menuList.fields.price}',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Color(0xFF3E2723),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.payments_outlined,
-                                      size: 16,
-                                      color: Color(0xFF3E2723),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF7B32B),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            menuList.fields.category,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFF7B32B),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          child: Text(
+                                            menuList.fields.specialized,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Rp ${menuList.fields.price}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF3E2723),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF7B32B),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        menuList.fields.category,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
+                                    const SizedBox(height: 8),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => AdminDetail(menuList: menuList),
+                                            ),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(0xFF6D4C41),
+                                          foregroundColor: Colors.white,
+                                          padding: const EdgeInsets.symmetric(vertical: 12),
+                                          minimumSize: const Size(double.infinity, 48),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                        ),
+                                        child: const Text(
+                                          'See Details',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFF7B32B),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Text(
-                                        menuList.fields.specialized,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
-                                // Button See Details
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AdminDetail(menuList: menuList),
-                                      ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF6D4C41),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    minimumSize: const Size(double.infinity, 48),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'See Details',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      // Edit dan Delete Button
-                       Positioned(
+                          // Edit and Delete Buttons
+                          Positioned(
                             top: 8,
                             left: 8,
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                // Edit Button
                                 Container(
                                   decoration: BoxDecoration(
                                     color: Color(0xFFFFD54F),
@@ -574,7 +589,6 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                   ),
                                 ),
                                 const SizedBox(width:8),
-                                // Delete Button
                                 Container(
                                   decoration: BoxDecoration(
                                     color: Color(0xFF842323),
@@ -594,7 +608,6 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                       color: Colors.white,
                                     ),
                                     onPressed: () {
-                                      // Tampilkan dialog konfirmasi
                                       showDialog(
                                         context: context,
                                         builder: (BuildContext context) {
@@ -602,13 +615,11 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                             title: const Text('Delete Menu'),
                                             content: const Text('Are you sure you want to delete this menu?'),
                                             actions: [
-                                              // bali ke halaman sebelumnya kalau cancel
                                               TextButton(
                                                 child: const Text('Cancel'),
                                                 onPressed: () => Navigator.of(context).pop(),
                                               ),
                                               TextButton(
-                                                // Panggil fungsi delete
                                                 child: const Text(
                                                   'Delete',
                                                   style: TextStyle(color: Color(0xFF842323)),
@@ -646,7 +657,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
 
   // Fungsi untuk menghapus menu
   _deleteMenu(CookieRequest request, int pk) {
-    request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/delete/$pk');
+    request.get('http://127.0.0.1:8000/explore/delete/$pk');
     setState(() {
       _menuFuture = fetchMenu(request);
     });

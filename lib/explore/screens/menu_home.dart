@@ -32,7 +32,7 @@ class _MenuPageState extends State<MenuPage> {
   // Mengambil data menu dari backend API
   Future<List<MenuList>> fetchMenu(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
 
       if (response == null) {
         return [];
@@ -334,9 +334,10 @@ class _MenuPageState extends State<MenuPage> {
                       color: const Color(0xFFF5F5DC),
                       clipBehavior: Clip.antiAlias,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Gambar menu
+                          // Image
                           AspectRatio(
                             aspectRatio: 2.0,
                             child: SizedBox(
@@ -345,7 +346,6 @@ class _MenuPageState extends State<MenuPage> {
                                 menuList.fields.image,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  // Tampilkan placeholder image jika gagal memuat gambar
                                   List<String> placeholderImages = [
                                     "assets/images/placeholder-image-1.png",
                                     "assets/images/placeholder-image-2.png",
@@ -364,15 +364,17 @@ class _MenuPageState extends State<MenuPage> {
                               ),
                             ),
                           ),
-                          // Deskripsi menu
+                          // Menu description
                           Padding(
                             padding: const EdgeInsets.all(12),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // Nama menu
+                                // Menu name
                                 Text(
                                   menuList.fields.menu,
+                                  textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -383,8 +385,9 @@ class _MenuPageState extends State<MenuPage> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 8),
-                                // Nama restoran dan kota
+                                // Restaurant and city
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.location_on,
@@ -392,9 +395,10 @@ class _MenuPageState extends State<MenuPage> {
                                       color: Color(0xFF3E2723),
                                     ),
                                     const SizedBox(width: 8),
-                                    Expanded(
+                                    Flexible(
                                       child: Text(
                                         '${menuList.fields.restaurantName}, ${menuList.fields.city.name}',
+                                        textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontSize: 12,
                                           color: Color(0xFF3E2723),
@@ -408,17 +412,17 @@ class _MenuPageState extends State<MenuPage> {
                                 const SizedBox(height: 8),
                                 // Rating
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Icon(
-                                      Icons.star, 
-                                      size: 16, 
+                                      Icons.star,
+                                      size: 16,
                                       color: Colors.amber
                                     ),
-                                
                                     const SizedBox(width: 8),
-                                    // Rating
                                     Text(
                                       '${menuList.fields.rating} / 5',
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF3E2723),
@@ -427,8 +431,9 @@ class _MenuPageState extends State<MenuPage> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-                                // Harga
+                                // Price
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Icon(
                                       Icons.payments_outlined,
@@ -438,6 +443,7 @@ class _MenuPageState extends State<MenuPage> {
                                     const SizedBox(width: 8),
                                     Text(
                                       'Rp ${menuList.fields.price}',
+                                      textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontSize: 12,
                                         color: Color(0xFF3E2723),
@@ -446,8 +452,9 @@ class _MenuPageState extends State<MenuPage> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-                                // Kategori dan spesialisasi
+                                // Category and specialization
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.symmetric(
@@ -460,6 +467,7 @@ class _MenuPageState extends State<MenuPage> {
                                       ),
                                       child: Text(
                                         menuList.fields.category,
+                                        textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 12,
@@ -478,6 +486,7 @@ class _MenuPageState extends State<MenuPage> {
                                       ),
                                       child: Text(
                                         menuList.fields.specialized,
+                                        textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 12,
@@ -487,30 +496,33 @@ class _MenuPageState extends State<MenuPage> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-
-                                // Tombol see details
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MenuDetailPage(menuList: menuList),
+                                // See details button
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MenuDetailPage(menuList: menuList),
+                                        ),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF6D4C41),
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(vertical: 12),
+                                      minimumSize: const Size(double.infinity, 48),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF6D4C41),
-                                    foregroundColor: Colors.white,
-                                    padding: const EdgeInsets.symmetric(vertical: 12),
-                                    minimumSize: const Size(double.infinity, 48),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
                                     ),
-                                  ),
-                                  child: const Text(
-                                    'See Details',
-                                    style: TextStyle(
-                                      fontSize: 14,
+                                    child: const Text(
+                                      'See Details',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -519,7 +531,7 @@ class _MenuPageState extends State<MenuPage> {
                           ),
                         ],
                       ),
-                    ),
+                    )
                   );
                 }
               },

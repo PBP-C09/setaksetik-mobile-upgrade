@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,8 @@ class EditBookingPage extends StatefulWidget {
   const EditBookingPage({
     required this.bookingId,
     required this.restaurantName,
-  Key? key}) : super(key: key);
+    Key? key
+  }) : super(key: key);
 
   @override
   State<EditBookingPage> createState() => _EditBookingPageState();
@@ -23,163 +23,25 @@ class _EditBookingPageState extends State<EditBookingPage> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _peopleController = TextEditingController();
 
-  Future<void> _submitEdit() async {
-    final request = Provider.of<CookieRequest>(context, listen: false);
-    final data = {
-      'booking_date': _dateController.text,
-      'number_of_people': _peopleController.text,
-    };
-
-    try {
-      final response = await request.postJson(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/edit_flutter/${widget.bookingId}/',
-        jsonEncode(data),
-      );
-
-      if (response != null && response['message'] != null) {
-        ScaffoldMessenger.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-                backgroundColor: Color(0xFF3E2723),
-                content:
-                    Text(response['message'])),
-          );
-        // Replace the current screen with BookingListPage
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const BookingListPage()),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to edit booking. Please try again.')),
-        );
-      }
-    } catch (e) {
-      print('Error editing booking: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('An unexpected error occurred.')),
-      );
-    }
-  }
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF3E2723),
-      appBar: AppBar(
-        title: const Text('Edit Booking'),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            elevation: 4,
-            color: const Color(0xFFF5F5DC),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'Edit Your Booking at',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24,
-                        fontFamily: 'Playfair Display',
-                        color: Color(0xFF6F4E37),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                        widget.restaurantName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          fontFamily: 'Playfair Display',
-                          fontStyle: FontStyle.italic,
-                          color: Color(0xFF6F4E37),
-                        ),
-                      ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _dateController,
-                      readOnly: true,
-                      onTap: () => _selectDate(context),
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Booking Date',
-                        suffixIcon: const Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      validator: (value) => value!.isEmpty ? 'Please select a booking date' : null,
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      controller: _peopleController,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
-                      decoration: InputDecoration(
-                        labelText: 'Number of People',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) => value!.isEmpty ? 'Please enter number of people' : null,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _submitEdit();
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6D4C41),
-                        foregroundColor: Colors.black87,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Save Changes',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2100),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color(0xFF6F4E37),
+              onPrimary: Colors.white,
+              surface: Color(0xFFF5F5DC),
+              onSurface: Color(0xFF3E2723),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
 
     if (picked != null) {
@@ -187,5 +49,225 @@ class _EditBookingPageState extends State<EditBookingPage> {
         _dateController.text = "${picked.toLocal()}".split(' ')[0];
       });
     }
+  }
+
+  Future<void> _submitEdit() async {
+    final request = Provider.of<CookieRequest>(context, listen: false);
+    final data = {
+      'booking_date': "${_dateController.text}T00:00:00",
+      'number_of_people': _peopleController.text,
+    };
+
+    try {
+      final response = await request.postJson(
+        'http://127.0.0.1:8000/booking/edit_flutter/${widget.bookingId}/',
+        jsonEncode(data),
+      );
+
+      if (response != null && response['message'] != null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              backgroundColor: const Color(0xFF3E2723),
+              content: Text(
+                response['message'],
+                style: const TextStyle(color: Color(0xFFF5F5DC)),
+              ),
+            ),
+          );
+        Navigator.of(context).pop();
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const BookingListPage()),
+        );
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to edit booking. Please try again.', 
+              style: TextStyle(color: Color(0xFFF5F5DC)),
+            ),
+            backgroundColor: Color(0xFF842323),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Error editing booking: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('An unexpected error occurred.'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 600;
+    
+    return Scaffold(
+      backgroundColor: const Color(0xFF3E2723),
+      appBar: AppBar(
+        title: const Text(
+          'Edit Booking',
+          style: TextStyle(
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: isMobile ? double.infinity : 500),
+            child: Card(
+              elevation: 8,
+              color: const Color(0xFFF5F5DC),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Edit Your Booking at',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Playfair Display',
+                            color: Color(0xFF6F4E37),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.restaurantName,
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Playfair Display',
+                            fontStyle: FontStyle.italic,
+                            color: Color(0xFF3E2723),
+                          ),
+                        ),
+                        const SizedBox(height: 32),
+                        TextFormField(
+                          controller: _dateController,
+                          readOnly: true,
+                          onTap: () => _selectDate(context),
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            labelText: 'Booking Date',
+                            labelStyle: const TextStyle(
+                              color: Color(0xFF6F4E37),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            suffixIcon: Icon(
+                              Icons.calendar_today,
+                              color: const Color(0xFF6F4E37).withOpacity(0.7),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Color(0xFF6F4E37)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Color(0xFF6F4E37), width: 2),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          validator: (value) => value!.isEmpty ? 'Please select a booking date' : null,
+                        ),
+                        const SizedBox(height: 24),
+                        TextFormField(
+                          controller: _peopleController,
+                          style: const TextStyle(
+                            color: Colors.black87,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            labelText: 'Number of People',
+                            labelStyle: const TextStyle(
+                              color: Color(0xFF6F4E37),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Color(0xFF6F4E37)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(color: Color(0xFF6F4E37), width: 2),
+                            ),
+                            filled: true,
+                            fillColor: Colors.white,
+                          ),
+                          keyboardType: TextInputType.number,
+                          validator: (value) => value!.isEmpty ? 'Please enter number of people' : null,
+                        ),
+                        const SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                _submitEdit();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6F4E37),
+                              foregroundColor: Colors.white,
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text(
+                              'Save Changes',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

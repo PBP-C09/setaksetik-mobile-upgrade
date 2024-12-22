@@ -9,7 +9,7 @@ import 'package:setaksetikmobile/booking/screens/list_booking.dart';
 
 Future<List<MenuList>> fetchMenu(CookieRequest request) async {
   try {
-    final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+    final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
 
     if (response == null) {
       return [];
@@ -273,7 +273,8 @@ class _BookingPageState extends State<BookingPage> {
         color: const Color(0xFFF5F5DC),
         clipBehavior: Clip.antiAlias,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             AspectRatio(
               aspectRatio: 2.0,
@@ -283,31 +284,33 @@ class _BookingPageState extends State<BookingPage> {
                   menu.fields.image,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) {
-                  List<String> placeholderImages = [
-                    "assets/images/placeholder-image-1.png",
-                    "assets/images/placeholder-image-2.png",
-                    "assets/images/placeholder-image-3.png",
-                    "assets/images/placeholder-image-4.png",
-                    "assets/images/placeholder-image-5.png",
-                  ];
+                    List<String> placeholderImages = [
+                      "assets/images/placeholder-image-1.png",
+                      "assets/images/placeholder-image-2.png",
+                      "assets/images/placeholder-image-3.png",
+                      "assets/images/placeholder-image-4.png",
+                      "assets/images/placeholder-image-5.png",
+                    ];
 
-                  int index = menu.pk % placeholderImages.length;
+                    int index = menu.pk % placeholderImages.length;
 
-                  return Image.asset(
-                    placeholderImages[index],
-                    fit: BoxFit.cover,
-                  );
-                },
+                    return Image.asset(
+                      placeholderImages[index],
+                      fit: BoxFit.cover,
+                    );
+                  },
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     menu.fields.restaurantName,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -319,6 +322,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 8),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
                         Icons.restaurant,
@@ -328,6 +332,7 @@ class _BookingPageState extends State<BookingPage> {
                       const SizedBox(width: 8),
                       Text(
                         '${menu.fields.menu}',
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFF3E2723),
@@ -337,6 +342,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 8),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
                         Icons.location_on_outlined,
@@ -344,9 +350,10 @@ class _BookingPageState extends State<BookingPage> {
                         color: Color(0xFF3E2723),
                       ),
                       const SizedBox(width: 8),
-                      Expanded(
+                      Flexible(
                         child: Text(
                           '${menu.fields.city.name}',
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 12,
                             color: Color(0xFF3E2723),
@@ -359,6 +366,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 8),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
                         Icons.star,
@@ -368,6 +376,7 @@ class _BookingPageState extends State<BookingPage> {
                       const SizedBox(width: 8),
                       Text(
                         '${menu.fields.rating} / 5',
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFF3E2723),
@@ -377,6 +386,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 8),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
                         Icons.payments_outlined,
@@ -386,6 +396,7 @@ class _BookingPageState extends State<BookingPage> {
                       const SizedBox(width: 8),
                       Text(
                         'Rp ${menu.fields.price}',
+                        textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 12,
                           color: Color(0xFF3E2723),
@@ -395,6 +406,7 @@ class _BookingPageState extends State<BookingPage> {
                   ),
                   const SizedBox(height: 8),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -407,6 +419,7 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                         child: Text(
                           menu.fields.category,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -416,28 +429,32 @@ class _BookingPageState extends State<BookingPage> {
                     ],
                   ),
                   const SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookingFormPage(menuId: menu.pk, restaurantName: menu.fields.restaurantName),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingFormPage(menuId: menu.pk, restaurantName: menu.fields.restaurantName),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6D4C41),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        minimumSize: const Size(double.infinity, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6D4C41),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      minimumSize: const Size(double.infinity, 48),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
-                    child: const Text(
-                      'Book Now',
-                      style: TextStyle(
-                        fontSize: 14,
+                      child: const Text(
+                        'Book Now',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
                       ),
                     ),
                   ),
