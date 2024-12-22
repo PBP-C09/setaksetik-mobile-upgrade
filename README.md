@@ -15,7 +15,7 @@ Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web](http://muhammad-
 6. [Alur Pengintegrasian](#alur-pengintegrasian-dengan-web-service)
 7. [Rancangan](#rancangan-desain)
 8. [Tautan Deployment](#tautan-deployment)
-9. [Video Storyline](#dokumentasi)
+9. [Dokumentasi](#dokumentasi)
 
 ---
 
@@ -39,11 +39,11 @@ Saat ini, aplikasi ini dirancang untuk pecinta _steak_ berbasis Jakarta. Dataset
 
 ## Daftar Modul
 
-1. **Autentikasi**
+### 1. **Autentikasi**
    - Mendaftar dan membuat akun (username, name, role, password, dan konfirmasi password).
    - Login dan logout.
 
-2. **Explore Menu** _(Steak Lover, Steakhouse Owner, Admin)_ : Nadira
+### 2. **Explore Menu** _(Steak Lover, Steakhouse Owner, Admin)_ : Nadira
    - Fitur filter berdasarkan:
      - Jenis beef.
      - Kota.
@@ -52,27 +52,27 @@ Saat ini, aplikasi ini dirancang untuk pecinta _steak_ berbasis Jakarta. Dataset
    - Explore untuk Steakhouse Owner terintegrasi dengan fitur Claim.
    - Admin dapat menambah, mengedit, serta menghapus daftar menu yang tersedia.
 
-3. **Spin the Wheel - Makan Apa Hari Ini** _(Steak Lover)_ : Haliza
+### 3. **Spin the Wheel - Makan Apa Hari Ini** _(Steak Lover)_ : Haliza
    - Pilih preferensi beef untuk menambahkan menu ke daftar spin.
    - Tambah/hapus daftar menu dari _spin wheel_.
    - Simpan hasil spin ke dalam _spin history_.
 
-4. **Rating dan Review** _(Steak Lover, Steakhouse Owner)_ : Clara
+### 4. **Rating dan Review** _(Steak Lover, Steakhouse Owner)_ : Clara
    - Steak Lover dapat memberi _rating_ dan _review_ pada menu yang dicoba.
    - Steakhouse Owner dapat membalas _review_.
    - Admin dapat menghapus _review_ yang tidak sesuai.
 
-5. **Meat Up - Teman Makan** _(Steak Lover)_ : Aimee
+### 5. **Meat Up - Teman Makan** _(Steak Lover)_ : Aimee
    - Mengirim pesan ke Steak Lover lainnya.
    - Mengedit pesan yang telah dikirim.
    - Melakukan _reject_ terhadap pesan Meat Up dari Steak Lover lain.
 
-6. **Booking Restoran** _(Steak Lover, Steakhouse Owner)_ : Faizi
+### 6. **Booking Restoran** _(Steak Lover, Steakhouse Owner)_ : Faizi
    - _Booking_ berdasarkan restoran, nama pemesan, dan jumlah orang.
    - Melihat riwayat _booking_.
    - Steakhouse Owner dapat menyetujui _booking_.
 
-7. **Claim Restoran** _(Steakhouse Owner, Admin)_
+### 7. **Claim Restoran** _(Steakhouse Owner, Admin)_
    - Steakhouse Owner dapat mengklaim kepemilikan restoran.
    - Admin dapat mencabut klaim kepemilikan restoran.
 
