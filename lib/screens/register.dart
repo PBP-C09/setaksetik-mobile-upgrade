@@ -57,7 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       'Register to',
                       style: TextStyle(
                         fontFamily: 'Playfair Display',
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w600,
                         fontStyle: FontStyle.italic,
                         color: Color(0xFF3E2723),
                         fontSize: 24,
@@ -108,7 +108,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: InputDecoration(
                               labelText: 'Role',
                               labelStyle: TextStyle(color: Color(0xFF3E2723)),
-                              prefixIcon: Icon(Icons.person_outline, color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.badge, color: Color(0xFF3E2723)),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(color: Color(0xFF3E2723)),
@@ -144,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: InputDecoration(
                               labelText: 'Full Name',
                               labelStyle: TextStyle(color: Color(0xFF3E2723)),
-                              prefixIcon: Icon(Icons.person, color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.person_outline, color: Color(0xFF3E2723)),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(color: Color(0xFF3E2723)),
@@ -162,7 +162,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: InputDecoration(
                               labelText: 'Password',
                               labelStyle: TextStyle(color: Color(0xFF3E2723)),
-                              prefixIcon: Icon(Icons.lock_outline, color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.lock, color: Color(0xFF3E2723)),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(color: Color(0xFF3E2723)),
@@ -181,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: InputDecoration(
                               labelText: 'Confirm Password',
                               labelStyle: TextStyle(color: Color(0xFF3E2723)),
-                              prefixIcon: Icon(Icons.lock, color: Color(0xFF3E2723)),
+                              prefixIcon: Icon(Icons.lock_outline, color: Color(0xFF3E2723)),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(color: Color(0xFF3E2723)),
@@ -203,7 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               String password2 = _confirmPasswordController.text;
 
                               final response = await request.postJson(
-                                "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/register-mobile/",
+                                "http://127.0.0.1:8000/register-mobile/",
                                 jsonEncode({
                                   "username": username,
                                   "password1": password1,

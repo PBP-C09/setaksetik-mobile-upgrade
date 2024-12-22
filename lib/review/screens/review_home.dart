@@ -25,7 +25,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('http://127.0.0.1:8000/review/get_review/');
 
       if (response != null) {
         setState(() {
@@ -44,12 +44,23 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Review'),
+        title: const Text('Review'),
         centerTitle: true,
       ),
       drawer: const LeftDrawer(),
       body: reviews.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: Text(
+                "There's no review yet :(",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFFF5F5DC),
+                  fontFamily: 'Playfair Display',
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              )
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(
@@ -68,7 +79,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                   style: TextStyle(
                                     fontFamily: 'Playfair Display',
                                     fontSize: 30.0,
-                                    fontWeight: FontWeight.w400,
+                                    fontWeight: FontWeight.w600,
                                     color: Color(0xFFF5F5DC),
                                   ),
                                 ),
@@ -77,7 +88,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                   style: TextStyle(
                                     fontFamily: 'Playfair Display',
                                     fontSize: 30.0,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
                                     fontStyle: FontStyle.italic,
                                     color: Color(0xFFF5F5DC),
                                   ),

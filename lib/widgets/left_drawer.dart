@@ -7,9 +7,9 @@ import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/screens/root_page.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
-import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
+import 'package:setaksetikmobile/explore/screens/menu_home.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
-import 'package:setaksetikmobile/review/screens/user_review.dart';
+import 'package:setaksetikmobile/review/screens/review_home.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
 import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 
@@ -175,7 +175,7 @@ class LeftDrawer extends StatelessWidget {
           },
         ),
         createStyledListTile(
-          icon: Icons.chat,
+          icon: Icons.rate_review,
           title: 'Review',
           onTap: () {
             Navigator.pushReplacement(
@@ -185,7 +185,7 @@ class LeftDrawer extends StatelessWidget {
           },
         ),
         createStyledListTile(
-          icon: Icons.call,
+          icon: Icons.people,
           title: 'Meat Up',
           onTap: () {
             Navigator.pushReplacement(

@@ -159,6 +159,14 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                                       setState(() {
                                         spinHistoryFuture = _fetchSpinHistory(request);
                                       });
+                                      ScaffoldMessenger.of(context)
+                                      ..hideCurrentSnackBar()
+                                      ..showSnackBar(
+                                        SnackBar(
+                                            backgroundColor: Color(0xFF3E2723),
+                                            content:
+                                                Text("Spin history deleted!")),
+                                      );
                                     },
                                     style: TextButton.styleFrom(
                                       backgroundColor: Colors.transparent,
@@ -195,7 +203,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
 
   Future<List<SpinHistory>> _fetchSpinHistory(CookieRequest request) async {
     final response =
-        await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/history-json/');
+        await request.get('http://127.0.0.1:8000/spinthewheel/history-json/');
     var data = response;
     List<SpinHistory> listHistory = [];
     for (var d in data) {
@@ -207,7 +215,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
   }
 
   _deleteSpinHistory(CookieRequest request, String pk) {
-    request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/delete/$pk');
+    request.get('http://127.0.0.1:8000/spinthewheel/delete/$pk');
     // Refresh the spin history list
     setState(() {
       spinHistoryFuture = _fetchSpinHistory(request);

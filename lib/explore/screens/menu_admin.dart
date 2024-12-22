@@ -33,7 +33,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
   // Fungsi untuk mengambil data menu
   Future<List<MenuList>> fetchMenu(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
 
       if (response == null) {
         return [];
@@ -63,7 +63,8 @@ class _ExploreAdminState extends State<ExploreAdmin> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text('Steak Menu'),
+        title: const Text('Manage Menus'),
+        centerTitle: true,
       ),
       drawer: LeftDrawer(),
       body: FutureBuilder<List<MenuList>>(
@@ -645,7 +646,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
 
   // Fungsi untuk menghapus menu
   _deleteMenu(CookieRequest request, int pk) {
-    request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/delete/$pk');
+    request.get('http://127.0.0.1:8000/explore/delete/$pk');
     setState(() {
       _menuFuture = fetchMenu(request);
     });

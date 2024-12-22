@@ -29,12 +29,18 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
       'title': 'Review',
       'description': 'Share and read reviews from other steak lovers',
       'color': Color(0xFF842323),
-      'icon': Icons.chat
+      'icon': Icons.rate_review
+    },
+    {
+      'title': 'Meat Up',
+      'description': 'Connect with your fellow steak enthusiasts!',
+      'color': Color(0xFF3E2723),
+      'icon': Icons.rate_review
     },
     {
       'title': 'Booking',
       'description': 'Make reservations at your favorite steakhouse',
-      'color': Color(0xFF3E2723),
+      'color': Color(0xFF6D4C41),
       'icon': Icons.restaurant
     },
   ];
@@ -85,6 +91,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
                     'Welcome to',
                     style: TextStyle(
                       fontFamily: 'Raleway',
+                      fontWeight: FontWeight.w600,
                       fontSize: 32,
                       color: Color(0xFF3E2723),
                     ),

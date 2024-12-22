@@ -6,11 +6,11 @@ import 'package:setaksetikmobile/claim/screens/manage_ownership.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 
-import 'package:setaksetikmobile/explore/screens/steak_lover.dart';
+import 'package:setaksetikmobile/explore/screens/menu_home.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
 import 'package:setaksetikmobile/review/screens/review_admin.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
-import 'package:setaksetikmobile/review/screens/user_review.dart';
+import 'package:setaksetikmobile/review/screens/review_home.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
 import 'package:setaksetikmobile/booking/screens/booking_home.dart';
 import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
@@ -209,7 +209,7 @@ class HomePage extends StatelessWidget {
             const ClaimPage(),
             const Color(0xFF3E2723),
             const Color(0xFFF5F5DC),
-            'Claim a steakhouse!',
+            'Claim a steakhouse if it\'s yours!',
             Icons.store,
             false,
           ),
@@ -224,7 +224,7 @@ class HomePage extends StatelessWidget {
             const OwnedRestaurantPage(),
             const Color(0xFF3E2723),
             const Color(0xFFF5F5DC),
-            'Lihat restoran yang Anda miliki!',
+            'See the restaurant you own!',
             Icons.restaurant,
             false,
           ),
@@ -236,7 +236,7 @@ class HomePage extends StatelessWidget {
         // Tombol untuk memantau review
         _buildButtonWithInfo(
           context,
-          'Pantau Review',
+          'Monitor Review',
           const ReviewOwner(),
           const Color(0xFF842323),
           const Color(0xFFF5F5DC),
@@ -249,11 +249,11 @@ class HomePage extends StatelessWidget {
         // Tombol untuk memantau booking
         _buildButtonWithInfo(
           context,
-          'Pantau Booking',
+          'Monitor Booking',
           const PantauBookingPage(),
           const Color(0xFF6D4C41),
           const Color(0xFFF5F5DC),
-          'Pantau booking di restoranmu!',
+          'Monitor bookings made in your restaurant',
           Icons.book_online,
           false,
         ),
@@ -289,7 +289,7 @@ class HomePage extends StatelessWidget {
           const Color(0xFF842323),
           const Color(0xFFF5F5DC),
           'Share and read reviews from other steak lovers.',
-          Icons.chat,
+          Icons.rate_review,
           true
         ),
         SizedBox(height: 16.0),
@@ -300,7 +300,7 @@ class HomePage extends StatelessWidget {
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
           'Connect with fellow steak enthusiasts!',
-          Icons.call,
+          Icons.people,
           false
         ),
         SizedBox(height: 16.0),
@@ -330,8 +330,8 @@ class HomePage extends StatelessWidget {
           children: [
             Image.asset(
               'assets/images/setaksetik-bg.png',
-              height: 120,
-              width: 120,
+              height: 140,
+              width: 140,
             ),
             const Text(
               'SetakSetik Says Hi,',

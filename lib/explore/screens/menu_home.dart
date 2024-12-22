@@ -32,7 +32,7 @@ class _MenuPageState extends State<MenuPage> {
   // Mengambil data menu dari backend API
   Future<List<MenuList>> fetchMenu(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
 
       if (response == null) {
         return [];
@@ -61,7 +61,7 @@ class _MenuPageState extends State<MenuPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text('Steak Menu'),
+        title: const Text('Explore Steak Menus', softWrap: true,),
         centerTitle: true,
       ),
       drawer: LeftDrawer(),
@@ -75,22 +75,23 @@ class _MenuPageState extends State<MenuPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Center(
-                  child: RichText(
-                    text: TextSpan(
-                      style: const TextStyle(
-                        fontSize: 42,
-                        fontFamily: 'Playfair Display',
-                        color: Color(0xFFF5F5DC),
-                      ),
-                      children: const [
-                        TextSpan(text: 'Makan apa '),
-                        TextSpan(
-                          text: 'Hari ini?',
-                          style: TextStyle(fontStyle: FontStyle.italic),
-                        ),
-                      ],
-                    ),
+                Text(
+                  'Makan apa',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontFamily: 'Playfair Display',
+                    color: Color(0xFFF5F5DC),
+                  ),
+                ),
+                Text(
+                  'hari ini?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontFamily: 'Playfair Display',
+                    color: Color(0xFFF5F5DC),
+                    fontStyle: FontStyle.italic,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -217,23 +218,27 @@ class _MenuPageState extends State<MenuPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Center( 
-                          child: RichText( 
-                            text: TextSpan(
-                              style: const TextStyle(
-                                fontSize: 42,
-                                fontFamily: 'Playfair Display',
-                                color: Color(0xFFF5F5DC),
-                              ),
-                              children: const [
-                                TextSpan(text: 'Makan apa '),
-                                TextSpan(
-                                  text: 'Hari ini?',
-                                  style: TextStyle(fontStyle: FontStyle.italic),
-                                ),
-                              ],
-                            ),
-                          ),
+                          
                         ),
+                        Text(
+                  'Makan apa',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontFamily: 'Playfair Display',
+                    color: Color(0xFFF5F5DC),
+                  ),
+                ),
+                Text(
+                  'hari ini?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontFamily: 'Playfair Display',
+                    color: Color(0xFFF5F5DC),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
                         const SizedBox(height: 16),
                         Row(
                           children: [

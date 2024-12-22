@@ -25,7 +25,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> fetchMessages() async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/get-messages-json/');
+      final response = await request.get('http://127.0.0.1:8000/meatup/flutter/get-messages-json/');
       if (mounted) {
         setState(() {
           receivedMessages = List<Map<String, dynamic>>.from(response['received_messages']);
@@ -38,21 +38,31 @@ class MeatUpPageState extends State<MeatUpPage> {
         setState(() {
           isLoading = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error loading messages')),
-        );
+        ScaffoldMessenger.of(context)
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(
+                                    SnackBar(
+                                      backgroundColor: Color(0xFF3E2723),
+                                      content:
+                                      Text("Error loading messages")),
+                                      );
       }
     }
   }
 
   Future<void> _deleteMessage(CookieRequest request, int messageId) async {
     try {
-      await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/delete/$messageId/');
+      await request.get('http://127.0.0.1:8000/meatup/flutter/delete/$messageId/');
       fetchMessages();
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Message deleted successfully')),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+              backgroundColor: Color(0xFF3E2723),
+              content:
+              Text("Message deleted successfully")),
+              );
       }
     } catch (e) {
       if (mounted) {
@@ -78,7 +88,16 @@ class MeatUpPageState extends State<MeatUpPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Mau meat up sama siapa?',
+              'Mau meat up',
+              style: TextStyle(
+                color: Color(0xFFF5F5DC),
+                fontSize: 42,
+                fontFamily: 'Playfair Display',
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const Text(
+              'sama siapa?',
               style: TextStyle(
                 color: Color(0xFFF5F5DC),
                 fontSize: 42,
@@ -130,6 +149,7 @@ class MeatUpPageState extends State<MeatUpPage> {
       children: [
         Text(
           title,
+          textAlign: TextAlign.center,
           style: const TextStyle(
             color: Color(0xFFFFD700),
             fontSize: 28,
