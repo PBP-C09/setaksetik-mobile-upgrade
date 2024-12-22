@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15),
                           child: Image.asset(
-                            'assets/images/login-image.png',
+                            'assets/images/landing-image-0.png',
                             height: 180,
                             width: 180,
                             fit: BoxFit.cover,
@@ -68,7 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                           'Welcomes You Back!',
                           style: TextStyle(
                             fontFamily: 'Playfair Display',
-                            fontSize: 20,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w600,
                             fontStyle: FontStyle.italic,
                             color: Color(0xFF842323),
                           ),
@@ -102,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
                                 decoration: InputDecoration(
                                   labelText: 'Username',
                                   labelStyle: TextStyle(color: Color(0xFF3E2723)),
-                                  prefixIcon: Icon(Icons.person, color: Color(0xFF3E2723)),
+                                  prefixIcon: Icon(Icons.account_circle, color: Color(0xFF3E2723)),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(12),
                                     borderSide: BorderSide(color: Color(0xFF3E2723)),
@@ -139,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                                   String password = _passwordController.text;
 
                                   final response = await request.login(
-                                      "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/login-mobile/", {
+                                      "http://127.0.0.1:8000/login-mobile/", {
                                     'username': username,
                                     'password': password,
                                   });

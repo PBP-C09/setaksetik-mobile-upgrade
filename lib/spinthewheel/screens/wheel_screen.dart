@@ -176,7 +176,7 @@ class _WheelViewState extends State<WheelView> {
 
   Future<void> _fetchMenuOptions(CookieRequest request, String category) async {
     final response = await request.get(
-          'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/option-json/$category/');
+          'http://127.0.0.1:8000/spinthewheel/option-json/$category/');
       var data = response;
 
       if (mounted) {
@@ -286,13 +286,13 @@ class _WheelViewState extends State<WheelView> {
 
     else {
       ScaffoldMessenger.of(context)
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(
-                              SnackBar(
-                                  backgroundColor: Color(0xFF3E2723),
-                                  content:
-                                      Text("Please add at least two items to the wheel!")),
-                            );
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+              backgroundColor: Color(0xFF3E2723),
+              content:
+                  Text("Please add at least two items to the wheel!")),
+        );
     }
   }
 
@@ -377,13 +377,21 @@ class _WheelViewState extends State<WheelView> {
                   TextButton(
                     onPressed: () async {
                       final response = await request.postJson(
-                        "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/add-spin-history-mobile/",
+                        "http://127.0.0.1:8000/spinthewheel/add-spin-history-mobile/",
                         jsonEncode({
                           'winner': selectedMenuName,
                           'winnerId': selectedMenu.pk.toString(),
                           'note': _noteController.text
                         })
                       );
+                      ScaffoldMessenger.of(context)
+                        ..hideCurrentSnackBar()
+                        ..showSnackBar(
+                          SnackBar(
+                              backgroundColor: Color(0xFF3E2723),
+                              content:
+                                  Text("Added to spin history!")),
+                        );
                       Navigator.of(context).pop();
                       _noteController.clear();
                     },

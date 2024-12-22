@@ -70,26 +70,34 @@ class UserProfilePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () async {
         final response = await request.logout(
-          "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/logout-mobile/");
+          "http://127.0.0.1:8000/logout-mobile/");
 
         String message = response["message"];
         if (context.mounted) {
           if (response['status']) {
             String uname = response["username"];
             UserProfile.logout();
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("$message Sampai jumpa, $uname."),
-            ));
+            ScaffoldMessenger.of(context)
+                                ..hideCurrentSnackBar()
+                                ..showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Color(0xFF3E2723),
+                                    content:
+                                    Text("See you again, $uname!")),
+                                    );
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const WelcomePage()),
             );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(message),
-              ),
-            );
+            ScaffoldMessenger.of(context)
+                                ..hideCurrentSnackBar()
+                                ..showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Color(0xFF3E2723),
+                                    content:
+                                    Text(message)),
+                                    );
           }
         }
       },

@@ -45,7 +45,7 @@ Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
 Future<bool> approveBooking(CookieRequest request, int bookingId) async {
   try {
     final response = await request.post(
-      'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/approve_flutter/$bookingId/',
+      'http://127.0.0.1:8000/booking/approve_flutter/$bookingId/',
       {}, // Empty payload
     );
     if (response['status'] == 'success') {
@@ -266,14 +266,26 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                                             setState(() {
                                               booking['status'] = 'approved';
                                             });
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                  content: Text('Booking approved successfully!')),
+                                            ScaffoldMessenger.of(context)
+                                            ..hideCurrentSnackBar()
+                                            ..showSnackBar(
+                                              SnackBar(
+                                                  backgroundColor: Color(0xFF3E2723),
+                                                  content:
+                                                      Text('Booking approved successfully!')),
                                             );
                                           } else {
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               const SnackBar(
                                                   content: Text('Failed to approve booking')),
+                                            );
+                                            ScaffoldMessenger.of(context)
+                                            ..hideCurrentSnackBar()
+                                            ..showSnackBar(
+                                              SnackBar(
+                                                  backgroundColor: Color(0xFF3E2723),
+                                                  content:
+                                                      Text('Failed to approve booking')),
                                             );
                                           }
                                         },

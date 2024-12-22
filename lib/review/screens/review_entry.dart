@@ -4,7 +4,7 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
-import 'package:setaksetikmobile/review/screens/user_review.dart';
+import 'package:setaksetikmobile/review/screens/review_home.dart';
 
 class ReviewEntryFormPage extends StatefulWidget {
   final MenuList menu;
@@ -20,7 +20,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
 
   // Form variables
   String _place = "";
-  int _rating = 0;
+  double _rating = 3.0; // Changed to double for slider
   String _description = "";
   String _ownerReply = "";
 
@@ -39,231 +39,241 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Form Tambah Review'),
+        title: const Text('Add Your Review'),
         centerTitle: true,
       ),
       body: Container(
-        color: const Color(0xFF6D4C41), // Brown background color
+        color: const Color(0xFF6D4C41),
         child: Center(
           child: Card(
-            color: const Color(0xFFF5F5DC), // Beige card color
-            elevation: 5,
+            color: const Color(0xFFF5F5DC),
+            elevation: 8, // Increased elevation
             margin: const EdgeInsets.all(16.0),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(16.0),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(20.0),
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Menu details header
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      // Menu Image
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(
+                          widget.menu.fields.image,
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            int index = widget.menu.pk % placeholderImages.length;
+                            return Image.asset(
+                              placeholderImages[index],
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            );
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Menu Name
+                      Text(
+                        widget.menu.fields.menu,
+                        style: const TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF3E2723),
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Restaurant Name
+                      Text(
+                        widget.menu.fields.restaurantName,
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          color: Color(0xFF6D4C41),
+                          fontStyle: FontStyle.italic,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Rating Section
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
                           children: [
-                            // Image widget with error handling
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.network(
-                                widget.menu.fields.image,
-                                width: 140,
-                                height: 140,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  int index = widget.menu.pk % placeholderImages.length;
-                                  return Image.asset(
-                                    placeholderImages[index],
-                                    width: 140,
-                                    height: 140,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Your Rating: ",
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF3E2723),
+                                  ),
+                                ),
+                                Text(
+                                  _rating.toStringAsFixed(1),
+                                  style: const TextStyle(
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color(0xFF6D4C41),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    widget.menu.fields.menu,
-                                    style: const TextStyle(
-                                      fontSize: 18.0, // Smaller font size
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF3E2723),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    widget.menu.fields.restaurantName,
-                                    style: const TextStyle(
-                                      fontSize: 14.0, // Smaller font size
-                                      color: Color(0xFF6D4C41),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              ),
+                            Slider(
+                              value: _rating,
+                              min: 1.0,
+                              max: 5.0,
+                              divisions: 4,
+                              activeColor: const Color(0xFF6D4C41),
+                              inactiveColor: const Color(0xFF6D4C41).withOpacity(0.3),
+                              onChanged: (double value) {
+                                setState(() {
+                                  _rating = value;
+                                });
+                              },
                             ),
                           ],
                         ),
                       ),
-
-                      // Rating Field
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          "Rating (1-5):",
-                          style: TextStyle(
-                            fontSize: 14.0, // Smaller font size
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            hintText: "Masukkan rating antara 1-5",
-                            hintStyle: const TextStyle(
-                              fontSize: 12.0, // Smaller hint text size
-                            ),
-                            labelText: "Rating",
-                            labelStyle: const TextStyle(
-                              fontSize: 14.0,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          ),
-                          style: const TextStyle(color: Colors.black),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _rating = int.tryParse(value!) ?? 0;
-                            });
-                          },
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return "Rating cannot be empty!";
-                            }
-                            if (int.tryParse(value) == null || int.parse(value) < 1 || int.parse(value) > 5) {
-                              return "Rating must be a number between 1 and 5!";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
+                      const SizedBox(height: 24),
 
                       // Description Field
-                      const Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Text(
-                          "Review Description:",
-                          style: TextStyle(
-                            fontSize: 14.0, // Smaller font size
-                            fontWeight: FontWeight.bold,
-                          ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 16.0),
-                        child: TextFormField(
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                            hintText: "Tuliskan deskripsi review Anda",
-                            hintStyle: const TextStyle(
-                              fontSize: 12.0, // Smaller hint text size
-                            ),
-                            labelText: "Description",
-                            labelStyle: const TextStyle(
-                              fontSize: 14.0,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          ),
-                          style: const TextStyle(color: Colors.black),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _description = value!;
-                            });
-                          },
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return "Description cannot be empty!";
-                            }
-                            return null;
-                          },
-                        ),
-                      ),
-
-                      // Save Button
-                      Align(
-                        alignment: Alignment.center,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                Theme.of(context).colorScheme.primary),
-                            padding: MaterialStateProperty.all(
-                              const EdgeInsets.symmetric(horizontal: 80, vertical: 16),
-                            ),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0), // Less rounded
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              "Your Review",
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFF3E2723),
                               ),
                             ),
-                          ),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              try {
-                                final response = await request.postJson(
-                                  "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/create-review-flutter/",
-                                  jsonEncode(<String, dynamic>{
-                                    'menu': widget.menu.fields.menu,
-                                    'place': widget.menu.fields.restaurantName,
-                                    'rating': _rating.toString(),
-                                    'description': _description,
-                                    'owner_reply': _ownerReply,
-                                  }),
-                                );
-
-                                if (response['status'] == 'success') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Review berhasil disimpan!")),
-                                  );
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ReviewMainPage()),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text("Gagal menyimpan review. Coba lagi.")),
-                                  );
+                            const SizedBox(height: 8),
+                            TextFormField(
+                              maxLines: 5,
+                              decoration: InputDecoration(
+                                hintText: "Share your experience with this dish...",
+                                hintStyle: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Colors.brown.withOpacity(0.6),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  borderSide: BorderSide.none,
+                                ),
+                                contentPadding: const EdgeInsets.all(16),
+                              ),
+                              style: const TextStyle(color: Colors.black),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _description = value!;
+                                });
+                              },
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return "Please share your thoughts about this dish";
                                 }
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Terjadi kesalahan: $e")),
+                                return null;
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Submit Button
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF6D4C41),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          elevation: 4,
+                        ),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            try {
+                              final response = await request.postJson(
+                                "http://127.0.0.1:8000/review/create-review-flutter/",
+                                jsonEncode(<String, dynamic>{
+                                  'menu': widget.menu.fields.menu,
+                                  'place': widget.menu.fields.restaurantName,
+                                  'rating': _rating.round().toString(),
+                                  'description': _description,
+                                  'owner_reply': _ownerReply,
+                                }),
+                              );
+
+                              if (response['status'] == 'success') {
+                                ScaffoldMessenger.of(context)
+                                ..hideCurrentSnackBar()
+                                ..showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Color(0xFF3E2723),
+                                    content:
+                                    Text("Review saved successfully")),
+                                    );
+                                
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                    builder: (context) => ReviewMainPage(),
+                                  ),
+                                  (Route<dynamic> route) => route.isFirst,
                                 );
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                ..hideCurrentSnackBar()
+                                ..showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Color(0xFF3E2723),
+                                    content:
+                                    Text("Failed to save review. Please try again.")),
+                                    );
                               }
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text("Error occurred: $e"),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
                             }
-                          },
-                          child: const Text(
-                            "Save",
-                            style: TextStyle(color: Colors.white),
+                          }
+                        },
+                        child: const Text(
+                          "Submit Review",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),

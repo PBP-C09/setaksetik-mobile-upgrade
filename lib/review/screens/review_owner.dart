@@ -24,7 +24,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('http://127.0.0.1:8000/review/get_review/');
       if (response != null) {
         setState(() {
           reviews = reviewListFromJson(response);
@@ -42,7 +42,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     try {
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
-          'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/submit-reply-flutter/',
+          'http://127.0.0.1:8000/review/submit-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {
@@ -60,7 +60,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     try {
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
-          'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/update-reply-flutter/',
+          'http://127.0.0.1:8000/review/update-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {
@@ -80,12 +80,23 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Owner Reviews'),
+        title: const Text('Monitor Review'),
         centerTitle: true,
       ),
       drawer: const LeftDrawer(),
       body: reviews.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: Text(
+                "There's no review yet :(",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Color(0xFFF5F5DC),
+                  fontFamily: 'Playfair Display',
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              )
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: SingleChildScrollView(

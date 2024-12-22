@@ -56,9 +56,14 @@ class _BookingFormPageState extends State<BookingFormPage> {
       );
 
       if (response != null && response['message'] != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response['message'])),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                backgroundColor: Color(0xFF3E2723),
+                content:
+                    Text(response['message'])),
+          );
         Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -32,14 +32,19 @@ class _EditBookingPageState extends State<EditBookingPage> {
 
     try {
       final response = await request.postJson(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/edit_flutter/${widget.bookingId}/',
+        'http://127.0.0.1:8000/booking/edit_flutter/${widget.bookingId}/',
         jsonEncode(data),
       );
 
       if (response != null && response['message'] != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response['message'])),
-        );
+        ScaffoldMessenger.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(
+            SnackBar(
+                backgroundColor: Color(0xFF3E2723),
+                content:
+                    Text(response['message'])),
+          );
         // Replace the current screen with BookingListPage
         Navigator.pushReplacement(
           context,
