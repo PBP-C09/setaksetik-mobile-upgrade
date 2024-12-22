@@ -32,13 +32,35 @@ class BookingPage extends StatefulWidget {
 class _BookingPageState extends State<BookingPage> {
   late Future<List<MenuList>> _menuFuture;
   List<MenuList> _originalMenus = [];
+  List<MenuList> _filteredMenus = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     final request = Provider.of<CookieRequest>(context, listen: false);
     _menuFuture = fetchMenu(request);
-    _menuFuture.then((menus) => _originalMenus = menus);
+    _menuFuture.then((menus) {
+      setState(() {
+        _originalMenus = menus;
+        _filteredMenus = menus;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _handleSearch(String value) {
+    setState(() {
+      _filteredMenus = _originalMenus.where((menu) {
+        return (menu.fields.menu.toLowerCase().contains(value.toLowerCase()) ||
+            menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase()));
+      }).toList();
+    });
   }
 
   @override
@@ -80,15 +102,14 @@ class _BookingPageState extends State<BookingPage> {
               ),
             );
           } else {
-            final menus = snapshot.data!;
             return ListView.builder(
               padding: const EdgeInsets.all(16),
-              itemCount: menus.length + 1,
+              itemCount: _filteredMenus.length + 1,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0) {
                   return _buildSearchAndFilterSection();
                 } else {
-                  final menu = menus[index - 1];
+                  final menu = _filteredMenus[index - 1];
                   return _buildMenuCard(menu);
                 }
               },
@@ -136,6 +157,10 @@ class _BookingPageState extends State<BookingPage> {
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: TextField(
+                    controller: _searchController,
+                    style: const TextStyle(
+                      color: Color(0xFF3E2723),
+                    ),
                     decoration: InputDecoration(
                       hintText: 'Search menu or restaurant',
                       hintStyle: const TextStyle(fontSize: 14),
@@ -146,20 +171,14 @@ class _BookingPageState extends State<BookingPage> {
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear, size: 20),
                         onPressed: () {
+                          _searchController.clear();
                           setState(() {
-                            _menuFuture = Future.value(_originalMenus);
+                            _filteredMenus = _originalMenus;
                           });
                         },
                       ),
                     ),
-                    onChanged: (value) {
-                      setState(() {
-                        _menuFuture = Future.value(_originalMenus.where((menu) {
-                          return (menu.fields.menu.toLowerCase().contains(value.toLowerCase()) ||
-                              menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase()));
-                        }).toList());
-                      });
-                    },
+                    onChanged: _handleSearch,
                   ),
                 ),
               ),
