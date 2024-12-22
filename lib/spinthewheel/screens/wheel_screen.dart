@@ -21,10 +21,10 @@ class _WheelViewState extends State<WheelView> {
   final List<FortuneItem> _wheelItems = [
     FortuneItem(child: const Text("Start Adding Items!"))
   ];
-  List<int> _menuInWheel = [];
-  List<MenuList> _menuOptions = [];
-  List<MenuList> _allMenu = [];
-  late List<bool> _isAddedList;
+
+  Map<int, bool> _isAddedMap = {}; // Primary key - bool added
+  Map<int, MenuList> _menuOptionsMap = {}; // Primary key - MenuList object
+  Map<int, int> _wheelIndexToMenuKey = {}; // Wheel index - MenuList primary key
 
   String _selectedCategory = "All Categories";
   MenuList? _selectedItem;
@@ -40,7 +40,6 @@ class _WheelViewState extends State<WheelView> {
   @override
   void initState() {
     super.initState();
-    _isAddedList = [];
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final request = context.read<CookieRequest>();
       _fetchMenuOptions(request, _selectedCategory);
@@ -49,7 +48,6 @@ class _WheelViewState extends State<WheelView> {
       if (mounted) {
         setState(() {
           _buttonsEnabled = true;
-          _allMenu = List.from(_menuOptions);
         });
       }
     });
@@ -162,11 +160,9 @@ class _WheelViewState extends State<WheelView> {
             height: MediaQuery.of(context).size.height * 0.4,
             child: SingleChildScrollView(
               child: Column(
-                children: _menuOptions.asMap().entries.map((entry) {
-                int index = entry.key;
-                var menu = entry.value;
-                return _buildOptionRow(menu.fields.menu, index, menu.pk);
-              }).toList(),
+                children: _menuOptionsMap.entries.map((entry) {
+                  return _buildOptionRow(entry.value.fields.menu, entry.key);
+                }).toList(),
               ),
             ),
           ),
@@ -182,19 +178,19 @@ class _WheelViewState extends State<WheelView> {
 
       if (mounted) {
         setState(() {
-          _menuOptions.clear();
+          _menuOptionsMap.clear();
           for (var option in data) {
             if (option != null) {
-              _menuOptions.add(MenuList.fromJson(option));
+              MenuList menuItem = MenuList.fromJson(option);
+              _menuOptionsMap[menuItem.pk] = menuItem;
+              _isAddedMap[menuItem.pk] = false;
             }
           }
-          int maxMenuId = _menuOptions.fold(0, (max, menu) => menu.pk > max ? menu.pk : max);
-          _isAddedList = List.generate(maxMenuId + 1, (index) => false);
         });
       }
   }
 
-  Widget _buildOptionRow(String menuName, int optionIndex, int menuIndex) {
+  Widget _buildOptionRow(String menuName, int menuKey) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 7.0),
       child: Container(
@@ -211,10 +207,10 @@ class _WheelViewState extends State<WheelView> {
             ),
             const SizedBox(width: 20),
             ElevatedButton(
-              onPressed: _isAddedList[menuIndex] || !_buttonsEnabled ? null : () {
-                _addOptionToWheel(menuName, menuIndex);
+              onPressed: _isAddedMap[menuKey] == true || !_buttonsEnabled ? null : () {
+                _addOptionToWheel(menuName, menuKey);
                 setState(() {
-                  _isAddedList[menuIndex] = true;
+                  _isAddedMap[menuKey] = true;
                 });
               },
               style: ElevatedButton.styleFrom(
@@ -227,7 +223,7 @@ class _WheelViewState extends State<WheelView> {
                 disabledBackgroundColor: const Color.fromARGB(255, 206, 188, 126),
                 disabledForegroundColor: Color.fromARGB(255, 128, 106, 102),
               ),
-              child: _isAddedList[menuIndex] 
+              child: _isAddedMap[menuKey] == true 
                   ? const Text(
                       'Added',
                       style: TextStyle(
@@ -248,12 +244,13 @@ class _WheelViewState extends State<WheelView> {
     );
   }
 
-  void _addOptionToWheel(String option, int menuIndex) {
+  void _addOptionToWheel(String option, int menuKey) {
     setState(() {
       if (_wheelItems.length == 1 &&
           _wheelItems[0].child is Text &&
           (_wheelItems[0].child as Text).data == "Start Adding Items!") {
         _wheelItems.clear();
+        _wheelIndexToMenuKey.clear();
       }
 
       bool exists = _wheelItems.any((item) => 
@@ -261,7 +258,7 @@ class _WheelViewState extends State<WheelView> {
 
       if (!exists) {
         _wheelItems.add(FortuneItem(child: Text(option)));
-        _menuInWheel.add(menuIndex);
+        _wheelIndexToMenuKey[_wheelItems.length - 1] = menuKey;
       }
     });
   }
@@ -279,11 +276,16 @@ class _WheelViewState extends State<WheelView> {
 
       Future.delayed(const Duration(seconds: 5), () {
         setState(() {
-          _selectedItem = _allMenu[_menuInWheel[selectedIndex]-1];
-          _selectedMenuName = _selectedItem?.fields.menu;
+          int? selectedMenuKey = _wheelIndexToMenuKey[selectedIndex];
+          if (selectedMenuKey != null) {
+            _selectedItem = _menuOptionsMap[selectedMenuKey];
+            _selectedMenuName = _selectedItem?.fields.menu;
+          }
           _buttonsEnabled = true;
         });
-        _showResultDialog(request, _selectedMenuName!, _selectedItem!); 
+        if (_selectedMenuName != null && _selectedItem != null) {
+          _showResultDialog(request, _selectedMenuName!, _selectedItem!);
+        } 
       });
     }
 
@@ -301,11 +303,11 @@ class _WheelViewState extends State<WheelView> {
 
   void _clearWheel() {
     setState(() {
-      _menuInWheel.clear();
       _wheelItems.clear();
+      _wheelIndexToMenuKey.clear();
       _wheelItems
           .add(FortuneItem(child: const Text("Start Adding Items!")));
-      _isAddedList = List.generate(_isAddedList.length, (index) => false);
+      _isAddedMap.updateAll((key, value) => false);
     });
   }
 
