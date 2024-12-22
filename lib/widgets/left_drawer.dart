@@ -4,6 +4,7 @@ import 'package:setaksetikmobile/claim/screens/claim_home.dart';
 import 'package:setaksetikmobile/claim/screens/manage_ownership.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/main.dart';
+import 'package:setaksetikmobile/review/screens/review_admin.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/screens/root_page.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
@@ -86,7 +87,7 @@ class LeftDrawer extends StatelessWidget {
           onTap: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const SpinPage()),
+              MaterialPageRoute(builder: (context) => const ReviewAdmin()),
             );
           },
         ),

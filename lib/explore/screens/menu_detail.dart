@@ -351,7 +351,7 @@ class MenuDetailPage extends StatelessWidget {
         const SizedBox(width: 8),
         Icon(
           value ? Icons.check_circle : Icons.cancel,
-          color: value ? Colors.green : Colors.red,
+          color: value ? Colors.green : Color(0xFF842323),
           size: 20.0,
         ),
       ],

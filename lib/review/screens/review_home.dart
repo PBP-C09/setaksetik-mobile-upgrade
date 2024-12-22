@@ -129,7 +129,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                 ),
                               ),
                               Text(
-                                'steak enthusiasts di seluruh penjuru',
+                                'steak lovers di seluruh penjuru',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Raleway',

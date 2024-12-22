@@ -121,7 +121,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
                                   review.fields.rating,
                                   (index) => const Icon(
                                     Icons.star,
-                                    color: Colors.yellow,
+                                    color: Color(0xFFFFD54F),
                                     size: 20,
                                   ),
                                 ),
@@ -136,7 +136,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
                                 ),
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
+                                icon: const Icon(Icons.delete, color: Color(0xFF842323)),
                                 onPressed: () async {
                                   await deleteReview(review.pk.toString());
                                 },

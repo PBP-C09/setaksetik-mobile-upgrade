@@ -77,9 +77,10 @@ class _MenuFormPageState extends State<MenuFormPage> {
 
     // Scaffold untuk menampilkan form
     return Scaffold(
-      backgroundColor: const Color(0xFFFEFBEA),
+      backgroundColor: const Color(0xFF6D4C41),
       appBar: AppBar(
         title: const Text('Add Menu'),
+        centerTitle: true,
       ),
       body: Center(
       child: Container(
