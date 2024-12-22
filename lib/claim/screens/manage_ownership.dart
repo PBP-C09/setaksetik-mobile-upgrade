@@ -54,36 +54,53 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Ownership'),
+        title: const Text(
+          'Manage Ownership',
+          style: TextStyle(
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         centerTitle: true,
       ),
       drawer: LeftDrawer(),
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFF6D4C41),
         ),
         child: FutureBuilder<List<Map<String, dynamic>>>(
           future: _futureClaimedRestaurants,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Color(0xFFF5F5DC),
+                ),
+              );
             } else if (snapshot.hasError) {
               return Center(
-                child: Text('Error occurred: ${snapshot.error}'),
+                child: Text(
+                  'Error occurred: ${snapshot.error}',
+                  style: const TextStyle(
+                    color: Color(0xFFF5F5DC),
+                    fontSize: 18,
+                    fontFamily: 'Playfair Display',
+                  ),
+                ),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
               return const Center(
-              child: Text(
-                "No claimed restaurants found!",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Color(0xFFF5F5DC),
-                  fontFamily: 'Playfair Display',
-                  fontStyle: FontStyle.italic,
+                child: Text(
+                  "No claimed restaurants found!",
+                  style: TextStyle(
+                    fontSize: 24,
+                    color: Color(0xFFF5F5DC),
+                    fontFamily: 'Playfair Display',
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
-              ),
-            );
+              );
             }
 
             final claimedRestaurants = snapshot.data!;
@@ -94,64 +111,106 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
               itemBuilder: (context, index) {
                 final restaurant = claimedRestaurants[index];
                 return Card(
-                  elevation: 4,
-                  margin: const EdgeInsets.only(bottom: 16.0),
+                  elevation: 8,
+                  margin: const EdgeInsets.only(bottom: 20.0),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      gradient: LinearGradient(
+                      borderRadius: BorderRadius.circular(20.0),
+                      gradient: const LinearGradient(
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
-                        colors: [Colors.white, Colors.grey.shade50],
+                        colors: [Color(0xFFF5F5DC), Color(0xFFF5F5DC)],
                       ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF3E2723).withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: const Offset(0, 5),
+                        ),
+                      ],
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Icon(Icons.restaurant, 
-                                color: Colors.grey[700],
-                                size: 28,
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Text(
-                                  '${restaurant['restaurant_name']}',
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF6D4C41).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF3E2723),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Icon(
+                                    Icons.restaurant,
+                                    color: Color(0xFFF5F5DC),
+                                    size: 32,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          Row(
-                            children: [
-                              Icon(Icons.person,
-                                color: Colors.grey[600],
-                                size: 20,
-                              ),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Owner: ${restaurant['claimed_by']}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.grey[700],
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '${restaurant['restaurant_name']}',
+                                        style: const TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF3E2723),
+                                          fontFamily: 'Playfair Display',
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF6D4C41).withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const Icon(
+                                              Icons.person,
+                                              size: 18,
+                                              color: Color(0xFF6D4C41),
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              '${restaurant['claimed_by']}',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color: Color(0xFF6D4C41),
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 16),
-                          Align(
-                            alignment: Alignment.centerRight,
+                          const SizedBox(height: 24),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 50,
                             child: ElevatedButton.icon(
                               onPressed: () async {
                                 final request = Provider.of<CookieRequest>(context, listen: false);
@@ -160,36 +219,55 @@ class _ManageOwnershipPageState extends State<ManageOwnershipPage> {
                                   setState(() {
                                     claimedRestaurants.removeAt(index);
                                   });
+                                  if (!mounted) return;
                                   ScaffoldMessenger.of(context)
-                                  ..hideCurrentSnackBar()
-                                  ..showSnackBar(
-                                    SnackBar(
-                                      backgroundColor: Color(0xFF3E2723),
-                                      content:
-                                      Text("Ownership revoked successfully")),
-                                      );
+                                    ..hideCurrentSnackBar()
+                                    ..showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: const Color(0xFF3E2723),
+                                        content: const Text(
+                                          "Ownership revoked successfully",
+                                          style: TextStyle(color: Color(0xFFF5F5DC)),
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    );
                                 } else {
+                                  if (!mounted) return;
                                   ScaffoldMessenger.of(context)
-                                  ..hideCurrentSnackBar()
-                                  ..showSnackBar(
-                                    SnackBar(
-                                      backgroundColor: Color(0xFF3E2723),
-                                      content:
-                                      Text("Failed to revoke ownership")),
-                                      );
+                                    ..hideCurrentSnackBar()
+                                    ..showSnackBar(
+                                      SnackBar(
+                                        backgroundColor: const Color(0xFF842323),
+                                        content: const Text(
+                                          "Failed to revoke ownership",
+                                          style: TextStyle(color: Color(0xFFF5F5DC)),
+                                        ),
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                    );
                                 }
                               },
-                              label: const Text('Revoke Ownership',
+                              icon: const Icon(Icons.delete_forever, size: 24),
+                              label: const Text(
+                                'Revoke Ownership',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFF842323),
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                                foregroundColor: const Color(0xFFF5F5DC),
+                                elevation: 4,
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
                               ),
                             ),

@@ -109,7 +109,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
             return const Center(
               child: Text(
                 'No bookings available yet!',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.white, fontFamily: "Playfair Display", fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
               ),
             );
           }
@@ -128,7 +128,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
             return const Center(
               child: Text(
                 'No bookings available yet!',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: TextStyle(fontSize: 18, color: Colors.white, fontFamily: "Playfair Display", fontStyle: FontStyle.italic, fontWeight: FontWeight.w600),
               ),
             );
           }

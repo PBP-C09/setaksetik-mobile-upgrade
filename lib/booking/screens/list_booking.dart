@@ -223,6 +223,9 @@ class _BookingListPageState extends State<BookingListPage> {
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                               color: booking['status'] == 'approved'
+                                  ? Color(0xFF3E2723)
+                                  : Color(0xFFF5F5DC ),
+                              backgroundColor: booking['status'] == 'approved'
                                   ? Color(0xFFFFD54F)
                                   : Color(0xFF842323),
                             ),
@@ -236,7 +239,7 @@ class _BookingListPageState extends State<BookingListPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit, color: Color(0xFFFFD54F)),
+                            icon: const Icon(Icons.edit, color: Color(0xFF6D4C41)),
                             onPressed: () {
                               Navigator.push(
                                 context,
