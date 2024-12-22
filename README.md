@@ -29,11 +29,11 @@ Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web](http://muhammad-
 ---
 
 ## Deskripsi Aplikasi
-Untuk menjawab kebingungan pengguna dalam memilih menu steak yang tepat, **SetakSetik** hadir sebagai solusi lengkap bagi para pecinta steak. Aplikasi ini dirancang dengan beragam fitur yang tidak hanya memudahkan pengguna dalam memilih menu, tetapi juga memberikan pengalaman bersantap yang lebih personal dan menyenangkan. 
+Untuk menjawab kebingungan pengguna dalam memilih menu _steak_ yang tepat, **SetakSetik** hadir sebagai solusi lengkap bagi para pecinta _steak_. Aplikasi ini dirancang dengan beragam fitur yang tidak hanya memudahkan pengguna dalam memilih menu, tetapi juga memberikan pengalaman bersantap yang lebih personal dan menyenangkan. 
 
 **SetakSetik** dikembangkan dengan berbagai modul yang mendukung kemudahan dalam pemilihan menu serta kenyamanan pengguna. Fitur autentikasi memungkinkan pengguna untuk login dengan mudah. Pengguna dapat melakukan _explore_ dari banyaknya menu yang tersedia beserta filter, lalu selanjutnya melakukan _booking_ restoran dan memberikan _review_. Selain itu, terdapat juga fitur _spin the wheel_ yang merupakan elemen hiburan dalam menentukan pilihan menu, serta fitur _meat up_ untuk melihat pengguna lain dengan _public wishlist_ dan preferensi yang serupa.
 
-Saat ini, aplikasi ini dirancang untuk pecinta steak berbasis Jakarta. Dataset yang digunakan adalah menu dan _steakhouse_ yang tersebar di segala penjuru Jakarta. Jadi, jika menjejakkan kaki di Jakarta dan mendambakan steak, tak perlu bingung tak perlu ragu, **SetakSetik** akan membantu!
+Saat ini, aplikasi ini dirancang untuk pecinta _steak_ berbasis Jakarta. Dataset yang digunakan adalah menu dan _steakhouse_ yang tersebar di segala penjuru Jakarta. Jadi, jika menjejakkan kaki di Jakarta dan mendambakan _steak_, tak perlu bingung tak perlu ragu, **SetakSetik** akan membantu!
 
 ---
 
@@ -49,8 +49,8 @@ Saat ini, aplikasi ini dirancang untuk pecinta steak berbasis Jakarta. Dataset y
      - Kota.
      - Harga maksimum.
      - Nama menu melalui _search bar_.
-  - Explore untuk Steakhouse Owner terintegrasi dengan fitur Claim.
-  - Admin dapat menambah, mengedit, serta menghapus daftar menu yang tersedia.
+   - Explore untuk Steakhouse Owner terintegrasi dengan fitur Claim.
+   - Admin dapat menambah, mengedit, serta menghapus daftar menu yang tersedia.
 
 3. **Spin the Wheel - Makan Apa Hari Ini** _(Steak Lover)_ : Haliza
    - Pilih preferensi beef untuk menambahkan menu ke daftar spin.
@@ -138,7 +138,7 @@ Saat ini, aplikasi ini dirancang untuk pecinta steak berbasis Jakarta. Dataset y
 ---
 
 ## Tautan Deployment
-**Aplikasi via App Center:** [SetakSetik Mobile](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/5).
+**Aplikasi via App Center:** [SetakSetik Mobile](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/6).
 
 ---
 
