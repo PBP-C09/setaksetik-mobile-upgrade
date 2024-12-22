@@ -62,7 +62,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
 
     try {
       final response = await request.postJson(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/add_flutter/${widget.menuId}/',
+        'http://127.0.0.1:8000/booking/add_flutter/${widget.menuId}/',
         jsonEncode(data),
       );
 
@@ -146,33 +146,26 @@ class _BookingFormPageState extends State<BookingFormPage> {
                   child: Form(
                     key: _formKey,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Container(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Make a Reservation at',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Playfair Display',
-                                  color: Color(0xFF6F4E37),
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                widget.restaurantName,
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Playfair Display',
-                                  fontStyle: FontStyle.italic,
-                                  color: Color(0xFF3E2723),
-                                ),
-                              ),
-                            ],
+                        const Text(
+                          'Make a Reservation at',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Playfair Display',
+                            color: Color(0xFF6F4E37),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.restaurantName,
+                          style: const TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Playfair Display',
+                            fontStyle: FontStyle.italic,
+                            color: Color(0xFF3E2723),
                           ),
                         ),
                         const SizedBox(height: 32),

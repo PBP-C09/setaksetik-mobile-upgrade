@@ -9,7 +9,7 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
 Future<List<MenuList>> fetchClaimResto(CookieRequest request) async {
   try {
-    final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/claim/json/');
+    final response = await request.get('http://127.0.0.1:8000/claim/json/');
 
     if (response == null) {
       return [];
@@ -24,7 +24,7 @@ Future<List<MenuList>> fetchClaimResto(CookieRequest request) async {
 
 Future<void> claimRestaurant(BuildContext context, CookieRequest request, int menuId) async {
   final response = await request.post(
-    'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/claim/claim_flutter/$menuId/',
+    'http://127.0.0.1:8000/claim/claim_flutter/$menuId/',
     {},
   );
 
@@ -228,43 +228,46 @@ class RestaurantCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
               child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Image.network(
-                menu.fields.image,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  List<String> placeholderImages = [
-                    "assets/images/placeholder-image-1.png",
-                    "assets/images/placeholder-image-2.png",
-                    "assets/images/placeholder-image-3.png",
-                    "assets/images/placeholder-image-4.png",
-                    "assets/images/placeholder-image-5.png",
-                  ];
+                aspectRatio: 16 / 9,
+                child: Image.network(
+                  menu.fields.image,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    List<String> placeholderImages = [
+                      "assets/images/placeholder-image-1.png",
+                      "assets/images/placeholder-image-2.png",
+                      "assets/images/placeholder-image-3.png",
+                      "assets/images/placeholder-image-4.png",
+                      "assets/images/placeholder-image-5.png",
+                    ];
 
-                  int index = menu.pk % placeholderImages.length;
+                    int index = menu.pk % placeholderImages.length;
 
-                  return Image.asset(
-                    placeholderImages[index],
-                    fit: BoxFit.cover,
-                  );
-                },
+                    return Image.asset(
+                      placeholderImages[index],
+                      fit: BoxFit.cover,
+                    );
+                  },
+                ),
               ),
-            ),
             ),
             
             // Restaurant Info
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     menu.fields.restaurantName,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -275,12 +278,14 @@ class RestaurantCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.food_bank, size: 16),
                       const SizedBox(width: 4),
-                      Expanded(
+                      Flexible(
                         child: Text(
                           'Category: ${menu.fields.category}',
+                          textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 12),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -290,12 +295,14 @@ class RestaurantCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.location_on, size: 16),
                       const SizedBox(width: 4),
-                      Expanded(
+                      Flexible(
                         child: Text(
                           'City: ${menu.fields.city.name}',
+                          textAlign: TextAlign.center,
                           style: const TextStyle(fontSize: 12),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -305,11 +312,13 @@ class RestaurantCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(Icons.star, size: 16, color: Colors.amber),
                       const SizedBox(width: 4),
                       Text(
                         menu.fields.rating.toString(),
+                        textAlign: TextAlign.center,
                         style: const TextStyle(fontSize: 12),
                       ),
                     ],
@@ -334,6 +343,7 @@ class RestaurantCard extends StatelessWidget {
                 ),
                 child: const Text(
                   'Claim',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,

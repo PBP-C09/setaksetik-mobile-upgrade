@@ -223,7 +223,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                           if (_formKey.currentState!.validate()) {
                             try {
                               final response = await request.postJson(
-                                "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/create-review-flutter/",
+                                "http://127.0.0.1:8000/review/create-review-flutter/",
                                 jsonEncode(<String, dynamic>{
                                   'menu': widget.menu.fields.menu,
                                   'place': widget.menu.fields.restaurantName,

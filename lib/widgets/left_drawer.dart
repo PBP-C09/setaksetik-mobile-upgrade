@@ -133,7 +133,7 @@ class LeftDrawer extends StatelessWidget {
       tiles.addAll([
         createStyledListTile(
           icon: Icons.rate_review,
-          title: 'Pantau Review',
+          title: 'Manage Review',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -143,7 +143,7 @@ class LeftDrawer extends StatelessWidget {
         ),
         createStyledListTile(
           icon: Icons.book_online,
-          title: 'Pantau Booking',
+          title: 'Manage Booking',
           onTap: () {
             Navigator.pushReplacement(
               context,

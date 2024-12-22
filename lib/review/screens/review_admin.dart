@@ -26,7 +26,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.post(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/delete-review-flutter/',
+        'http://127.0.0.1:8000/review/delete-review-flutter/',
         jsonEncode({'review_id': reviewId}),
       );
 
@@ -49,7 +49,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
 
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('http://127.0.0.1:8000/review/get_review/');
 
       if (response != null) {
         setState(() {
