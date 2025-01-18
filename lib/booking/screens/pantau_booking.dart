@@ -7,16 +7,14 @@ import 'package:intl/intl.dart';
 
 Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
   try {
-    final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/pantau_flutter/');
-    final menuResponse = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+    final response = await request.get('http://127.0.0.1:8000/booking/pantau_flutter/');
+    final menuResponse = await request.get('http://127.0.0.1:8000/explore/get_menu/');
 
     if (response != null && menuResponse != null) {
-      // Convert menu response to MenuList objects
+      // menuResponse jadi object menu
       final menus = menuResponse.map((item) => MenuList.fromJson(item)).toList();
       
-      // Find the restaurant owned by user
       final restaurant = response['restaurant'];
-      // Find matching menu for the restaurant
       final matchingMenu = menus.firstWhere(
         (menu) => menu.fields.restaurantName == restaurant['restaurant_name'],
         orElse: () => MenuList(pk: 0, model: Model.EXPLORE_MENU, fields: Fields(
@@ -27,7 +25,7 @@ Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
         )),
       );
 
-      // Update restaurant data with image
+      // Update data restaurant dengan image_url dari matchingMenu
       response['restaurant'] = {
         ...restaurant,
         'image_url': matchingMenu.fields.image,
@@ -45,8 +43,8 @@ Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
 Future<bool> approveBooking(CookieRequest request, int bookingId) async {
   try {
     final response = await request.post(
-      'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/approve_flutter/$bookingId/',
-      {}, // Empty payload
+      'http://127.0.0.1:8000/booking/approve_flutter/$bookingId/',
+      {}, 
     );
     if (response['status'] == 'success') {
       return true;

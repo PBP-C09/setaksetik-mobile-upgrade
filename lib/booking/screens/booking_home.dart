@@ -6,16 +6,30 @@ import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
 import 'package:setaksetikmobile/booking/screens/list_booking.dart';
+import 'package:setaksetikmobile/booking/screens/booking_detail.dart';
 
 Future<List<MenuList>> fetchMenu(CookieRequest request) async {
   try {
-    final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
+    final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
 
     if (response == null) {
       return [];
     }
 
-    return response.map<MenuList>((menu) => MenuList.fromJson(menu)).toList();
+    // Membuat map untuk hanya melihatkan satu menu dari suatu resto
+    Map<String, MenuList> uniqueRestaurants = {};
+
+    // Ubah menjadi objek MenuList
+    List<MenuList> allMenus = response.map<MenuList>((menu) => MenuList.fromJson(menu)).toList();
+
+    for (var menu in allMenus) {
+      String restaurantName = menu.fields.restaurantName;
+      if (!uniqueRestaurants.containsKey(restaurantName)) {
+        uniqueRestaurants[restaurantName] = menu;
+      }
+    }
+
+    return uniqueRestaurants.values.toList();
   } catch (e) {
     print('Error fetching menu: $e');
     return [];
@@ -57,8 +71,7 @@ class _BookingPageState extends State<BookingPage> {
   void _handleSearch(String value) {
     setState(() {
       _filteredMenus = _originalMenus.where((menu) {
-        return (menu.fields.menu.toLowerCase().contains(value.toLowerCase()) ||
-            menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase()));
+        return (menu.fields.restaurantName.toLowerCase().contains(value.toLowerCase()));
       }).toList();
     });
   }
@@ -162,7 +175,7 @@ class _BookingPageState extends State<BookingPage> {
                       color: Color(0xFF3E2723),
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Search menu or restaurant',
+                      hintText: 'Search restaurant',
                       hintStyle: const TextStyle(fontSize: 14),
                       prefixIcon: const Icon(Icons.search, size: 20),
                       isDense: true,
@@ -470,6 +483,36 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                       child: const Text(
                         'Book Now',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BookingDetailPage(menu: menu),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6D4C41),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        minimumSize: const Size(double.infinity, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'See Detail',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
