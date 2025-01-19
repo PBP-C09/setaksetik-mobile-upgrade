@@ -291,7 +291,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
                             if (_formKey.currentState!.validate()) {
                               // Kirim data menu ke django
                               final response = await request.postJson(
-                                "http://127.0.0.1:8000/explore/create-flutter/",
+                                "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/create-flutter/",
                                 jsonEncode(<String, String>{
                                   "menu": _menuName,
                                   "category": _selectedCategory ?? "",

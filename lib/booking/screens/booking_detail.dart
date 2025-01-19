@@ -4,27 +4,6 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
 import 'package:setaksetikmobile/review/screens/review_entry.dart';
 
-class RestoMenuResponse {
-  final String restaurantName;
-  final List<MenuList> menus;
-
-  RestoMenuResponse({
-    required this.restaurantName,
-    required this.menus,
-  });
-
-  factory RestoMenuResponse.fromJson(Map<String, dynamic> json) {
-    return RestoMenuResponse(
-      restaurantName: json['restaurant_name'],
-      menus: (json['menus'] as List).map((menuJson) => MenuList.fromJson({
-        "pk": menuJson['id'],
-        "model": "explore.menu",
-        "fields": menuJson,
-      })).toList(),
-    );
-  }
-}
-
 class BookingDetailPage extends StatelessWidget {
   final MenuList menu;
 
@@ -37,7 +16,7 @@ class BookingDetailPage extends StatelessWidget {
         title: const Text('Restaurant Details'),
         centerTitle: true,
       ),
-      backgroundColor: const Color(0xFF6D4C41),
+      backgroundColor: const Color(0xFF3E2723),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Card(
@@ -262,7 +241,7 @@ class BookingDetailPage extends StatelessWidget {
                         ),
                         onPressed: () => Navigator.pop(context),
                         child: const Text(
-                          'Back to Menu List',
+                          'Back to Restaurant List',
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,
