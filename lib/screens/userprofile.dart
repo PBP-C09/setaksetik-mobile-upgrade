@@ -70,7 +70,7 @@ class UserProfilePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () async {
         final response = await request.logout(
-          "http://127.0.0.1:8000/logout-mobile/");
+          "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/logout-mobile/");
 
         String message = response["message"];
         if (context.mounted) {

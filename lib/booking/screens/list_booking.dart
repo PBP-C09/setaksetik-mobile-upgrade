@@ -41,23 +41,20 @@ class _BookingListPageState extends State<BookingListPage> {
     }
   }
 
-  /// Fetch the list of bookings from the server
+  // Fetch list bookingnya
   Future<List<dynamic>> fetchBookings(CookieRequest request) async {
     try {
-      // First fetch the bookings
-      final response = await request.get('http://127.0.0.1:8000/booking/json/all/');
+      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/json/all/');
       
       if (response == null || response.isEmpty) {
         return [];
       }
 
-      // Then fetch all menus
-      final menuResponse = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      final menuResponse = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
       final menus = menuResponse != null ? 
         menuResponse.map((item) => MenuList.fromJson(item)).toList() : 
         <MenuList>[];
 
-      // Create a map of menu ID to menu details for faster lookup
       final menuMap = {
         for (var menu in menus) 
         menu.pk: menu
