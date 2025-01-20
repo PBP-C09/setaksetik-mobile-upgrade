@@ -376,11 +376,9 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
 
 
   // Fungsi untuk menghapus menu
-  _deleteMenu(CookieRequest request, int pk) {
-    request.get('http://127.0.0.1:8000/explore/delete/$pk');
-    setState(() {
-      fetchOwnedRestaurant(request);
-    });
+  Future<void> _deleteMenu(CookieRequest request, int pk) async {
+    await request.get('http://127.0.0.1:8000/explore/delete/$pk');
+    _refreshData();
   }
 }
 

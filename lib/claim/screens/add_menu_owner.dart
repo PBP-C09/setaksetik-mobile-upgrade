@@ -17,7 +17,6 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
 
   // Dropdown Selections
   String? _selectedCategory;
-  String? _selectedCity;
   String? _selectedSpecialized;
 
   // Text Input
@@ -90,6 +89,11 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
       setState(() {
         restaurantName = firstMenu['restaurant_name'];
         restaurantCity = firstMenu['city'];
+        _takeaway = firstMenu['takeaway'] ?? false;
+        _delivery = firstMenu['delivery'] ?? false;
+        _outdoor = firstMenu['outdoor'] ?? false;
+        _smokingArea = firstMenu['smoking_area'] ?? false;
+        _wifi = firstMenu['wifi'] ?? false;
       });
     }
   }
@@ -269,31 +273,26 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                   color: const Color(0xFF4E342E),
                 ),
               ),
-              _buildCheckbox(
-                label: "Takeaway",
-                value: _takeaway,
-                onChanged: (value) => setState(() => _takeaway = value!),
-              ),
-              _buildCheckbox(
-                label: "Delivery",
-                value: _delivery,
-                onChanged: (value) => setState(() => _delivery = value!),
-              ),
-              _buildCheckbox(
-                label: "Outdoor Seating",
-                value: _outdoor,
-                onChanged: (value) => setState(() => _outdoor = value!),
-              ),
-              _buildCheckbox(
-                label: "Smoking Area",
-                value: _smokingArea,
-                onChanged: (value) => setState(() => _smokingArea = value!),
-              ),
-              _buildCheckbox(
-                label: "WiFi",
-                value: _wifi,
-                onChanged: (value) => setState(() => _wifi = value!),
-              ),
+              _buildDisabledTextField(
+              label: "Takeaway",
+              value: _takeaway,
+            ),
+            _buildDisabledTextField(
+              label: "Delivery",
+              value: _delivery,
+            ),
+            _buildDisabledTextField(
+              label: "Outdoor Seating",
+              value: _outdoor,
+            ),
+            _buildDisabledTextField(
+              label: "Smoking Area",
+              value: _smokingArea,
+            ),
+            _buildDisabledTextField(
+              label: "WiFi",
+              value: _wifi,
+            ),
 
               // Submit Button
               Padding(
@@ -447,17 +446,26 @@ Widget _buildDropdown({
   );
 }
 
-// Helper Widget: Checkbox
-Widget _buildCheckbox({
+Widget _buildDisabledTextField({
   required String label,
   required bool value,
-  required void Function(bool?) onChanged,
 }) {
-  return CheckboxListTile(
-    title: Text(label),
-    value: value,
-    onChanged: onChanged,
-    controlAffinity: ListTileControlAffinity.leading,
-    contentPadding: EdgeInsets.zero,
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 8.0),
+    child: TextFormField(
+      initialValue: value ? "Yes" : "No",
+      style: const TextStyle(color: Colors.black54),
+      decoration: InputDecoration(
+        labelText: label,  // Now just shows the label without the value
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        filled: true,
+        fillColor: Colors.grey[200],
+      ),
+      enabled: false,
+    ),
   );
 }
