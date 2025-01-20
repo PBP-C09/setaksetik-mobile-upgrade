@@ -325,9 +325,6 @@ class MenuDetailPage extends StatelessWidget {
     );
   }
 
-
-
-
   // Widget untuk menampilkan bullet info
   Widget _buildBulletInfo(String label, bool value) {
     return Row(
