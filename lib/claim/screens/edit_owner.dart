@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 
 // Class untuk edit menu
-class EditMenuFormPage extends StatefulWidget {
+class EditMenuOwnerPage extends StatefulWidget {
   final MenuList menuToEdit;
-  const EditMenuFormPage({super.key, required this.menuToEdit});
+  const EditMenuOwnerPage({super.key, required this.menuToEdit});
 
   @override
-  State<EditMenuFormPage> createState() => _EditMenuFormPageState();
+  State<EditMenuOwnerPage> createState() => _EditMenuOwnerPageState();
 }
 
-class _EditMenuFormPageState extends State<EditMenuFormPage> {
+class _EditMenuOwnerPageState extends State<EditMenuOwnerPage> {
   final _formKey = GlobalKey<FormState>();
 
   // Dropdown Selections
@@ -273,7 +273,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               final response = await request.postJson(
-                                "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/explore/edit-flutter/${widget.menuToEdit.pk}/",
+                                "http://127.0.0.1:8000/claim/edit-flutter/${widget.menuToEdit.pk}/",
                                 jsonEncode(<String, String>{
                                   "menu": _menuName,
                                   "category": _selectedCategory ?? "",
@@ -297,7 +297,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                                   );
                                   Navigator.pushReplacement(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ExploreAdmin()),
+                                    MaterialPageRoute(builder: (context) => OwnedRestaurantPage()),
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
