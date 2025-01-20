@@ -282,7 +282,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                                                       onPressed: () async {
                                                          await _deleteMenu(request, menu.pk);
                                                          setState(() {
-                                                          fetchOwnedRestaurant(request);
+                                                          _refreshData();
                                                         });
                                                         Navigator.pop(context);
                                                       },
@@ -403,7 +403,7 @@ class OwnershipCard extends StatelessWidget {
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.8, // 80% dari lebar layar
+          maxWidth: MediaQuery.of(context).size.width * 0.8,
         ),
         child: TweenAnimationBuilder(
           tween: Tween<double>(begin: 0.95, end: 1.0),
@@ -428,43 +428,95 @@ class OwnershipCard extends StatelessWidget {
               ],
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                // Title
+                const Text(
                   'Card of Ownership',
                   style: TextStyle(
-                    color: const Color(0xFF5B3E39),
-                    fontSize: 28, // Ukuran font dikurangi
+                    color: Color(0xFF5B3E39),
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Playfair Display',
                     fontStyle: FontStyle.italic,
                   ),
                 ),
-                const SizedBox(height: 20),
-                _buildDividerWithText('This is to verify that'),
-                const SizedBox(height: 8),
-                Text(
-                  ownerName,
-                  style: TextStyle(
-                    color: const Color(0xFF5B3E39),
-                    fontSize: 20, // Ukuran font dikurangi
+                const SizedBox(height: 30),
+                
+                // Verify text with line
+                Row(
+                  children: [
+                    const Text(
+                      'This is to verify that',
+                      style: TextStyle(
+                        color: Color(0xFF5B3E39),
+                        fontSize: 14,
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: const Color(0xFF5B3E39),
+                        margin: const EdgeInsets.only(left: 4),
+                      ),
+                    ),
+                  ],
+                ),
+                
+                // Owner name
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    ownerName,
+                    style: const TextStyle(
+                    color: Color(0xFF5B3E39),
+                    fontSize: 24,
                     fontFamily: 'Playfair Display',
                     fontStyle: FontStyle.italic,
+                    ),
+                  ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                _buildDividerWithText('is the One True Owner of'),
-                const SizedBox(height: 8),
-                Text(
-                  restaurantName,
-                  style: TextStyle(
-                    color: const Color(0xFF5B3E39),
-                    fontSize: 20, // Ukuran font dikurangi
-                    fontFamily: 'Playfair Display',
-                    fontStyle: FontStyle.italic,
+                
+                // True owner text with line
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        color: const Color(0xFF5B3E39),
+                        margin: const EdgeInsets.only(right: 4),
+                      ),
+                    ),
+                    const Text(
+                      'is the One True Owner of',
+                      style: TextStyle(
+                        color: Color(0xFF5B3E39),
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                
+                // Restaurant name (aligned right)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12, bottom: 30),
+                    child: Text(
+                      restaurantName,
+                      style: const TextStyle(
+                        color: Color(0xFF5B3E39),
+                        fontSize: 24,
+                        fontFamily: 'Playfair Display',
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                
+                // Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
