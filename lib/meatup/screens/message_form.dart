@@ -36,7 +36,7 @@ class _MessageFormPageState extends State<MessageFormPage> {
   Future<void> fetchReceivers() async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/get-receivers/');
+      final response = await request.get('http://127.0.0.1:8000/meatup/flutter/get-receivers/');
       if (mounted) {
         setState(() {
           receiverList = List<Map<String, dynamic>>.from(response);
@@ -251,8 +251,8 @@ class _MessageFormPageState extends State<MessageFormPage> {
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   String url = widget.messageToEdit != null
-                                      ? 'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/edit/${widget.messageToEdit!['id']}/'
-                                      : 'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/create-flutter/';
+                                      ? 'http://127.0.0.1:8000/meatup/flutter/edit/${widget.messageToEdit!['id']}/'
+                                      : 'http://127.0.0.1:8000/meatup/create-flutter/';
 
                                   try {
                                     final response = await request.postJson(

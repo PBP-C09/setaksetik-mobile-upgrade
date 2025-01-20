@@ -27,7 +27,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> fetchMessages() async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/get-messages-json/');
+      final response = await request.get('http://127.0.0.1:8000/meatup/get-messages-json/');
       if (mounted) {
         setState(() {
           receivedMessages = List<Map<String, dynamic>>.from(response['received_messages']);
@@ -57,7 +57,7 @@ class MeatUpPageState extends State<MeatUpPage> {
 
   Future<void> _deleteMessage(CookieRequest request, int messageId) async {
     try {
-      await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/delete/$messageId/');
+      await request.get('http://127.0.0.1:8000/meatup/delete/$messageId/');
       fetchMessages();
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -81,7 +81,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> _acceptMessage(CookieRequest request, int messageId) async {
     try {
       await request.post(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/accept/$messageId/',
+        'http://127.0.0.1:8000/meatup/accept/$messageId/',
         {},
       );
       fetchMessages();
@@ -107,7 +107,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> _rejectMessage(CookieRequest request, int messageId) async {
     try {
       await request.post(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/meatup/reject/$messageId/',
+        'http://127.0.0.1:8000/meatup/reject/$messageId/',
         {},
       );
       fetchMessages();

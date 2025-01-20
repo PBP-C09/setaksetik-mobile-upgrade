@@ -7,7 +7,7 @@ import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 
 import 'package:setaksetikmobile/explore/screens/menu_home.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/spin.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/front_screen.dart';
 import 'package:setaksetikmobile/review/screens/review_admin.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
 import 'package:setaksetikmobile/review/screens/review_home.dart';
