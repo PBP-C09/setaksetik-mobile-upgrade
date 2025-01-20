@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final spinHistory = spinHistoryFromJson(jsonString);
-
 import 'dart:convert';
 
 List<SpinHistory> spinHistoryFromJson(String str) => List<SpinHistory>.from(json.decode(str).map((x) => SpinHistory.fromJson(x)));
