@@ -85,9 +85,11 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
     final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
     
     if (response != null) {
+      final menus = response['menus'] as List;
+      final firstMenu = menus[0]['fields'];
       setState(() {
-        restaurantName = response['fields']['restaurant_name'];
-        restaurantCity = response['fields']['city'];
+        restaurantName = firstMenu['restaurant_name'];
+        restaurantCity = firstMenu['city'];
       });
     }
   }
@@ -356,7 +358,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                               if (context.mounted) {
                                 if (response['status'] == 'success') {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                                    const SnackBar(content: Text("Menu baru berhasil disimpan!")),
                                   );
                                    Navigator.pop(context, true);
                                 } else {

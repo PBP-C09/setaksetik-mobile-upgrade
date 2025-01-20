@@ -3,12 +3,12 @@ import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 import 'package:setaksetikmobile/claim/screens/add_menu_owner.dart';
+import 'package:setaksetikmobile/claim/screens/edit_owner.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
+import 'package:setaksetikmobile/explore/screens/admin_detail.dart';
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/screens/root_page.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
-import 'package:setaksetikmobile/explore/screens/edit_menu_form.dart';
 
 class OwnedRestaurantPage extends StatefulWidget {
   const OwnedRestaurantPage({super.key});
@@ -37,7 +37,7 @@ Future<bool> deleteOwnership(CookieRequest request, int restaurantId) async {
 }
 
 class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
-  Future<MenuList?> _ownedRestaurantFuture = Future.value(null);
+  Future<List<MenuList>?> _ownedRestaurantFuture = Future.value(null);
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
       _ownedRestaurantFuture = fetchOwnedRestaurant(request);
     });
   }
-  Future<MenuList?> fetchOwnedRestaurant(CookieRequest request) async {
+  Future<List<MenuList>?> fetchOwnedRestaurant(CookieRequest request) async {    
     try {
       final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
 
@@ -59,7 +59,13 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
         return null;
       }
 
-      return MenuList.fromJson(response);
+      if (response['status'] == 'success') {
+        // Parse list menu dari response
+        List<MenuList> menus = (response['menus'] as List)
+            .map((menu) => MenuList.fromJson(menu))
+            .toList();
+        return menus;
+      }
     } catch (e) {
       print('Error fetching owned restaurant: $e');
       return null;
@@ -76,7 +82,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
         centerTitle: true,
       ),
       drawer: LeftDrawer(),
-      body: FutureBuilder<MenuList?>(
+      body: FutureBuilder<List<MenuList>?>(
         future: _ownedRestaurantFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -86,7 +92,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
           } else if (!snapshot.hasData) {
             return const Center(child: Text('You do not own any restaurant.'));
           } else {
-            final menu = snapshot.data!;
+            final menus = snapshot.data!;
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -96,9 +102,9 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                   Center(
                   child: OwnershipCard(
                   ownerName: UserProfile.data["full_name"],
-                  restaurantName: menu.fields.restaurantName,
+                  restaurantName: menus[0].fields.restaurantName,
                   onDisown: () async {
-                    final success = await deleteOwnership(request, menu.pk);
+                    final success = await deleteOwnership(request, menus[0].pk);
                     if (success) {
                       UserProfile.data["claim"] = 0;
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -174,185 +180,190 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                   ),
                 ),
                   const SizedBox(height: 24),
-                  Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Stack(
-                        children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.network(
-                            menu.fields.image,
-                            height: 200,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.network(
-                                "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
-                                height: 200,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              );
-                            },
-                          ),
+                  // Menu List
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: menus.length,
+                    itemBuilder: (context, index) {
+                      final menu = menus[index];
+                      return Card(
+                        elevation: 4,
+                        // margin: EdgeInsets.only(bottom: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)
                         ),
-                        // Edit and Delete Buttons
-                          Positioned(
-                            top: 8,
-                            left: 8,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFFFD54F),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => EditMenuFormPage(menuToEdit: menu),
-                                        ),
-                                      ).then((_) {
-                                        setState(() {
-                                          fetchOwnedRestaurant(
-                                            Provider.of<CookieRequest>(context, listen: false)
-                                          );
-                                        });
-                                      });
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    menu.fields.image,
+                                    height: 200,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.network(
+                                        "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/1665px-No-Image-Placeholder.svg.png",
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      );
                                     },
                                   ),
                                 ),
-                                const SizedBox(width:8),
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF842323),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                        offset: const Offset(0, 2),
+                                // Edit and Delete Buttons
+                                Positioned(
+                                  top: 8,
+                                  left: 8,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFFFD54F),
+                                          borderRadius: BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.2),
+                                              spreadRadius: 1,
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: IconButton(
+                                          icon: const Icon(Icons.edit, color: Colors.white),
+                                          onPressed: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => EditMenuOwnerPage(menuToEdit: menu),
+                                              ),
+                                            ).then((_) => _refreshData());
+                                          },
+                                        ),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF842323),
+                                          borderRadius: BorderRadius.circular(20),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.2),
+                                              spreadRadius: 1,
+                                              blurRadius: 3,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: IconButton(
+                                          icon: const Icon(Icons.delete, color: Colors.white),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text('Delete Menu'),
+                                                  content: const Text('Are you sure you want to delete this menu?'),
+                                                  actions: [
+                                                    TextButton(
+                                                      child: const Text('Cancel'),
+                                                      onPressed: () => Navigator.of(context).pop(),
+                                                    ),
+                                                    TextButton(
+                                                      child: const Text(
+                                                        'Delete',
+                                                        style: TextStyle(color: Color(0xFF842323)),
+                                                      ),
+                                                      onPressed: () async {
+                                                         _deleteMenu(request, menu.pk);
+                                                         setState(() {
+                                                          fetchOwnedRestaurant(request);
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ],
-                                  ),
-                                  child: IconButton(
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text('Delete Menu'),
-                                            content: const Text('Are you sure you want to delete this menu?'),
-                                            actions: [
-                                              TextButton(
-                                                child: const Text('Cancel'),
-                                                onPressed: () => Navigator.of(context).pop(),
-                                              ),
-                                              TextButton(
-                                                child: const Text(
-                                                  'Delete',
-                                                  style: TextStyle(color: Color(0xFF842323)),
-                                                ),
-                                                onPressed: () async {                  
-                                                  _deleteMenu(request, menu.pk);
-                                                  setState(() {
-                                                     fetchOwnedRestaurant(request);
-                                                  });
-                                                  Navigator.pop(context);
-                                                }         
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                        ),
-                        
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                menu.fields.restaurantName,
-                                style: const TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Playfair Display',
-                                  fontStyle: FontStyle.italic
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text('Category: ${menu.fields.category}'),
-                              const SizedBox(height: 8),
-                              Text('City: ${menu.fields.city.name}'),
-                              const SizedBox(height: 8),
-                              Text('Rating: ${menu.fields.rating}'),
-                              const SizedBox(height: 16),
-                              Center(
-                                child: ElevatedButton(
-                                  onPressed: () async {
-                                    
+                            Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Center(
+                                  child: Text(
+                                    menu.fields.menu,
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'Playfair Display',
+                                      fontStyle: FontStyle.italic
+                                    ),
+                                  ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Center(
+                                  child: Text('Category: ${menu.fields.category}'),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Center(
+                                  child: Text('Price: ${menu.fields.price}'),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Center(
+                                  child: Text('Rating: ${menu.fields.rating}'),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Center(
+                                  child: ElevatedButton(
+                                    onPressed: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => MenuDetailPage(menuList: menu),
+                                          builder: (context) => AdminDetail(menuList: menu),
                                         ),
                                       );
                                     },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF6D4C41), // Warna merah untuk tombol
-                                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF6D4C41),
+                                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'View Details',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Playfair Display',
+                                        fontStyle: FontStyle.italic,
+                                        color: Color(0xFFF5F5DC)
+                                      ),
+                                      ),
                                     ),
                                   ),
-                                  child: const Text(
-                                    'View Details',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Playfair Display',
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xFFF5F5DC) 
-                                    ),
-                                  ),
-                                ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -362,6 +373,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
       ),
     );
   }
+
 
   // Fungsi untuk menghapus menu
   _deleteMenu(CookieRequest request, int pk) {

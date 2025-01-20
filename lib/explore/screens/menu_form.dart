@@ -312,7 +312,7 @@ class _MenuFormPageState extends State<MenuFormPage> {
                               if (context.mounted) {
                                 if (response['status'] == 'success') {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Produk baru berhasil disimpan!")),
+                                    const SnackBar(content: Text("Menu baru berhasil disimpan!")),
                                   );
                                   Navigator.pushReplacement(
                                     context,
