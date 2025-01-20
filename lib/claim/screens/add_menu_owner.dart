@@ -274,25 +274,25 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                 ),
               ),
               _buildDisabledTextField(
-              label: "Takeaway",
-              value: _takeaway,
-            ),
-            _buildDisabledTextField(
-              label: "Delivery",
-              value: _delivery,
-            ),
-            _buildDisabledTextField(
-              label: "Outdoor Seating",
-              value: _outdoor,
-            ),
-            _buildDisabledTextField(
-              label: "Smoking Area",
-              value: _smokingArea,
-            ),
-            _buildDisabledTextField(
-              label: "WiFi",
-              value: _wifi,
-            ),
+            label: "Takeaway",
+            value: _takeaway,
+          ),
+          _buildDisabledTextField(
+            label: "Delivery",
+            value: _delivery,
+          ),
+          _buildDisabledTextField(
+            label: "Outdoor Seating",
+            value: _outdoor,
+          ),
+          _buildDisabledTextField(
+            label: "Smoking Area",
+            value: _smokingArea,
+          ),
+          _buildDisabledTextField(
+            label: "WiFi",
+            value: _wifi,
+          ),
 
               // Submit Button
               Padding(
@@ -452,20 +452,34 @@ Widget _buildDisabledTextField({
 }) {
   return Padding(
     padding: const EdgeInsets.symmetric(vertical: 8.0),
-    child: TextFormField(
-      initialValue: value ? "Yes" : "No",
-      style: const TextStyle(color: Colors.black54),
-      decoration: InputDecoration(
-        labelText: label,  // Now just shows the label without the value
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
-          borderRadius: BorderRadius.circular(8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Label di luar kotak
+        Padding(
+          padding: const EdgeInsets.only(left: 4, bottom: 4),
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+          ),
         ),
-        filled: true,
-        fillColor: Colors.grey[200],
-      ),
-      enabled: false,
+        // Kotak dengan ukuran fixed
+        Container(
+          width: double.infinity,  // Memenuhi lebar parent
+          height: 48,  // Tinggi fixed untuk konsistensi
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            border: Border.all(color: Color(0xFFBDBDBD)),
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+          // Value Yes/No di dalam kotak
+          child: Text(
+            value ? "Yes" : "No",
+            style: TextStyle(color: Colors.black54),
+          ),
+        ),
+      ],
     ),
   );
 }

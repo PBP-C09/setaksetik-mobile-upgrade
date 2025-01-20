@@ -280,7 +280,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                                                         style: TextStyle(color: Color(0xFF842323)),
                                                       ),
                                                       onPressed: () async {
-                                                         _deleteMenu(request, menu.pk);
+                                                         await _deleteMenu(request, menu.pk);
                                                          setState(() {
                                                           fetchOwnedRestaurant(request);
                                                         });
@@ -377,8 +377,10 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
 
   // Fungsi untuk menghapus menu
   Future<void> _deleteMenu(CookieRequest request, int pk) async {
+    try{
     await request.get('http://127.0.0.1:8000/explore/delete/$pk');
-    _refreshData();
+    } catch (e) {
+    }
   }
 }
 
