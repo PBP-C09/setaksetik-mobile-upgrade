@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
+import 'package:setaksetikmobile/explore/models/menu_entry.dart';
+import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 import 'package:setaksetikmobile/spinthewheel/models/spin_history.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
-class SpinHistoryView extends StatefulWidget {
-  const SpinHistoryView({super.key});
+class SpinHistoryTab extends StatefulWidget {
+  const SpinHistoryTab({super.key});
 
   @override
-  State<SpinHistoryView> createState() => _SpinHistoryViewState();
+  State<SpinHistoryTab> createState() => _SpinHistoryTabState();
 }
 
-class _SpinHistoryViewState extends State<SpinHistoryView> {
+class _SpinHistoryTabState extends State<SpinHistoryTab> {
   late Future<List<SpinHistory>> spinHistoryFuture;
 
   @override
@@ -129,14 +131,15 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   TextButton(
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      final theMenu = await _fetchMenuById(request, history.fields.winnerId);                                      
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               BookingFormPage(
                                                 menuId: history.fields.winnerId,
-                                                restaurantName: history.fields.winner,
+                                                restaurantName: theMenu.fields.restaurantName,
                                               ),
                                         ),
                                       );
@@ -146,6 +149,33 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
                                     ),
                                     child: Text(
                                       'Book',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontStyle: FontStyle.italic,
+                                        fontSize: 16.0,
+                                        color: isRed
+                                          ? const Color(0xFFF5F5DC)
+                                          : const Color(0xFF3E2723),
+                                        fontFamily: 'Playfair Display',
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      final theMenu = await _fetchMenuById(request, history.fields.winnerId);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              MenuDetailPage(menuList: theMenu),
+                                        ),
+                                      );
+                                    },
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                    ),
+                                    child: Text(
+                                      'Detail',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontStyle: FontStyle.italic,
@@ -207,7 +237,7 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
 
   Future<List<SpinHistory>> _fetchSpinHistory(CookieRequest request) async {
     final response =
-        await request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/history-json/');
+        await request.get('http://127.0.0.1:8000/spinthewheel/history-json/');
     var data = response;
     List<SpinHistory> listHistory = [];
     for (var d in data) {
@@ -218,9 +248,18 @@ class _SpinHistoryViewState extends State<SpinHistoryView> {
     return listHistory;
   }
 
+  Future<MenuList> _fetchMenuById(CookieRequest request, int id) async {
+    final response = 
+      await request.get('http://127.0.0.1:8000/explore/get_menu/$id/');
+    var data = response;
+    if (data != null && data.isNotEmpty) {
+      return MenuList.fromJson(data[0]);
+    }
+    throw Exception('Menu not found');
+  }
+
   _deleteSpinHistory(CookieRequest request, String pk) {
-    request.get('https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/delete/$pk');
-    // Refresh the spin history list
+    request.get('http://127.0.0.1:8000/spinthewheel/delete/$pk');
     setState(() {
       spinHistoryFuture = _fetchSpinHistory(request);
     });
