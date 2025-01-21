@@ -10,7 +10,7 @@ import 'package:setaksetikmobile/booking/screens/booking_detail.dart';
 
 Future<List<MenuList>> fetchMenu(CookieRequest request) async {
   try {
-    final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+    final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
 
     if (response == null) {
       return [];
