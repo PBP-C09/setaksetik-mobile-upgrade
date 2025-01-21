@@ -48,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15),
                           child: Image.asset(
-                            'assets/images/landing-image-0.png',
+                            'assets/images/setaksetik.png',
                             height: 180,
                             width: 180,
                             fit: BoxFit.cover,
@@ -140,7 +140,7 @@ class _LoginPageState extends State<LoginPage> {
                                   String password = _passwordController.text;
 
                                   final response = await request.login(
-                                      "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id//login-mobile/", {
+                                      "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/login-mobile/", {
                                       
                                     'username': username,
                                     'password': password,
