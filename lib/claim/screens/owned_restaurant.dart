@@ -7,7 +7,7 @@ import 'package:setaksetikmobile/claim/screens/edit_owner.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/explore/screens/admin_detail.dart';
 import 'package:setaksetikmobile/main.dart';
-import 'package:setaksetikmobile/screens/root_page.dart';
+import 'package:setaksetikmobile/main/screens/root_page.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class OwnedRestaurantPage extends StatefulWidget {
