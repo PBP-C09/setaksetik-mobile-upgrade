@@ -62,7 +62,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
 
     try {
       final response = await request.postJson(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/add_flutter/${widget.menuId}/',
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/booking/add_flutter/${widget.menuId}/',
         jsonEncode(data),
       );
 

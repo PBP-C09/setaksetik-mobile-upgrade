@@ -7,8 +7,8 @@ import 'package:intl/intl.dart';
 
 Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
   try {
-    final response = await request.get('http://127.0.0.1:8000/booking/pantau_flutter/');
-    final menuResponse = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+    final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/booking/pantau_flutter/');
+    final menuResponse = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
 
     if (response != null && menuResponse != null) {
       // menuResponse jadi object menu
@@ -43,7 +43,7 @@ Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
 Future<bool> approveBooking(CookieRequest request, int bookingId) async {
   try {
     final response = await request.post(
-      'http://127.0.0.1:8000/booking/approve_flutter/$bookingId/',
+      'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/booking/approve_flutter/$bookingId/',
       {}, 
     );
     if (response['status'] == 'success') {

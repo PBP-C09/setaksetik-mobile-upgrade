@@ -60,7 +60,7 @@ class _EditBookingPageState extends State<EditBookingPage> {
 
     try {
       final response = await request.postJson(
-        'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/booking/edit_flutter/${widget.bookingId}/',
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/booking/edit_flutter/${widget.bookingId}/',
         jsonEncode(data),
       );
 
