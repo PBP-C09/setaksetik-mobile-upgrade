@@ -53,6 +53,10 @@ class Fields {
       };
 }
 
+// To parse this JSON data, do
+//
+//     final messageEntry = messageEntryFromJson(jsonString);
+
 List<MessageEntry> messageEntryFromJson(String str) => List<MessageEntry>.from(
     json.decode(str).map((x) => MessageEntry.fromJson(x))
 );

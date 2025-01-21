@@ -85,7 +85,9 @@ class _BookingListPageState extends State<BookingListPage> {
   Future<void> deleteBooking(int bookingId) async {
     final request = Provider.of<CookieRequest>(context, listen: false);
     try {
+
       final url = 'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/booking/delete_flutter/$bookingId/';
+
       await request.post(
         url,
         {}, // Empty body

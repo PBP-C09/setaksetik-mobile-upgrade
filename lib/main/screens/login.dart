@@ -1,9 +1,9 @@
 import 'package:setaksetikmobile/main.dart';
-import 'package:setaksetikmobile/screens/root_page.dart';
+import 'package:setaksetikmobile/main/screens/root_page.dart';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/screens/register.dart';
+import 'package:setaksetikmobile/main/screens/register.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

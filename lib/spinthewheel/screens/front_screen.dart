@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/wheel_screen.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/history_screen.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/wheel_tab.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/history_tab.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class SpinPage extends StatefulWidget {
@@ -61,8 +61,8 @@ class _SpinPageState extends State<SpinPage> with SingleTickerProviderStateMixin
       body: TabBarView(
         controller: _tabController,
         children: const [
-          WheelView(), // Wheel Screen
-          SpinHistoryView(), // Spin History Screen
+          WheelTab(),
+          SpinHistoryTab()
         ],
       ),
     );

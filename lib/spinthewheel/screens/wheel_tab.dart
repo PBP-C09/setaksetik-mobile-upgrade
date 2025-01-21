@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/spinthewheel/fortune_wheel/flutter_fortune_wheel.dart';
+// import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
-class WheelView extends StatefulWidget {
-  const WheelView({super.key});
+class WheelTab extends StatefulWidget {
+  const WheelTab({super.key});
 
   @override
-  _WheelViewState createState() => _WheelViewState();
+  _WheelTabState createState() => _WheelTabState();
 }
 
-class _WheelViewState extends State<WheelView> {
+class _WheelTabState extends State<WheelTab> {
   final StreamController<int> _controller = StreamController<int>();
   final TextEditingController _noteController = TextEditingController();
   bool _buttonsEnabled = false;
@@ -23,8 +24,10 @@ class _WheelViewState extends State<WheelView> {
   ];
 
   Map<int, bool> _isAddedMap = {}; // Primary key - bool added
-  Map<int, MenuList> _menuOptionsMap = {}; // Primary key - MenuList object
+  Map<int, MenuList> _menuOptionsMap = {}; // Primary key - MenuList object in current filter
+   Map<int, MenuList> _addedMenuMap = {}; // // Primary key - MenuList object in wheel
   Map<int, int> _wheelIndexToMenuKey = {}; // Wheel index - MenuList primary key
+  Set<int> _addedMenuKeys = {}; // Set of added MenuList primary key
 
   String _selectedCategory = "All Categories";
   MenuList? _selectedItem;
@@ -173,19 +176,24 @@ class _WheelViewState extends State<WheelView> {
 
   Future<void> _fetchMenuOptions(CookieRequest request, String category) async {
     final response = await request.get(
-          'https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/option-json/$category/');
+          'http://127.0.0.1:8000/spinthewheel/option-json/$category/');
       var data = response;
 
       if (mounted) {
         setState(() {
-          _menuOptionsMap.clear();
+          Map<int, bool> tempIsAdded = {};
+          Map<int, MenuList> tempMenuOptions = {};
+
           for (var option in data) {
             if (option != null) {
               MenuList menuItem = MenuList.fromJson(option);
-              _menuOptionsMap[menuItem.pk] = menuItem;
-              _isAddedMap[menuItem.pk] = false;
+              tempMenuOptions[menuItem.pk] = menuItem;
+              tempIsAdded[menuItem.pk] = _addedMenuKeys.contains(menuItem.pk);
             }
           }
+
+          _menuOptionsMap = tempMenuOptions;
+          _isAddedMap = tempIsAdded;
         });
       }
   }
@@ -259,6 +267,9 @@ class _WheelViewState extends State<WheelView> {
       if (!exists) {
         _wheelItems.add(FortuneItem(child: Text(option)));
         _wheelIndexToMenuKey[_wheelItems.length - 1] = menuKey;
+        _isAddedMap[menuKey] = true;
+        _addedMenuKeys.add(menuKey);
+        _addedMenuMap[menuKey] = _menuOptionsMap[menuKey]!;
       }
     });
   }
@@ -278,7 +289,7 @@ class _WheelViewState extends State<WheelView> {
         setState(() {
           int? selectedMenuKey = _wheelIndexToMenuKey[selectedIndex];
           if (selectedMenuKey != null) {
-            _selectedItem = _menuOptionsMap[selectedMenuKey];
+            _selectedItem = _addedMenuMap[selectedMenuKey];
             _selectedMenuName = _selectedItem?.fields.menu;
           }
           _buttonsEnabled = true;
@@ -308,6 +319,8 @@ class _WheelViewState extends State<WheelView> {
       _wheelItems
           .add(FortuneItem(child: const Text("Start Adding Items!")));
       _isAddedMap.updateAll((key, value) => false);
+      _addedMenuKeys.clear();
+      _addedMenuMap.clear();
     });
   }
 
@@ -381,8 +394,8 @@ class _WheelViewState extends State<WheelView> {
                 children: [
                   TextButton(
                     onPressed: () async {
-                      final response = await request.postJson(
-                        "https://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/spinthewheel/add-spin-history-mobile/",
+                      await request.postJson(
+                        "http://127.0.0.1:8000/spinthewheel/add-spin-history-mobile/",
                         jsonEncode({
                           'winner': selectedMenuName,
                           'winnerId': selectedMenu.pk.toString(),

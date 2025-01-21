@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/screens/welcome_page.dart';
-import 'screens/login.dart';
+import 'package:setaksetikmobile/main/screens/welcome_page.dart';
+import 'main/screens/login.dart';
 
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
