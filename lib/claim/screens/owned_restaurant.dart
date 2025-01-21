@@ -462,7 +462,7 @@ class OwnershipCard extends StatelessWidget {
                   ],
                 ),
                 
-                // Owner name
+                // Nama owner
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Align(
@@ -479,7 +479,7 @@ class OwnershipCard extends StatelessWidget {
                   ),
                 ),
                 
-                // True owner text with line
+                // Teks True owner
                 Row(
                   children: [
                     Expanded(
@@ -499,7 +499,7 @@ class OwnershipCard extends StatelessWidget {
                   ],
                 ),
                 
-                // Restaurant name (aligned right)
+                // Nama restoran
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
