@@ -27,7 +27,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> fetchMessages() async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.get('http://127.0.0.1:8000/meatup/flutter/get-messages-json/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/get-messages-json/');
       if (mounted) {
         setState(() {
           final allReceivedMessages = List<Map<String, dynamic>>.from(response['received_messages']);
@@ -77,7 +77,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> _deleteMessage(CookieRequest request, int messageId) async {
     try {
       final response = await request.post(
-        'http://127.0.0.1:8000/meatup/flutter/delete/$messageId/',
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/delete/$messageId/',
         {},
       );
       
@@ -112,7 +112,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> _acceptMessage(CookieRequest request, int messageId) async {
     try {
       final response = await request.post(
-        'http://127.0.0.1:8000/meatup/flutter/accept/$messageId/',
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/accept/$messageId/',
         {},
       );
       
@@ -147,7 +147,7 @@ class MeatUpPageState extends State<MeatUpPage> {
   Future<void> _rejectMessage(CookieRequest request, int messageId) async {
     try {
       final response = await request.post(
-        'http://127.0.0.1:8000/meatup/flutter/reject/$messageId/',
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/reject/$messageId/',
         {},
       );
       
