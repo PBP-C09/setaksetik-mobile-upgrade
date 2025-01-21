@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/screens/login.dart';
-import 'package:setaksetikmobile/screens/register.dart';
+import 'package:setaksetikmobile/main/screens/login.dart';
+import 'package:setaksetikmobile/main/screens/register.dart';
 
 class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});

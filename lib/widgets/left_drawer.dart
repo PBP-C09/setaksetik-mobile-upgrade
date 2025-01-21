@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/booking/screens/pantau_booking.dart';
 import 'package:setaksetikmobile/claim/screens/claim_home.dart';
 import 'package:setaksetikmobile/claim/screens/manage_ownership.dart';
@@ -6,9 +8,10 @@ import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/review/screens/review_admin.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
-import 'package:setaksetikmobile/screens/root_page.dart';
+import 'package:setaksetikmobile/main/screens/root_page.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
 import 'package:setaksetikmobile/explore/screens/menu_home.dart';
+import 'package:setaksetikmobile/main/screens/welcome_page.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/front_screen.dart';
 import 'package:setaksetikmobile/review/screens/review_home.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
@@ -211,6 +214,70 @@ class LeftDrawer extends StatelessWidget {
     return tiles;
   }
 
+  Widget _buildLogoutButton(BuildContext context) {
+    final request = context.watch<CookieRequest>();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      child: ElevatedButton(
+        onPressed: () async {
+          final response = await request.logout(
+            "http://127.0.0.1:8000/logout-mobile/");
+
+          String message = response["message"];
+          if (context.mounted) {
+            if (response['status']) {
+              String uname = response["username"];
+              UserProfile.logout();
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    backgroundColor: Color(0xFF3E2723),
+                    content: Text("See you again, $uname!")),
+                );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const WelcomePage()),
+              );
+            } else {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  SnackBar(
+                    backgroundColor: Color(0xFF3E2723),
+                    content: Text(message)),
+                );
+            }
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF842323),
+          padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+          minimumSize: Size(double.infinity, 50),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.logout,
+              color: Color(0xFFF5F5DC),
+            ),
+            SizedBox(width: 8),
+            Text(
+              'Logout',
+              style: TextStyle(
+                color: Color(0xFFF5F5DC),
+                fontFamily: 'Playfair Display',
+                fontSize: 18,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -255,7 +322,15 @@ class LeftDrawer extends StatelessWidget {
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
-              children: _buildRoleSpecificListTiles(context),
+              children: [
+              ..._buildRoleSpecificListTiles(context),
+              const Divider(
+                color: Color(0xFF6D4C41),
+                thickness: 1,
+                height: 32,
+              ),
+              _buildLogoutButton(context),
+            ],
             ),
           ),
         ],
