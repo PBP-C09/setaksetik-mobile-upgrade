@@ -20,7 +20,7 @@ class OwnedRestaurantPage extends StatefulWidget {
 Future<bool> deleteOwnership(CookieRequest request, int restaurantId) async {
   try {
     final response = await request.post(
-      'http://127.0.0.1:8000/claim/delete_flutter/$restaurantId/',
+      'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/delete_flutter/$restaurantId/',
       {}, // Tambahkan parameter data kosong
     );
 
@@ -53,7 +53,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
   }
   Future<List<MenuList>?> fetchOwnedRestaurant(CookieRequest request) async {    
     try {
-      final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/owned_flutter/');
 
       if (response == null || response['status'] == 'failed') {
         return null;
@@ -378,7 +378,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
   // Fungsi untuk menghapus menu
   Future<void> _deleteMenu(CookieRequest request, int pk) async {
     try{
-    await request.get('http://127.0.0.1:8000/explore/delete/$pk');
+    await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/delete/$pk');
     } catch (e) {
     }
   }
@@ -462,7 +462,7 @@ class OwnershipCard extends StatelessWidget {
                   ],
                 ),
                 
-                // Owner name
+                // Nama owner
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Align(
@@ -479,7 +479,7 @@ class OwnershipCard extends StatelessWidget {
                   ),
                 ),
                 
-                // True owner text with line
+                // Teks True owner
                 Row(
                   children: [
                     Expanded(
@@ -499,7 +499,7 @@ class OwnershipCard extends StatelessWidget {
                   ],
                 ),
                 
-                // Restaurant name (aligned right)
+                // Nama restoran
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(

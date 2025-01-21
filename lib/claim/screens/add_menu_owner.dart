@@ -32,7 +32,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
   bool _smokingArea = false;
   bool _wifi = false;
 
-  // Dropdown Choices
+  // Dropdown
   final List<DropdownMenuItem<String>> categoryChoices = const [
     DropdownMenuItem(value: 'beef', child: Text('Beef')),
     DropdownMenuItem(value: 'chicken', child: Text('Chicken')),
@@ -74,14 +74,14 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
   @override
   void initState() {
     super.initState();
-    // Fetch restaurant data when form is opened
+    // Ambil data restoran saat form dibuka
     fetchRestaurantData();
   }
 
-  // Function to fetch restaurant data
+  // Function untuk fetch data restoran
   Future<void> fetchRestaurantData() async {
     final request = context.read<CookieRequest>();
-    final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
+    final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/owned_flutter/');
     
     if (response != null) {
       final menus = response['menus'] as List;
@@ -336,7 +336,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                             if (_formKey.currentState!.validate()) {
                               // Kirim data menu ke django
                               final response = await request.postJson(
-                                "http://127.0.0.1:8000/claim/add-menu-flutter/",
+                                "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/add-menu-flutter/",
                                 jsonEncode(<String, String>{
                                   "menu": _menuName,
                                   "category": _selectedCategory ?? "",
@@ -463,10 +463,9 @@ Widget _buildDisabledTextField({
             style: TextStyle(fontSize: 12, color: Colors.grey[600]),
           ),
         ),
-        // Kotak dengan ukuran fixed
         Container(
-          width: double.infinity,  // Memenuhi lebar parent
-          height: 48,  // Tinggi fixed untuk konsistensi
+          width: double.infinity,  
+          height: 48,  
           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: Colors.grey[200],
