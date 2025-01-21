@@ -32,7 +32,8 @@ class ReviewList {
 
 class Fields {
   int user;
-  String menu;
+  //TODO: sementara aku ganti jadi integer
+  int menu;
   String place;
   int rating;
   String description;

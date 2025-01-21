@@ -48,7 +48,9 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     final query = _searchController.text.toLowerCase();
     setState(() {
       filteredReviews = reviews
-          .where((review) => review.fields.menu.toLowerCase().contains(query) ||
+          .where((review) =>
+              //TODO: ini perhatiin lagi
+              // review.fields.menu.toLowerCase().contains(query) ||
               review.fields.place.toLowerCase().contains(query) ||
               review.fields.description.toLowerCase().contains(query))
           .toList();
@@ -160,7 +162,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              review.fields.menu,
+                                              review.fields.menu as String,
                                               style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,

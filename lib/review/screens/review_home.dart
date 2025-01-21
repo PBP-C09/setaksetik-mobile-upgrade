@@ -49,7 +49,8 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
       searchQuery = query;
       filteredReviews = reviews
           .where((review) =>
-              review.fields.menu.toLowerCase().contains(query.toLowerCase()) ||
+              //TODO: ini perhatiin lagi
+              // review.fields.menu.toLowerCase().contains(query.toLowerCase()) ||
               review.fields.place.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
@@ -190,7 +191,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(16),
                             title: Text(
-                              review.fields.menu,
+                              review.fields.menu as String,
                               style: const TextStyle(
                                 fontSize: 16, // Font size reduced
                                 fontWeight: FontWeight.bold,

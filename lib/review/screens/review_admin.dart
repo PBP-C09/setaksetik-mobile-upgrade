@@ -108,7 +108,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  review.fields.menu,
+                                  review.fields.menu as String,
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
