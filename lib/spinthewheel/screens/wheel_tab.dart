@@ -176,7 +176,7 @@ class _WheelTabState extends State<WheelTab> {
 
   Future<void> _fetchMenuOptions(CookieRequest request, String category) async {
     final response = await request.get(
-          'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/spinthewheel/option-json/$category/');
+          'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.idspinthewheel/option-json/$category/');
       var data = response;
 
       if (mounted) {
@@ -347,6 +347,8 @@ class _WheelTabState extends State<WheelTab> {
 
           content: Column(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Divider(
                 color: Color(0xFF3E2723),
@@ -355,14 +357,32 @@ class _WheelTabState extends State<WheelTab> {
                 endIndent: 7,
               ),
               SizedBox(height: 12),
-              Text(
-                selectedMenu.fields.restaurantName,
-                textAlign: TextAlign.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.restaurant),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      selectedMenu.fields.restaurantName,
+                      textAlign: TextAlign.center
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 5),
-              Text(
-                selectedMenu.fields.city.name,
-                textAlign: TextAlign.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.location_city),
+                  const SizedBox(width: 6),
+                  Flexible(
+                    child: Text(
+                      selectedMenu.fields.city.name,
+                      textAlign: TextAlign.center
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 12),
               TextField(
@@ -395,7 +415,7 @@ class _WheelTabState extends State<WheelTab> {
                   TextButton(
                     onPressed: () async {
                       await request.postJson(
-                        "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/spinthewheel/add-spin-history-mobile/",
+                        "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.idspinthewheel/add-spin-history-mobile/",
                         jsonEncode({
                           'winner': selectedMenuName,
                           'winnerId': selectedMenu.pk.toString(),
