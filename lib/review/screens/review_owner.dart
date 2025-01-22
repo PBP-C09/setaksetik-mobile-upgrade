@@ -31,26 +31,50 @@ class _ReviewOwnerState extends State<ReviewOwner> {
   Future<void> fetchReviews(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/review/pantau-review-owner/');
-      if (response != null) {
-        final Map<String, dynamic> data = json.decode(response);
-        if (data.containsKey('reviews') && data['reviews'] is List) {
+      print("Response: $response");
+
+      if (response is Map<String, dynamic> && response.containsKey('reviews')) {
+        final reviewsData = response['reviews'];
+        print("Reviews: $reviewsData");
+
+        // Validasi setiap objek dalam daftar reviews
+
+        if (reviewsData is List) {
+          final List<ReviewList> tempReviews = [];
+          print("1");
+          for (var review in reviewsData) {
+            print("2");
+            if (review is Map && review.containsKey('fields') && review['fields'] != null) {
+              final reviewFields = review['fields'];
+              print("3");
+              
+              // Gunakan reviewListFromJson untuk mengubah JSON menjadi ReviewList
+              final reviewList = ReviewList.fromJson(reviewFields);
+              print("4");
+              tempReviews.add(reviewList);
+              print("5");
+            } else {
+              throw Exception("Unexpected format or null field in review item");
+            }
+          }
           setState(() {
-            reviews = reviewListFromJson(data['reviews']);
+            print("6");
+            reviews = tempReviews;
+            print("7");
             filteredReviews = reviews;
+            print("8");
           });
         } else {
-          throw Exception("Unexpected format: 'reviews' key is missing or invalid");
+          throw Exception("Expected a list for 'reviews'");
         }
       } else {
-        throw Exception('Response is null');
+        throw Exception("Unexpected response format or missing 'reviews' key");
       }
     } catch (e) {
       print('Error: $e');
       throw Exception('Failed to load reviews');
     }
   }
-
-
 
 
 

@@ -32,7 +32,9 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
 
       if (response != null) {
         setState(() {
+          // print("response yan/g bener: " + response);
           reviews = reviewListFromJson(response);
+          
           filteredReviews = reviews;
         });
       } else {
