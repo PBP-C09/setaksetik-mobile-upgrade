@@ -24,7 +24,7 @@ class MeatUpPageState extends State<MeatUpPage> {
     fetchMessages();
   }
 
-  Future<void> fetchMessages() async {
+Future<void> fetchMessages() async {
     final request = context.read<CookieRequest>();
     try {
       final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/get-messages-json/');
@@ -33,26 +33,22 @@ class MeatUpPageState extends State<MeatUpPage> {
           final allReceivedMessages = List<Map<String, dynamic>>.from(response['received_messages']);
           final allSentMessages = List<Map<String, dynamic>>.from(response['sent_messages']);
 
-          // First, categorize received messages
           receivedMessages = allReceivedMessages
-              .where((msg) => msg['status'] == null || msg['status'] == 'pending')
+              .where((msg) => msg['status'] == null || msg['status'] == 'PENDING')
               .toList();
 
-          // Then, categorize sent messages
           sentMessages = allSentMessages
-              .where((msg) => msg['status'] == null || msg['status'] == 'pending')
+              .where((msg) => msg['status'] == null || msg['status'] == 'PENDING')
               .toList();
 
-          // For accepted messages, combine both received and sent
           acceptedMessages = [
-            ...allReceivedMessages.where((msg) => msg['status'] == 'accepted'),
-            ...allSentMessages.where((msg) => msg['status'] == 'accepted'),
+            ...allReceivedMessages.where((msg) => msg['status'] == 'ACCEPTED'),
+            ...allSentMessages.where((msg) => msg['status'] == 'ACCEPTED')
           ];
 
-          // For rejected messages, combine both received and sent
           rejectedMessages = [
-            ...allReceivedMessages.where((msg) => msg['status'] == 'rejected'),
-            ...allSentMessages.where((msg) => msg['status'] == 'rejected'),
+            ...allReceivedMessages.where((msg) => msg['status'] == 'REJECTED'),
+            ...allSentMessages.where((msg) => msg['status'] == 'REJECTED')
           ];
 
           isLoading = false;
@@ -82,7 +78,7 @@ class MeatUpPageState extends State<MeatUpPage> {
       );
       
       if (response['status'] == 'success') {
-        await fetchMessages(); // Refresh the messages after successful deletion
+        await fetchMessages();  
         if (mounted) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
@@ -109,7 +105,7 @@ class MeatUpPageState extends State<MeatUpPage> {
     }
   }
 
-  Future<void> _acceptMessage(CookieRequest request, int messageId) async {
+Future<void> _acceptMessage(CookieRequest request, int messageId) async {
     try {
       final response = await request.post(
         'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/accept/$messageId/',
@@ -117,8 +113,22 @@ class MeatUpPageState extends State<MeatUpPage> {
       );
       
       if (response['status'] == 'success') {
-        await fetchMessages(); // Refresh the messages after successful acceptance
+        await fetchMessages();
+        
         if (mounted) {
+          final acceptedMsg = [...receivedMessages, ...sentMessages]
+              .firstWhere((msg) => msg['id'] == messageId, orElse: () => {});
+          
+          if (acceptedMsg.isNotEmpty) {
+            setState(() {
+              receivedMessages.removeWhere((msg) => msg['id'] == messageId);
+              sentMessages.removeWhere((msg) => msg['id'] == messageId);
+              
+              acceptedMsg['status'] = 'ACCEPTED';
+              acceptedMessages.add(acceptedMsg);
+            });
+          }
+          
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -152,8 +162,22 @@ class MeatUpPageState extends State<MeatUpPage> {
       );
       
       if (response['status'] == 'success') {
-        await fetchMessages(); // Refresh the messages after successful rejection
+        await fetchMessages();
+        
         if (mounted) {
+          final rejectedMsg = [...receivedMessages, ...sentMessages]
+              .firstWhere((msg) => msg['id'] == messageId, orElse: () => {});
+          
+          if (rejectedMsg.isNotEmpty) {
+            setState(() {
+              receivedMessages.removeWhere((msg) => msg['id'] == messageId);
+              sentMessages.removeWhere((msg) => msg['id'] == messageId);
+              
+              rejectedMsg['status'] = 'REJECTED';
+              rejectedMessages.add(rejectedMsg);
+            });
+          }
+          
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -201,7 +225,7 @@ class MeatUpPageState extends State<MeatUpPage> {
               Tab(
                 child: Row(
                   children: [
-                    const Icon(Icons.mail),
+                    const Icon(Icons.pending_actions),   
                     const SizedBox(width: 8),
                     Text('Received (${receivedMessages.length})'),
                   ],
@@ -219,7 +243,7 @@ class MeatUpPageState extends State<MeatUpPage> {
               Tab(
                 child: Row(
                   children: [
-                    const Icon(Icons.check_circle),
+                    const Icon(Icons.handshake),   
                     const SizedBox(width: 8),
                     Text('Accepted (${acceptedMessages.length})'),
                   ],
@@ -228,7 +252,7 @@ class MeatUpPageState extends State<MeatUpPage> {
               Tab(
                 child: Row(
                   children: [
-                    const Icon(Icons.cancel),
+                    const Icon(Icons.block),  
                     const SizedBox(width: 8),
                     Text('Rejected (${rejectedMessages.length})'),
                   ],
@@ -322,8 +346,8 @@ class MeatUpPageState extends State<MeatUpPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isAccepted ? Colors.green[800] :
-                         isRejected ? Colors.red[800] :
+                  color: isAccepted ? const Color (0xFF307A48) :
+                         isRejected ? const Color(0xFF842323) :
                          const Color(0xFF3E2723),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),

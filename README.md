@@ -1,8 +1,8 @@
-# SetakSetik Mobile
+# SetakSetik Mobile Upgrade
 
 Aplikasi yang didedikasikan untuk pecinta dan calon pecinta steak!
 
-Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web](http://muhammad-faizi-setaksetik.pbp.cs.ui.ac.id/).
+Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web Upgrade](https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/).
 
 ---
 
@@ -137,7 +137,7 @@ Saat ini, aplikasi ini dirancang untuk pecinta _steak_ berbasis Jakarta. Dataset
 ---
 
 ## Tautan Deployment
-**Aplikasi via App Center:** [SetakSetik Mobile](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik/distribution_groups/public/releases/13).
+**Aplikasi via App Center:** [SetakSetik Mobile Upgrade](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik-1/distribution_groups/public/releases/).
 
 ---
 
