@@ -17,12 +17,12 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
 
   // Dropdown Selections
   String? _selectedCategory;
-  String? _selectedSpecialized;
 
   // Text Input
   String _menuName = "";
   String restaurantName = "";
-    String restaurantCity = "";
+  String restaurantCity = "";
+  String restaurantSpecialized = "";
   int _price = 0;
   double _rating = 0.0;
   String _imageUrl = "";
@@ -89,6 +89,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
       setState(() {
         restaurantName = firstMenu['restaurant_name'];
         restaurantCity = firstMenu['city'];
+        restaurantSpecialized = firstMenu['specialized'];
         _takeaway = firstMenu['takeaway'] ?? false;
         _delivery = firstMenu['delivery'] ?? false;
         _outdoor = firstMenu['outdoor'] ?? false;
@@ -202,20 +203,32 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                 ),
                 ),
 
+                // Dropdown for Specialized
+                Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: TextFormField(
+                  initialValue: restaurantSpecialized,
+                  style: const TextStyle(color: Colors.black54),
+                  decoration: InputDecoration(
+                  labelText: "Specialized: $restaurantSpecialized",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: const Color(0xFFBDBDBD)), 
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  ),
+                  enabled: false,
+                ),
+                ),
+
               // Dropdown for Category
               _buildDropdown(
                 label: "Category",
                 value: _selectedCategory,
                 items: categoryChoices,
                 onChanged: (value) => setState(() => _selectedCategory = value),
-              ),
-
-              // Dropdown for Specialized
-              _buildDropdown(
-                label: "Specialized",
-                value: _selectedSpecialized,
-                items: specializedChoices,
-                onChanged: (value) => setState(() => _selectedSpecialized = value),
               ),
 
               // Price Input
@@ -274,25 +287,25 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                 ),
               ),
               _buildDisabledTextField(
-            label: "Takeaway",
-            value: _takeaway,
-          ),
-          _buildDisabledTextField(
-            label: "Delivery",
-            value: _delivery,
-          ),
-          _buildDisabledTextField(
-            label: "Outdoor Seating",
-            value: _outdoor,
-          ),
-          _buildDisabledTextField(
-            label: "Smoking Area",
-            value: _smokingArea,
-          ),
-          _buildDisabledTextField(
-            label: "WiFi",
-            value: _wifi,
-          ),
+                label: "Takeaway",
+                value: _takeaway,
+              ),
+              _buildDisabledTextField(
+                label: "Delivery",
+                value: _delivery,
+              ),
+              _buildDisabledTextField(
+                label: "Outdoor Seating",
+                value: _outdoor,
+              ),
+              _buildDisabledTextField(
+                label: "Smoking Area",
+                value: _smokingArea,
+              ),
+              _buildDisabledTextField(
+                label: "WiFi",
+                value: _wifi,
+              ),
 
               // Submit Button
               Padding(
@@ -344,7 +357,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                                   "city": restaurantCity,
                                   "price": _price.toString(),
                                   "rating": _rating.toString(),
-                                  "specialized": _selectedSpecialized ?? "",
+                                  "specialized": restaurantSpecialized,
                                   "image": _imageUrl,
                                   "takeaway": _takeaway.toString(),
                                   "delivery": _delivery.toString(),
