@@ -237,7 +237,7 @@ class _SpinHistoryTabState extends State<SpinHistoryTab> {
 
   Future<List<SpinHistory>> _fetchSpinHistory(CookieRequest request) async {
     final response =
-        await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/spinthewheel/history-json/');
+        await request.get('http://127.0.0.1:8000/spinthewheel/history-json/');
     var data = response;
     List<SpinHistory> listHistory = [];
     for (var d in data) {
@@ -250,7 +250,7 @@ class _SpinHistoryTabState extends State<SpinHistoryTab> {
 
   Future<MenuList> _fetchMenuById(CookieRequest request, int id) async {
     final response = 
-      await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/$id/');
+      await request.get('http://127.0.0.1:8000/explore/get_menu/$id/');
     var data = response;
     if (data != null && data.isNotEmpty) {
       return MenuList.fromJson(data[0]);
@@ -259,7 +259,7 @@ class _SpinHistoryTabState extends State<SpinHistoryTab> {
   }
 
   _deleteSpinHistory(CookieRequest request, String pk) {
-    request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/spinthewheel/delete/$pk');
+    request.get('http://127.0.0.1:8000/spinthewheel/delete/$pk');
     setState(() {
       spinHistoryFuture = _fetchSpinHistory(request);
     });

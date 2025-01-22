@@ -81,7 +81,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
   // Function untuk fetch data restoran
   Future<void> fetchRestaurantData() async {
     final request = context.read<CookieRequest>();
-    final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/owned_flutter/');
+    final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
     
     if (response != null) {
       final menus = response['menus'] as List;
@@ -336,7 +336,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                             if (_formKey.currentState!.validate()) {
                               // Kirim data menu ke django
                               final response = await request.postJson(
-                                "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/add-menu-flutter/",
+                                "http://127.0.0.1:8000/claim/add-menu-flutter/",
                                 jsonEncode(<String, String>{
                                   "menu": _menuName,
                                   "category": _selectedCategory ?? "",

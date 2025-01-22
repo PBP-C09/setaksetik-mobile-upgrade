@@ -28,7 +28,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('http://127.0.0.1:8000/review/get_review/');
 
       if (response != null) {
         setState(() {
@@ -191,7 +191,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(16),
                             title: Text(
-                              review.fields.menu as String,
+                              review.fields.menu.toString(),
                               style: const TextStyle(
                                 fontSize: 16, // Font size reduced
                                 fontWeight: FontWeight.bold,

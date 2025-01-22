@@ -62,7 +62,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
 
     try {
       final response = await request.postJson(
-        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/booking/add_flutter/${widget.menuId}/',
+        'http://127.0.0.1:8000/booking/add_flutter/${widget.menuId}/',
         jsonEncode(data),
       );
 

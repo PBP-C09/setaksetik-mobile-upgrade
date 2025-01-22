@@ -273,7 +273,7 @@ class _EditMenuOwnerPageState extends State<EditMenuOwnerPage> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               final response = await request.postJson(
-                                "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/edit-flutter/${widget.menuToEdit.pk}/",
+                                "http://127.0.0.1:8000/claim/edit-flutter/${widget.menuToEdit.pk}/",
                                 jsonEncode(<String, String>{
                                   "menu": _menuName,
                                   "category": _selectedCategory ?? "",

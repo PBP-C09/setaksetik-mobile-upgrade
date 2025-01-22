@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
+import 'review_list.dart';
 
 class ReviewOwner extends StatefulWidget {
   const ReviewOwner({super.key});
@@ -29,12 +30,17 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('http://127.0.0.1:8000/review/get_reviews_from_owner/');
       if (response != null) {
-        setState(() {
-          reviews = reviewListFromJson(response);
-          filteredReviews = reviews;
-        });
+        final Map<String, dynamic> data = json.decode(response);
+        if (data.containsKey('reviews') && data['reviews'] is List) {
+          setState(() {
+            reviews = reviewListFromJson(data['reviews']);
+            filteredReviews = reviews;
+          });
+        } else {
+          throw Exception("Unexpected format: 'reviews' key is missing or invalid");
+        }
       } else {
         throw Exception('Response is null');
       }
@@ -43,6 +49,11 @@ class _ReviewOwnerState extends State<ReviewOwner> {
       throw Exception('Failed to load reviews');
     }
   }
+
+
+
+
+
 
   void filterReviews() {
     final query = _searchController.text.toLowerCase();
@@ -61,7 +72,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     try {
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
-          'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/submit-reply-flutter/',
+          'http://127.0.0.1:8000/review/submit-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {
@@ -79,7 +90,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     try {
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
-          'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/update-reply-flutter/',
+          'http://127.0.0.1:8000/review/update-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {
@@ -162,7 +173,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              review.fields.menu as String,
+                                              review.fields.menu.toString(),
                                               style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,

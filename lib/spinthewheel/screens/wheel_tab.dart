@@ -176,7 +176,7 @@ class _WheelTabState extends State<WheelTab> {
 
   Future<void> _fetchMenuOptions(CookieRequest request, String category) async {
     final response = await request.get(
-          'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/spinthewheel/option-json/$category/');
+          'http://127.0.0.1:8000/spinthewheel/option-json/$category/');
       var data = response;
 
       if (mounted) {
@@ -395,7 +395,7 @@ class _WheelTabState extends State<WheelTab> {
                   TextButton(
                     onPressed: () async {
                       await request.postJson(
-                        "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/spinthewheel/add-spin-history-mobile/",
+                        "http://127.0.0.1:8000/spinthewheel/add-spin-history-mobile/",
                         jsonEncode({
                           'winner': selectedMenuName,
                           'winnerId': selectedMenu.pk.toString(),
