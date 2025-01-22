@@ -346,7 +346,7 @@ Future<void> _acceptMessage(CookieRequest request, int messageId) async {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isAccepted ? const Color (0xFF307A48) :
+                  color: isAccepted ? const Color (0xFF8B7355) :
                          isRejected ? const Color(0xFF842323) :
                          const Color(0xFF3E2723),
                   borderRadius: const BorderRadius.only(
