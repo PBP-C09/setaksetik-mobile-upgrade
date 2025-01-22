@@ -306,7 +306,7 @@ class MenuDetailPage extends StatelessWidget {
                         ),
                         onPressed: () => Navigator.pop(context),
                         child: const Text(
-                          'Back to Menu List',
+                          'Back',
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,

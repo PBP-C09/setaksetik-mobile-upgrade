@@ -107,8 +107,13 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                     final success = await deleteOwnership(request, menus[0].pk);
                     if (success) {
                       UserProfile.data["claim"] = 0;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Ownership deleted successfully.')),
+                      ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                            backgroundColor: Color(0xFF3E2723),
+                            content:
+                                Text("Restaurant disowned!")),
                       );
                       Navigator.pop(context);
                       Navigator.pushReplacement(

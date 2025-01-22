@@ -292,8 +292,13 @@ class _EditMenuOwnerPageState extends State<EditMenuOwnerPage> {
                               );
                               if (context.mounted) {
                                 if (response['status'] == 'success') {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Menu berhasil diupdate!")),
+                                  ScaffoldMessenger.of(context)
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(
+                                    SnackBar(
+                                        backgroundColor: Color(0xFF3E2723),
+                                        content:
+                                            Text("Menu berhasil diupdate!")),
                                   );
                                   Navigator.pushReplacement(
                                     context,
@@ -301,7 +306,15 @@ class _EditMenuOwnerPageState extends State<EditMenuOwnerPage> {
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Terdapat kesalahan, silakan coba lagi.")),
+                                    const SnackBar(content: Text("")),
+                                  );
+                                  ScaffoldMessenger.of(context)
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(
+                                    SnackBar(
+                                        backgroundColor: Color(0xFF3E2723),
+                                        content:
+                                            Text("Terdapat kesalahan, silakan coba lagi.")),
                                   );
                                 }
                               }
@@ -335,7 +348,7 @@ class _EditMenuOwnerPageState extends State<EditMenuOwnerPage> {
                             Navigator.pop(context);
                           },
                           child: const Text(
-                            "Back to Menu List",
+                            "Back",
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
