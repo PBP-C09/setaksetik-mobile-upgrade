@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/screens/login.dart';
+import 'package:setaksetikmobile/main/screens/login.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 
@@ -203,7 +203,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               String password2 = _confirmPasswordController.text;
 
                               final response = await request.postJson(
-                                "http://127.0.0.1:8000/register-mobile/",
+                                "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/register-mobile/",
                                 jsonEncode({
                                   "username": username,
                                   "password1": password1,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 
-import 'package:setaksetikmobile/screens/home.dart';
-import 'package:setaksetikmobile/screens/userprofile.dart';
+import 'package:setaksetikmobile/main/screens/home.dart';
+import 'package:setaksetikmobile/main/screens/userprofile.dart';
 
 class RootPage extends StatefulWidget {
   final String fullName;

@@ -8,10 +8,10 @@ import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/main.dart';
 import 'package:setaksetikmobile/review/screens/review_admin.dart';
 import 'package:setaksetikmobile/review/screens/review_owner.dart';
-import 'package:setaksetikmobile/screens/root_page.dart';
+import 'package:setaksetikmobile/main/screens/root_page.dart';
 import 'package:setaksetikmobile/explore/screens/menu_admin.dart';
 import 'package:setaksetikmobile/explore/screens/menu_home.dart';
-import 'package:setaksetikmobile/screens/welcome_page.dart';
+import 'package:setaksetikmobile/main/screens/welcome_page.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/front_screen.dart';
 import 'package:setaksetikmobile/review/screens/review_home.dart';
 import 'package:setaksetikmobile/meatup/screens/meatup.dart';
@@ -221,7 +221,7 @@ class LeftDrawer extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () async {
           final response = await request.logout(
-            "http://127.0.0.1:8000/logout-mobile/");
+            "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/logout-mobile/");
 
           String message = response["message"];
           if (context.mounted) {
@@ -325,7 +325,7 @@ class LeftDrawer extends StatelessWidget {
               children: [
               ..._buildRoleSpecificListTiles(context),
               const Divider(
-                color: Color(0xFF842323),
+                color: Color(0xFF6D4C41),
                 thickness: 1,
                 height: 32,
               ),

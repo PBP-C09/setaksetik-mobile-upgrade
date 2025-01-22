@@ -24,21 +24,37 @@ class MeatUpPageState extends State<MeatUpPage> {
     fetchMessages();
   }
 
-  Future<void> fetchMessages() async {
+Future<void> fetchMessages() async {
     final request = context.read<CookieRequest>();
     try {
-      final response = await request.get('http://127.0.0.1:8000/meatup/get-messages-json/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/get-messages-json/');
       if (mounted) {
         setState(() {
-          receivedMessages = List<Map<String, dynamic>>.from(response['received_messages']);
-          sentMessages = List<Map<String, dynamic>>.from(response['sent_messages']);
-          acceptedMessages = List<Map<String, dynamic>>.from(response['accepted_messages']);
-          rejectedMessages = List<Map<String, dynamic>>.from(response['rejected_messages']);
+          final allReceivedMessages = List<Map<String, dynamic>>.from(response['received_messages']);
+          final allSentMessages = List<Map<String, dynamic>>.from(response['sent_messages']);
+
+          receivedMessages = allReceivedMessages
+              .where((msg) => msg['status'] == null || msg['status'] == 'PENDING')
+              .toList();
+
+          sentMessages = allSentMessages
+              .where((msg) => msg['status'] == null || msg['status'] == 'PENDING')
+              .toList();
+
+          acceptedMessages = [
+            ...allReceivedMessages.where((msg) => msg['status'] == 'ACCEPTED'),
+            ...allSentMessages.where((msg) => msg['status'] == 'ACCEPTED')
+          ];
+
+          rejectedMessages = [
+            ...allReceivedMessages.where((msg) => msg['status'] == 'REJECTED'),
+            ...allSentMessages.where((msg) => msg['status'] == 'REJECTED')
+          ];
+
           isLoading = false;
         });
       }
     } catch (e) {
-      print("Error details: $e");
       if (mounted) {
         setState(() {
           isLoading = false;
@@ -48,8 +64,7 @@ class MeatUpPageState extends State<MeatUpPage> {
           ..showSnackBar(
             const SnackBar(
               backgroundColor: Color(0xFF3E2723),
-              content: Text("Error loading messages")
-            ),
+              content: Text("Error loading messages")),
           );
       }
     }
@@ -57,75 +72,133 @@ class MeatUpPageState extends State<MeatUpPage> {
 
   Future<void> _deleteMessage(CookieRequest request, int messageId) async {
     try {
-      await request.get('http://127.0.0.1:8000/meatup/delete/$messageId/');
-      fetchMessages();
+      final response = await request.post(
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/delete/$messageId/',
+        {},
+      );
+      
+      if (response['status'] == 'success') {
+        await fetchMessages();  
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                backgroundColor: Color(0xFF3E2723),
+                content: Text("Message deleted successfully")),
+            );
+        }
+      } else {
+        throw Exception('Failed to delete message');
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            const SnackBar(
-              backgroundColor: Color(0xFF3E2723),
-              content: Text("Message deleted successfully")
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text('Error: $e'),
             ),
           );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
       }
     }
   }
 
-  Future<void> _acceptMessage(CookieRequest request, int messageId) async {
+Future<void> _acceptMessage(CookieRequest request, int messageId) async {
     try {
-      await request.post(
-        'http://127.0.0.1:8000/meatup/accept/$messageId/',
+      final response = await request.post(
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/accept/$messageId/',
         {},
       );
-      fetchMessages();
+      
+      if (response['status'] == 'success') {
+        await fetchMessages();
+        
+        if (mounted) {
+          final acceptedMsg = [...receivedMessages, ...sentMessages]
+              .firstWhere((msg) => msg['id'] == messageId, orElse: () => {});
+          
+          if (acceptedMsg.isNotEmpty) {
+            setState(() {
+              receivedMessages.removeWhere((msg) => msg['id'] == messageId);
+              sentMessages.removeWhere((msg) => msg['id'] == messageId);
+              
+              acceptedMsg['status'] = 'ACCEPTED';
+              acceptedMessages.add(acceptedMsg);
+            });
+          }
+          
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                backgroundColor: Color(0xFF3E2723),
+                content: Text("Message accepted successfully")),
+            );
+        }
+      } else {
+        throw Exception('Failed to accept message');
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            const SnackBar(
-              backgroundColor: Color(0xFF3E2723),
-              content: Text("Message accepted successfully")
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text('Error: $e'),
             ),
           );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
       }
     }
   }
 
   Future<void> _rejectMessage(CookieRequest request, int messageId) async {
     try {
-      await request.post(
-        'http://127.0.0.1:8000/meatup/reject/$messageId/',
+      final response = await request.post(
+        'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/meatup/flutter/reject/$messageId/',
         {},
       );
-      fetchMessages();
+      
+      if (response['status'] == 'success') {
+        await fetchMessages();
+        
+        if (mounted) {
+          final rejectedMsg = [...receivedMessages, ...sentMessages]
+              .firstWhere((msg) => msg['id'] == messageId, orElse: () => {});
+          
+          if (rejectedMsg.isNotEmpty) {
+            setState(() {
+              receivedMessages.removeWhere((msg) => msg['id'] == messageId);
+              sentMessages.removeWhere((msg) => msg['id'] == messageId);
+              
+              rejectedMsg['status'] = 'REJECTED';
+              rejectedMessages.add(rejectedMsg);
+            });
+          }
+          
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                backgroundColor: Color(0xFF3E2723),
+                content: Text("Message rejected successfully")),
+            );
+        }
+      } else {
+        throw Exception('Failed to reject message');
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
           ..hideCurrentSnackBar()
           ..showSnackBar(
-            const SnackBar(
-              backgroundColor: Color(0xFF3E2723),
-              content: Text("Message rejected successfully")
+            SnackBar(
+              backgroundColor: Colors.red,
+              content: Text('Error: $e'),
             ),
           );
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
       }
     }
   }
@@ -133,277 +206,247 @@ class MeatUpPageState extends State<MeatUpPage> {
   @override
   Widget build(BuildContext context) {
     final request = context.watch<CookieRequest>();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Meat Up'),
-        centerTitle: true,
-      ),
-      drawer: const LeftDrawer(),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+    
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Meat Up',
+            style: TextStyle(
+              fontFamily: 'Playfair Display',
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
+          bottom: TabBar(
+            isScrollable: true,
+            tabs: [
+              Tab(
+                child: Row(
+                  children: [
+                    const Icon(Icons.pending_actions),   
+                    const SizedBox(width: 8),
+                    Text('Received (${receivedMessages.length})'),
+                  ],
+                ),
+              ),
+              Tab(
+                child: Row(
+                  children: [
+                    const Icon(Icons.send),
+                    const SizedBox(width: 8),
+                    Text('Sent (${sentMessages.length})'),
+                  ],
+                ),
+              ),
+              Tab(
+                child: Row(
+                  children: [
+                    const Icon(Icons.handshake),   
+                    const SizedBox(width: 8),
+                    Text('Accepted (${acceptedMessages.length})'),
+                  ],
+                ),
+              ),
+              Tab(
+                child: Row(
+                  children: [
+                    const Icon(Icons.block),  
+                    const SizedBox(width: 8),
+                    Text('Rejected (${rejectedMessages.length})'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        drawer: const LeftDrawer(),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MessageFormPage()),
+            );
+            if (result == true) fetchMessages();
+          },
+          backgroundColor: const Color(0xFF3E2723),
+          icon: const Icon(Icons.add, color: Color(0xFFF5F5DC)),
+          label: const Text(
+            'New Request',
+            style: TextStyle(
+              color: Color(0xFFF5F5DC),
+              fontFamily: 'Playfair Display',
+            ),
+          ),
+        ),
+        body: isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : TabBarView(
                 children: [
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                  _buildMessageList(receivedMessages, true, request),
+                  _buildMessageList(sentMessages, false, request),
+                  _buildMessageList(acceptedMessages, false, request, isAccepted: true),
+                  _buildMessageList(rejectedMessages, false, request, isRejected: true),
+                ],
+              ),
+      ),
+    );
+  }
+
+  Widget _buildMessageList(
+    List<Map<String, dynamic>> messages,
+    bool isReceived,
+    CookieRequest request, {
+    bool isAccepted = false,
+    bool isRejected = false,
+  }) {
+    if (messages.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              isReceived ? Icons.pending_actions :
+              isAccepted ? Icons.handshake :
+              isRejected ? Icons.block : Icons.send_outlined,
+              size: 64,
+              color: const Color(0xFFF5F5DC),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              isReceived ? 'No pending requests' :
+              isAccepted ? 'No accepted requests' :
+              isRejected ? 'No rejected requests' : 'No sent requests',
+              style: const TextStyle(
+                color: Color(0xFFF5F5DC),
+                fontSize: 18,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: messages.length,
+      itemBuilder: (context, index) {
+        final message = messages[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 16),
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: isAccepted ? const Color (0xFF8B7355) :
+                         isRejected ? const Color(0xFF842323) :
+                         const Color(0xFF3E2723),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         Text(
-                          'Meat Up',
-                          style: TextStyle(
+                          isReceived ? 'From: ${message['sender']}' : 'To: ${message['receiver']}',
+                          style: const TextStyle(
                             color: Color(0xFFF5F5DC),
-                            fontSize: 42,
-                            fontStyle: FontStyle.italic,
                             fontFamily: 'Playfair Display',
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                         Text(
-                          'dengan Steak Lover lainnya!',
-                          style: TextStyle(
+                          message['timestamp'],
+                          style: const TextStyle(
                             color: Color(0xFFF5F5DC),
-                            fontSize: 42,
-                            fontFamily: 'Playfair Display',
+                            fontSize: 12,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
-                  ),
-                  const SizedBox(height: 32),
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const MessageFormPage()),
-                        );
-                        if (result == true) fetchMessages();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD700),
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Kirim Pesan Meat Up',
-                        style: TextStyle(
-                          color: Color(0xFF3E2723),
-                          fontSize: 18,
-                          fontFamily: 'Playfair Display',
-                        ),
+                    const SizedBox(height: 8),
+                    Text(
+                      message['title'],
+                      style: const TextStyle(
+                        color: Color(0xFFFFD700),
+                        fontSize: 20,
+                        fontFamily: 'Playfair Display',
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 48),
-                  _buildSection('Received Meat Up Request', receivedMessages, isReceived: true, request: request),
-                  const SizedBox(height: 48),
-                  _buildSection('Sent Meat Up Request', sentMessages, isReceived: false, request: request),
-                  const SizedBox(height: 48),
-                  _buildSection('Accepted Meat Up Request', acceptedMessages, isReceived: false, request: request, isAccepted: true),
-                  const SizedBox(height: 48),
-                  _buildSection('Rejected Meat Up Request', rejectedMessages, isReceived: false, request: request, isRejected: true),
-                ],
+                  ],
+                ),
               ),
-            ),
-    );
-  }
-
-  Widget _buildSection(
-    String title, 
-    List<Map<String, dynamic>> messages, 
-    {required bool isReceived, 
-    required CookieRequest request, 
-    bool isAccepted = false,
-    bool isRejected = false}
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            color: Color(0xFFFFD700),
-            fontSize: 28,
-            fontFamily: 'Playfair Display',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 24),
-        messages.isEmpty
-            ? Center(
+              Padding(
+                padding: const EdgeInsets.all(16),
                 child: Text(
-                  'No ${title.toLowerCase()} yet',
+                  message['content'],
                   style: const TextStyle(
-                    color: Color(0xFFF5F5DC),
-                    fontSize: 18,
-                    fontStyle: FontStyle.italic,
+                    fontSize: 16,
+                    height: 1.5,
                   ),
                 ),
-              )
-            : Wrap(
-                spacing: 20,
-                runSpacing: 20,
-                alignment: WrapAlignment.center,
-                children: messages.map((message) => 
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width > 600 
-                      ? (MediaQuery.of(context).size.width - 88) / 2 
-                      : MediaQuery.of(context).size.width - 48,
-                    child: _buildCard(
-                      message, 
-                      isReceived, 
-                      request,
-                      isAccepted: isAccepted,
-                      isRejected: isRejected,
-                    ),
-                  )
-                ).toList(),
               ),
-      ],
-    );
-  }
-
-  Widget _buildCard(
-    Map<String, dynamic> message, 
-    bool isReceived, 
-    CookieRequest request,
-    {bool isAccepted = false,
-    bool isRejected = false}
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5DC),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              isReceived ? 'From: ${message['sender']}' : 'To: ${message['receiver']}',
-              style: const TextStyle(
-                fontFamily: 'Playfair Display',
-                fontSize: 18,
-                fontStyle: FontStyle.italic,
-                color: Color(0xFF3E2723),
-              ),
-            ),
-            Text(
-              message['timestamp'],
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 14,
-              ),
-            ),
-            const Divider(height: 24, thickness: 1, color: Color(0xFF3E2723)),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF3E2723),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message['title'],
-                    style: const TextStyle(
-                      color: Color(0xFFF5F5DC),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Playfair Display',
-                    ),
+              if (!isAccepted && !isRejected) ...[
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      if (isReceived) ...[
+                        TextButton.icon(
+                          onPressed: () => _acceptMessage(request, message['id']),
+                          icon: const Icon(Icons.handshake, color: Colors.green),
+                          label: const Text('Accept', style: TextStyle(color: Colors.green)),
+                        ),
+                        TextButton.icon(
+                          onPressed: () => _rejectMessage(request, message['id']),
+                          icon: const Icon(Icons.block, color: Colors.red),
+                          label: const Text('Decline', style: TextStyle(color: Colors.red)),
+                        ),
+                      ],
+                      if (!isReceived)
+                        TextButton.icon(
+                          onPressed: () async {
+                            final result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MessageFormPage(messageToEdit: message),
+                              ),
+                            );
+                            if (result == true) fetchMessages();
+                          },
+                          icon: const Icon(Icons.edit, color: Color(0xFFFFD700)),
+                          label: const Text('Edit', style: TextStyle(color: Color(0xFFFFD700))),
+                        ),
+                      TextButton.icon(
+                        onPressed: () => _deleteMessage(request, message['id']),
+                        icon: const Icon(Icons.delete, color: Color(0xFF842323)),
+                        label: const Text('Delete', style: TextStyle(color: Color(0xFF842323))),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    message['content'],
-                    style: const TextStyle(
-                      color: Color(0xFFF5F5DC),
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            if (!isAccepted && !isRejected) ...[
-              const SizedBox(height: 16),
-              if (isReceived) ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => _acceptMessage(request, message['id']),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4CAF50),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                      child: const Text('Accept Meat Up'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => _rejectMessage(request, message['id']),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF842323),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                      child: const Text('Reject Meat Up'),
-                    ),
-                  ],
-                ),
-              ] else ...[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        final result = await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MessageFormPage(messageToEdit: message),
-                          ),
-                        );
-                        if (result == true) fetchMessages();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD700),
-                        foregroundColor: const Color(0xFF3E2723),
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                      child: const Text('Edit'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => _deleteMessage(request, message['id']),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF842323),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                      child: const Text('Cancel Meat Up'),
-                    ),
-                  ],
                 ),
               ],
             ],
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

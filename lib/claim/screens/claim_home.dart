@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:setaksetikmobile/main.dart';
-import 'package:setaksetikmobile/screens/root_page.dart';
+import 'package:setaksetikmobile/main/screens/root_page.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,7 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
 Future<List<MenuList>> fetchClaimResto(CookieRequest request) async {
   try {
-    final response = await request.get('http://127.0.0.1:8000/claim/json/');
+    final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/json/');
 
     if (response == null) {
       return [];
@@ -24,7 +24,7 @@ Future<List<MenuList>> fetchClaimResto(CookieRequest request) async {
 
 Future<void> claimRestaurant(BuildContext context, CookieRequest request, int menuId) async {
   final response = await request.post(
-    'http://127.0.0.1:8000/claim/claim_flutter/$menuId/',
+    'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/claim_flutter/$menuId/',
     {},
   );
 

@@ -29,7 +29,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('http://127.0.0.1:8000/review/get_review/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
       if (response != null) {
         setState(() {
           reviews = reviewListFromJson(response);
@@ -59,7 +59,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     try {
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
-          'http://127.0.0.1:8000/review/submit-reply-flutter/',
+          'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/submit-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {
@@ -77,7 +77,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     try {
       if (review_id.isNotEmpty && reply_text.isNotEmpty) {
         final response = await request.post(
-          'http://127.0.0.1:8000/review/update-reply-flutter/',
+          'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/update-reply-flutter/',
           jsonEncode({'review_id': review_id, 'reply_text': reply_text}),
         );
         if (response['status'] == 'success') {

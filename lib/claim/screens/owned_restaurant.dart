@@ -7,7 +7,7 @@ import 'package:setaksetikmobile/claim/screens/edit_owner.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/explore/screens/admin_detail.dart';
 import 'package:setaksetikmobile/main.dart';
-import 'package:setaksetikmobile/screens/root_page.dart';
+import 'package:setaksetikmobile/main/screens/root_page.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class OwnedRestaurantPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class OwnedRestaurantPage extends StatefulWidget {
 Future<bool> deleteOwnership(CookieRequest request, int restaurantId) async {
   try {
     final response = await request.post(
-      'http://127.0.0.1:8000/claim/delete_flutter/$restaurantId/',
+      'https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/delete_flutter/$restaurantId/',
       {}, // Tambahkan parameter data kosong
     );
 
@@ -53,7 +53,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
   }
   Future<List<MenuList>?> fetchOwnedRestaurant(CookieRequest request) async {    
     try {
-      final response = await request.get('http://127.0.0.1:8000/claim/owned_flutter/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/owned_flutter/');
 
       if (response == null || response['status'] == 'failed') {
         return null;
@@ -107,8 +107,13 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                     final success = await deleteOwnership(request, menus[0].pk);
                     if (success) {
                       UserProfile.data["claim"] = 0;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Ownership deleted successfully.')),
+                      ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        SnackBar(
+                            backgroundColor: Color(0xFF3E2723),
+                            content:
+                                Text("Restaurant disowned!")),
                       );
                       Navigator.pop(context);
                       Navigator.pushReplacement(
@@ -387,7 +392,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
   // Fungsi untuk menghapus menu
   Future<void> _deleteMenu(CookieRequest request, int pk) async {
     try{
-    await request.get('http://127.0.0.1:8000/explore/delete/$pk');
+    await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/delete/$pk');
     } catch (e) {
     }
   }
@@ -424,9 +429,8 @@ class OwnershipCard extends StatelessWidget {
             );
           },
           child: Container(
-            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F5DC),
+              color: const Color(0xFFF5F5DC), // Beige background
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -437,142 +441,75 @@ class OwnershipCard extends StatelessWidget {
               ],
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Title
-                const Text(
-                  'Card of Ownership',
-                  style: TextStyle(
-                    color: Color(0xFF5B3E39),
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Playfair Display',
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                const SizedBox(height: 30),
-                
-                // Verify text with line
-                Row(
-                  children: [
-                    const Text(
-                      'This is to verify that',
-                      style: TextStyle(
-                        color: Color(0xFF5B3E39),
-                        fontSize: 14,
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        height: 1,
-                        color: const Color(0xFF5B3E39),
-                        margin: const EdgeInsets.only(left: 4),
-                      ),
-                    ),
-                  ],
-                ),
-                
-                // Owner name
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    ownerName,
-                    style: const TextStyle(
-                    color: Color(0xFF5B3E39),
-                    fontSize: 24,
-                    fontFamily: 'Playfair Display',
-                    fontStyle: FontStyle.italic,
+                // Header
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3E2723), // Brown background
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
                     ),
                   ),
-                  ),
-                ),
-                
-                // True owner text with line
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 1,
-                        color: const Color(0xFF5B3E39),
-                        margin: const EdgeInsets.only(right: 4),
-                      ),
-                    ),
-                    const Text(
-                      'is the One True Owner of',
-                      style: TextStyle(
-                        color: Color(0xFF5B3E39),
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                ),
-                
-                // Restaurant name (aligned right)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 12, bottom: 30),
-                    child: Text(
-                      restaurantName,
-                      style: const TextStyle(
-                        color: Color(0xFF5B3E39),
-                        fontSize: 24,
-                        fontFamily: 'Playfair Display',
-                        fontStyle: FontStyle.italic,
-                      ),
+                  child: const Text(
+                    'Card of Ownership',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFFF5F5DC), // Beige text
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Playfair Display',
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ),
                 
-                // Buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: onDisown,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF842323),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text(
-                          'Disown Restaurant',
-                          style: TextStyle(
-                            color: Color(0xFFF5F5DC),
-                            fontSize: 12,
-                            fontFamily: 'Playfair Display',
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                // Body part wrapped in Container
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Verified Owner Section
+                      _buildSection(
+                        title: 'Verified Owner',
+                        content: ownerName,
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: onSeeBookings,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFC08C25),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        child: const Text(
-                          'See Bookings',
-                          style: TextStyle(
-                            color: Color(0xFFF5F5DC),
-                            fontSize: 12,
-                            fontFamily: 'Playfair Display',
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                      const SizedBox(height: 20),
+
+                      // Restaurant Section
+                      _buildSection(
+                        title: 'Restaurant',
+                        content: restaurantName,
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 30),
+
+                      // Action Buttons
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildButton(
+                              label: 'View Bookings',
+                              color: const Color(0xFFFFD54F), // Yellow background
+                              textColor: const Color(0xFF3E2723), // Brown text
+                              onPressed: onSeeBookings,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: _buildButton(
+                              label: 'Disown Restaurant',
+                              color: const Color(0xFF842323), // Red background
+                              textColor: const Color(0xFFF5F5DC), // Beige text
+                              onPressed: onDisown,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -582,25 +519,63 @@ class OwnershipCard extends StatelessWidget {
     );
   }
 
-  Widget _buildDividerWithText(String text) {
-    return Row(
+
+  Widget _buildSection({required String title, required String content}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          text,
+          title,
           style: const TextStyle(
-            color: Color(0xFF5B3E39),
-            fontSize: 12,
+            color: Color(0xFF6D4C41), // Lighter brown text
+            fontSize: 14,
             fontFamily: 'Raleway',
+            fontWeight: FontWeight.bold,
           ),
         ),
-        Expanded(
-          child: Container(
-            margin: const EdgeInsets.only(left: 8),
-            height: 1,
-            color: const Color(0xFF5B3E39),
+        const SizedBox(height: 5),
+        Text(
+          content,
+          style: const TextStyle(
+            color: Color(0xFF3E2723), // Brown text
+            fontSize: 24,
+            fontFamily: 'Playfair Display',
+            fontStyle: FontStyle.italic,
           ),
+        ),
+        Divider(
+          color: const Color(0xFF3E2723), // Brown line
+          thickness: 2,
         ),
       ],
     );
   }
+
+  Widget _buildButton({
+    required String label,
+    required Color color,
+    required Color textColor,
+    required VoidCallback onPressed,
+  }) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: textColor,
+          fontSize: 16,
+          fontFamily: 'Playfair Display',
+          fontStyle: FontStyle.italic,
+        ),
+      ),
+    );
+  }
+
 }

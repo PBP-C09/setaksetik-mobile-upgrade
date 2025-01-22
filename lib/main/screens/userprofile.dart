@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/main.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/screens/welcome_page.dart';
+import 'package:setaksetikmobile/main/screens/welcome_page.dart';
 
 class UserProfilePage extends StatelessWidget {
   const UserProfilePage({super.key});
@@ -70,7 +70,7 @@ class UserProfilePage extends StatelessWidget {
     return ElevatedButton(
       onPressed: () async {
         final response = await request.logout(
-          "http://127.0.0.1:8000/logout-mobile/");
+          "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/logout-mobile/");
 
         String message = response["message"];
         if (context.mounted) {
