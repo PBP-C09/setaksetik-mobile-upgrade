@@ -30,7 +30,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
 
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('http://127.0.0.1:8000/review/get_reviews_from_owner/');
+      final response = await request.get('http://127.0.0.1:8000/review/pantau-review-owner/');
       if (response != null) {
         final Map<String, dynamic> data = json.decode(response);
         if (data.containsKey('reviews') && data['reviews'] is List) {

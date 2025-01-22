@@ -251,8 +251,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                if (review.fields.ownerReply != null &&
-                                    review.fields.ownerReply!.isNotEmpty)
+                                if (review.fields.ownerReply != "No reply yet")
                                   Container(
                                     width: double.infinity, // Ensures full width inside the card
                                     margin: const EdgeInsets.only(top: 8.0), // Space above the reply box
@@ -275,7 +274,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                         ),
                                         const SizedBox(height: 4), // Space between title and reply text
                                         Text(
-                                          review.fields.ownerReply!,
+                                          review.fields.ownerReply,
                                           style: const TextStyle(
                                             fontFamily: 'Raleway',
                                             fontSize: 12,

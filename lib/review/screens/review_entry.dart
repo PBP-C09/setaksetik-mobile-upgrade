@@ -6,6 +6,7 @@ import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/review/screens/review_home.dart';
 
+
 class ReviewEntryFormPage extends StatefulWidget {
   final MenuList menu;
 
@@ -17,6 +18,8 @@ class ReviewEntryFormPage extends StatefulWidget {
 
 class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
   final _formKey = GlobalKey<FormState>();
+
+  List<MenuList> menus = [];
 
   // Form variables
   String _place = "";
@@ -32,6 +35,126 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
     "assets/images/placeholder-image-4.png",
     "assets/images/placeholder-image-5.png",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final request = context.read<CookieRequest>();
+    fetchMenus(request);
+  }
+
+    Future<void> fetchMenus(CookieRequest request) async {
+    try {
+      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      if (response != null) {
+        setState(() {
+          menus = menuListFromJson(jsonEncode(response));
+          // filteredMenus = menus;
+        });
+      } else {
+        throw Exception('Response is null');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to load menus');
+    }
+  }
+
+  void showSuccessModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: const Color(0xFFFAF3E3),
+              borderRadius: BorderRadius.circular(16.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icon Success
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF617A55),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 32.0,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+
+                // Title
+                const Text(
+                  'Review Berhasil Ditambahkan',
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5B3E39),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8.0),
+
+                // Description
+                const Text(
+                  'Terima kasih atas review Anda! Apa yang ingin Anda lakukan setelah ini?',
+                  style: TextStyle(
+                    color: Color(0xFF5B3E39),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16.0),
+
+                // Buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF5B3E39),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context); // Tutup dialog
+                        Navigator.pop(context); // Kembali ke halaman sebelumnya
+                      },
+                      child: const Text('Kembali'),
+                    ),
+                    const SizedBox(width: 8.0),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFF7B32B),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context); // Tutup dialog untuk tambah review lagi
+                      },
+                      child: const Text('Tambah Review'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -222,50 +345,30 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                         onPressed: () async {
                           if (_formKey.currentState!.validate()) {
                             try {
+                              final menuIdMapping = <int, int>{};
+                              int index = 1;
+                              for (var menu in menus) {
+                                menuIdMapping[menu.pk] = index++;
+                              }
+                              int menuId = menuIdMapping[widget.menu.pk] ?? 0;
+
+                              final payload = <String, dynamic>{
+                                'menu': menuId,
+                                'place': widget.menu.fields.restaurantName,
+                                'rating': _rating.round(),
+                                'description': _description,
+                              };
+
                               final response = await request.postJson(
                                 "http://127.0.0.1:8000/review/create-review-flutter/",
-                                jsonEncode(<String, dynamic>{
-                                  'menu': widget.menu.fields.menu,
-                                  'place': widget.menu.fields.restaurantName,
-                                  'rating': _rating.round().toString(),
-                                  'description': _description,
-                                  'owner_reply': _ownerReply,
-                                }),
+                                jsonEncode(payload),
                               );
 
-                              if (response['status'] == 'success') {
-                                ScaffoldMessenger.of(context)
-                                ..hideCurrentSnackBar()
-                                ..showSnackBar(
-                                  SnackBar(
-                                    backgroundColor: Color(0xFF3E2723),
-                                    content:
-                                    Text("Review saved successfully")),
-                                    );
-                                
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                    builder: (context) => ReviewMainPage(),
-                                  ),
-                                  (Route<dynamic> route) => route.isFirst,
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context)
-                                ..hideCurrentSnackBar()
-                                ..showSnackBar(
-                                  SnackBar(
-                                    backgroundColor: Color(0xFF3E2723),
-                                    content:
-                                    Text("Failed to save review. Please try again.")),
-                                    );
+                              if (response != null) {
+                                showSuccessModal(context); // Tampilkan modal sukses
                               }
                             } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text("Error occurred: $e"),
-                                  backgroundColor: Color(0xFF842323),
-                                ),
-                              );
+                              print('Error: $e');
                             }
                           }
                         },
@@ -277,6 +380,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                           ),
                         ),
                       ),
+
                     ],
                   ),
                 ),
