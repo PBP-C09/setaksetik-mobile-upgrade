@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
+import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'review_list.dart';
 
 class ReviewOwner extends StatefulWidget {
@@ -15,8 +16,18 @@ class ReviewOwner extends StatefulWidget {
 
 class _ReviewOwnerState extends State<ReviewOwner> {
   List<ReviewList> reviews = [];
+  List<MenuList> menus = [];
   List<ReviewList> filteredReviews = [];
   TextEditingController _searchController = TextEditingController();
+
+    // Fungsi helper
+  // String getMenuNameByIndex(int index) {
+  //   final menu = menus.firstWhere(
+  //     (menu) => menu.pk == index,
+  //     orElse: () => MenuList(pk: -1, name: 'Unknown'),
+  //   );
+  //   return menu.name;
+  // }
 
   @override
   void initState() {
@@ -27,7 +38,23 @@ class _ReviewOwnerState extends State<ReviewOwner> {
       filterReviews();
     });
   }
+  
 
+  Future<void> fetchMenus(CookieRequest request) async {
+    try {
+      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      if (response != null) {
+        setState(() {
+          menus = menuListFromJson(jsonEncode(response));
+        });
+      } else {
+        throw Exception('Response is null');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to load menus');
+    }
+  }
   Future<void> fetchReviews(CookieRequest request) async {
     try {
       final response = await request.get('http://127.0.0.1:8000/review/pantau-review-owner/');
@@ -184,7 +211,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              review.fields.menu.toString(),
+                                              review.fields.name,
                                               style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -240,8 +267,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                         ),
                                       ),
                                       const SizedBox(height: 16),
-                                      if (review.fields.ownerReply != null &&
-                                          review.fields.ownerReply!.isNotEmpty)
+                                      if (review.fields.ownerReply != "No reply yet")
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [

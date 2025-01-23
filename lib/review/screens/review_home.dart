@@ -28,7 +28,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('http://127.0.0.1:8000/review/get_review/');
+      final response = await request.get('http://127.0.0.1:8000/review/show-review-flutter/');
 
       if (response != null) {
         setState(() {
@@ -193,7 +193,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(16),
                             title: Text(
-                              review.fields.menu.toString(),
+                              review.fields.name,
                               style: const TextStyle(
                                 fontSize: 16, // Font size reduced
                                 fontWeight: FontWeight.bold,
