@@ -16,7 +16,7 @@ class _RestoMenuPageState extends State<RestoMenuPage> {
   Future<List<MenuList>> fetchMenus() async {
     final response = await http.get(
 
-      Uri.parse('http://127.0.0.1:8000/booking/resto_menu_flutter/${widget.menuId}/'),
+      Uri.parse('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/booking/resto_menu_flutter/${widget.menuId}/'),
 
     );
 

@@ -45,7 +45,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
 
     Future<void> fetchMenus(CookieRequest request) async {
     try {
-      final response = await request.get('http://127.0.0.1:8000/explore/get_menu/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
       if (response != null) {
         setState(() {
           menus = menuListFromJson(jsonEncode(response));
@@ -360,7 +360,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                               };
 
                               final response = await request.postJson(
-                                "http://127.0.0.1:8000/review/create-review-flutter/",
+                                "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/create-review-flutter/",
                                 jsonEncode(payload),
                               );
 

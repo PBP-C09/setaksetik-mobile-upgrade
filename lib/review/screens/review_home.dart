@@ -28,7 +28,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('http://127.0.0.1:8000/review/show-review-flutter/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/show-review-flutter/');
 
       if (response != null) {
         setState(() {
