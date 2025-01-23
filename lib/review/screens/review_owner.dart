@@ -37,32 +37,18 @@ class _ReviewOwnerState extends State<ReviewOwner> {
         final reviewsData = response['reviews'];
         print("Reviews: $reviewsData");
 
-        // Validasi setiap objek dalam daftar reviews
-
         if (reviewsData is List) {
           final List<ReviewList> tempReviews = [];
-          print("1");
+
           for (var review in reviewsData) {
-            print("2");
-            if (review is Map && review.containsKey('fields') && review['fields'] != null) {
-              final reviewFields = review['fields'];
-              print("3");
-              
-              // Gunakan reviewListFromJson untuk mengubah JSON menjadi ReviewList
-              final reviewList = ReviewList.fromJson(reviewFields);
-              print("4");
-              tempReviews.add(reviewList);
-              print("5");
-            } else {
-              throw Exception("Unexpected format or null field in review item");
-            }
+            // Langsung parse JSON ke ReviewList
+            final ReviewList reviewList = ReviewList.fromJson(review);
+            tempReviews.add(reviewList);
           }
+
           setState(() {
-            print("6");
             reviews = tempReviews;
-            print("7");
             filteredReviews = reviews;
-            print("8");
           });
         } else {
           throw Exception("Expected a list for 'reviews'");
@@ -75,6 +61,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
       throw Exception('Failed to load reviews');
     }
   }
+
 
 
 
