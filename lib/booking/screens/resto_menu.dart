@@ -88,8 +88,8 @@ class _RestoMenuPageState extends State<RestoMenuPage> {
             padding: const EdgeInsets.all(16.0),
             child: GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
+                crossAxisCount: 1,
+                childAspectRatio: 1.1,
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
               ),
@@ -125,45 +125,71 @@ class _RestoMenuPageState extends State<RestoMenuPage> {
                       Expanded(
                         flex: 4,
                         child: Padding(
-                          padding: const EdgeInsets.all(12.0),
+                          padding: const EdgeInsets.all(8.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 menu.fields.menu,
                                 style: const TextStyle(
-                                  fontSize: 14,
+                                  fontFamily: 'Playfair Display',
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xFF3E2723),
                                 ),
-                                maxLines: 1,
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                'Category: ${menu.fields.category}',
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF5B3E39),
-                                ),
-                              ),
-                              Text(
-                                'Price: Rp${menu.fields.price}',
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF5B3E39),
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  const Icon(Icons.star, 
-                                    color: Colors.amber, size: 14),
+                                  const Icon(
+                                    Icons.local_offer_outlined,
+                                    size: 20,
+                                    color: Color(0xFF3E2723),
+                                  ),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    ' ${menu.fields.rating}',
+                                    menu.fields.category,
                                     style: const TextStyle(
                                       fontSize: 12,
-                                      color: Color(0xFF5B3E39),
+                                      color: Color(0xFF3E2723),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.attach_money,
+                                    size: 20,
+                                    color: Color(0xFF3E2723),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    'Rp ${menu.fields.price}',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF3E2723),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.star_outline,
+                                    size: 20,
+                                    color: Color(0xFF3E2723),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '${menu.fields.rating} / 5',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF3E2723),
                                     ),
                                   ),
                                 ],
@@ -171,8 +197,7 @@ class _RestoMenuPageState extends State<RestoMenuPage> {
                             ],
                           ),
                         ),
-                      ),
-                    ],
+                      ),                   ],
                   ),
                 );
               },

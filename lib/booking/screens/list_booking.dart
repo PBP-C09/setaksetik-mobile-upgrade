@@ -176,112 +176,147 @@ class _BookingListPageState extends State<BookingListPage> {
           }
 
           final bookings = snapshot.data!;
-          return ListView.builder(
+          return GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 1,
+              childAspectRatio: 0.8,
+              mainAxisSpacing: 16,
+            ),
             padding: const EdgeInsets.all(16),
             itemCount: bookings.length,
             itemBuilder: (context, index) {
               final booking = bookings[index];
               final formattedDate = formatBookingDate(booking['booking_date']);
 
-              return Container(
-                margin: const EdgeInsets.only(bottom: 16),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5DC),
-                  borderRadius: BorderRadius.circular(16),
+              return Card(
+                elevation: 8,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                color: const Color(0xFFF5F5DC),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                        child: Image.network(
-                          booking['menu_image'],
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                      child: AspectRatio(
+                        aspectRatio: 2.0,
+                        child: SizedBox(
                           width: double.infinity,
-                          height: 200,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              width: double.infinity,
-                              height: 200,
-                              color: Colors.grey,
-                              child: const Icon(Icons.error),
-                            );
-                          },
-                        )
+                          child: Image.network(
+                            booking['menu_image'],
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) {
+                              List<String> placeholderImages = [
+                                "assets/images/placeholder-image-1.png",
+                                "assets/images/placeholder-image-2.png",
+                                "assets/images/placeholder-image-3.png",
+                                "assets/images/placeholder-image-4.png",
+                                "assets/images/placeholder-image-5.png",
+                              ];
+
+                              int index = booking['id'] % placeholderImages.length;
+
+                              return Image.asset(
+                                placeholderImages[index],
+                                fit: BoxFit.cover,
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            booking['restaurant_name'], // Add this line
+                            booking['restaurant_name'],
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
                               fontFamily: 'Playfair Display',
-                              color: Color(0xFF6F4E37),
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Date: $formattedDate',
-                            style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF3E2723),
                             ),
                           ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'People: ${booking['number_of_people']}',
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF3E2723),
-                            ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              const Icon(Icons.calendar_today, size: 20, color: Color(0xFF3E2723)),
+                              const SizedBox(width: 12),
+                              Text(
+                                formattedDate,
+                                style: const TextStyle(fontSize: 14, color: Color(0xFF3E2723)),
+                              ),
+                            ],
                           ),
                           const SizedBox(height: 8),
-                          Text(
-                            'Status: ${booking['status']}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: booking['status'] == 'approved'
-                                  ? Color(0xFF3E2723)
-                                  : Color(0xFFF5F5DC ),
-                              backgroundColor: booking['status'] == 'approved'
-                                  ? Color(0xFFFFD54F)
-                                  : Color(0xFF842323),
+                          Row(
+                            children: [
+                              const Icon(Icons.people, size: 20, color: Color(0xFF3E2723)),
+                              const SizedBox(width: 12),
+                              Text(
+                                '${booking['number_of_people']} people',
+                                style: const TextStyle(fontSize: 14, color: Color(0xFF3E2723)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 12),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF7B32B),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              booking['status'],
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Color(0xFF6D4C41)),
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EditBookingPage(
-                                    bookingId: booking['id'],
-                                    restaurantName: booking['restaurant_name'],
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFF7B32B),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
                                   ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditBookingPage(
+                                          bookingId: booking['id'],
+                                          restaurantName: booking['restaurant_name'],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Edit', style: TextStyle(color: Colors.white)),
                                 ),
-                              );
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Color(0xFF842323)),
-                            onPressed: () => deleteBooking(booking['id']),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFFB71C1C),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  onPressed: () => deleteBooking(booking['id']),
+                                  child: const Text('Delete', style: TextStyle(color: Colors.white)),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
