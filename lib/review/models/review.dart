@@ -32,7 +32,8 @@ class ReviewList {
 
 class Fields {
   int user;
-  String menu;
+  String name;
+  int menu;
   String place;
   int rating;
   String description;
@@ -40,6 +41,7 @@ class Fields {
 
   Fields({
     required this.user,
+    required this.name,
     required this.menu,
     required this.place,
     required this.rating,
@@ -52,6 +54,7 @@ class Fields {
 
   factory Fields.fromJson(Map<String, dynamic> json) => Fields(
         user: json["user"],
+        name: json["name"],
         menu: json["menu"],
         place: json["place"],
         rating: json["rating"],
@@ -61,6 +64,7 @@ class Fields {
 
   Map<String, dynamic> toJson() => {
         "user": user,
+        "name": name,
         "menu": menu,
         "place": place,
         "rating": rating,

@@ -28,11 +28,13 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
   // Fetch reviews dari API Django
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/show-review-flutter/');
 
       if (response != null) {
         setState(() {
+          // print("response yan/g bener: " + response);
           reviews = reviewListFromJson(response);
+          
           filteredReviews = reviews;
         });
       } else {
@@ -49,7 +51,8 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
       searchQuery = query;
       filteredReviews = reviews
           .where((review) =>
-              review.fields.menu.toLowerCase().contains(query.toLowerCase()) ||
+              //TODO: ini perhatiin lagi
+              // review.fields.menu.toLowerCase().contains(query.toLowerCase()) ||
               review.fields.place.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
@@ -190,7 +193,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                           child: ListTile(
                             contentPadding: const EdgeInsets.all(16),
                             title: Text(
-                              review.fields.menu,
+                              review.fields.name,
                               style: const TextStyle(
                                 fontSize: 16, // Font size reduced
                                 fontWeight: FontWeight.bold,
@@ -250,8 +253,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                   ),
                                 ),
                                 const SizedBox(height: 8),
-                                if (review.fields.ownerReply != null &&
-                                    review.fields.ownerReply!.isNotEmpty)
+                                if (review.fields.ownerReply != "No reply yet")
                                   Container(
                                     width: double.infinity, // Ensures full width inside the card
                                     margin: const EdgeInsets.only(top: 8.0), // Space above the reply box
@@ -274,7 +276,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                         ),
                                         const SizedBox(height: 4), // Space between title and reply text
                                         Text(
-                                          review.fields.ownerReply!,
+                                          review.fields.ownerReply,
                                           style: const TextStyle(
                                             fontFamily: 'Raleway',
                                             fontSize: 12,
