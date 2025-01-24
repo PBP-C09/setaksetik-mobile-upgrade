@@ -188,14 +188,14 @@ class _EditMenuOwnerPageState extends State<EditMenuOwnerPage> {
                 // Price Input
                 _buildTextField(
                   label: "Price",
-                  hint: "Add price (1000 - 1800000)",
+                  hint: "Add price (10000 - 1800000)",
                   isNumeric: true,
                   onChanged: (value) => setState(() => _price = int.tryParse(value) ?? 0),
                   validator: (value) {
                     if (value == null || value.isEmpty) return "Harga menu tidak boleh kosong!";
                     if (int.tryParse(value) == null) return "Harga harus berupa angka!";
-                    if (_price < 1000 || _price > 1800000) {
-                      return "Rating harus antara 1000 dan 1800000!";
+                    if (_price < 10000 || _price > 1800000) {
+                      return "Rating harus antara 10000 dan 1800000!";
                     }
                     return null;
                   },
