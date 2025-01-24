@@ -500,7 +500,7 @@ class OwnershipCard extends StatelessWidget {
                           const SizedBox(width: 10),
                           Expanded(
                             child: _buildButton(
-                              label: 'Disown Restaurant',
+                              label: 'Disown',
                               color: const Color(0xFF842323), // Red background
                               textColor: const Color(0xFFF5F5DC), // Beige text
                               onPressed: onDisown,
