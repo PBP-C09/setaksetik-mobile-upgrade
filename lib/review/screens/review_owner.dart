@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
+import 'package:setaksetikmobile/explore/models/menu_entry.dart';
+import 'review_list.dart';
 
 class ReviewOwner extends StatefulWidget {
   const ReviewOwner({super.key});
@@ -14,8 +16,18 @@ class ReviewOwner extends StatefulWidget {
 
 class _ReviewOwnerState extends State<ReviewOwner> {
   List<ReviewList> reviews = [];
+  List<MenuList> menus = [];
   List<ReviewList> filteredReviews = [];
   TextEditingController _searchController = TextEditingController();
+
+    // Fungsi helper
+  // String getMenuNameByIndex(int index) {
+  //   final menu = menus.firstWhere(
+  //     (menu) => menu.pk == index,
+  //     orElse: () => MenuList(pk: -1, name: 'Unknown'),
+  //   );
+  //   return menu.name;
+  // }
 
   @override
   void initState() {
@@ -26,17 +38,50 @@ class _ReviewOwnerState extends State<ReviewOwner> {
       filterReviews();
     });
   }
+  
 
-  Future<void> fetchReviews(CookieRequest request) async {
+  Future<void> fetchMenus(CookieRequest request) async {
     try {
-      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
       if (response != null) {
         setState(() {
-          reviews = reviewListFromJson(response);
-          filteredReviews = reviews;
+          menus = menuListFromJson(jsonEncode(response));
         });
       } else {
         throw Exception('Response is null');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Failed to load menus');
+    }
+  }
+  Future<void> fetchReviews(CookieRequest request) async {
+    try {
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/pantau-review-owner/');
+      print("Response: $response");
+
+      if (response is Map<String, dynamic> && response.containsKey('reviews')) {
+        final reviewsData = response['reviews'];
+        print("Reviews: $reviewsData");
+
+        if (reviewsData is List) {
+          final List<ReviewList> tempReviews = [];
+
+          for (var review in reviewsData) {
+            // Langsung parse JSON ke ReviewList
+            final ReviewList reviewList = ReviewList.fromJson(review);
+            tempReviews.add(reviewList);
+          }
+
+          setState(() {
+            reviews = tempReviews;
+            filteredReviews = reviews;
+          });
+        } else {
+          throw Exception("Expected a list for 'reviews'");
+        }
+      } else {
+        throw Exception("Unexpected response format or missing 'reviews' key");
       }
     } catch (e) {
       print('Error: $e');
@@ -44,11 +89,17 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     }
   }
 
+
+
+
+
   void filterReviews() {
     final query = _searchController.text.toLowerCase();
     setState(() {
       filteredReviews = reviews
-          .where((review) => review.fields.menu.toLowerCase().contains(query) ||
+          .where((review) =>
+              //TODO: ini perhatiin lagi
+              // review.fields.menu.toLowerCase().contains(query) ||
               review.fields.place.toLowerCase().contains(query) ||
               review.fields.description.toLowerCase().contains(query))
           .toList();
@@ -160,7 +211,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                         children: [
                                           Expanded(
                                             child: Text(
-                                              review.fields.menu,
+                                              review.fields.name,
                                               style: const TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
@@ -216,8 +267,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                         ),
                                       ),
                                       const SizedBox(height: 16),
-                                      if (review.fields.ownerReply != null &&
-                                          review.fields.ownerReply!.isNotEmpty)
+                                      if (review.fields.ownerReply != "No reply yet")
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [

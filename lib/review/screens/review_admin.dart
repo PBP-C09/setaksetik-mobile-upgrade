@@ -30,15 +30,17 @@ class _ReviewAdminState extends State<ReviewAdmin> {
         jsonEncode({'review_id': reviewId}),
       );
 
+      print(response);
+
       if (response['status'] == 'success') {
         setState(() {
           reviews.removeWhere((review) => review.pk == reviewId);
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response['message'])),
+          SnackBar(content: Text(response['message'].toString())),  // Pastikan semua nilai adalah string
         );
       } else {
-        throw Exception(response['message']);
+        throw Exception(response['message'].toString());
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -47,13 +49,20 @@ class _ReviewAdminState extends State<ReviewAdmin> {
     }
   }
 
+
   Future<void> fetchReviews(CookieRequest request) async {
     try {
-      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/get_review/');
-
+      
+      final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/show-review-flutter/');
+      
       if (response != null) {
         setState(() {
+          
+          // print("response yan/g bener: " + response);
           reviews = reviewListFromJson(response);
+          
+          
+          // filteredReviews = reviews;
         });
       } else {
         throw Exception('Response is null');
@@ -108,7 +117,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
                             children: [
                               Expanded(
                                 child: Text(
-                                  review.fields.menu,
+                                  review.fields.name,
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
