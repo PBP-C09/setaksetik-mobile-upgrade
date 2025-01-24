@@ -179,7 +179,6 @@ class _BookingListPageState extends State<BookingListPage> {
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
-              childAspectRatio: 0.8,
               mainAxisSpacing: 16,
             ),
             padding: const EdgeInsets.all(16),
@@ -263,58 +262,50 @@ class _BookingListPageState extends State<BookingListPage> {
                             ],
                           ),
                           const SizedBox(height: 8),
-                          Container(
-                            margin: const EdgeInsets.symmetric(vertical: 12),
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF7B32B),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              booking['status'],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFF7B32B),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                              Container(
+                                margin: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: booking['status'] == 'waiting' 
+                                      ? const Color(0xFF842323) 
+                                      : const Color(0xFFFFD54F), // Conditional color
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  booking['status'],
+                                  style: TextStyle(
+                                    color: booking['status'] == 'waiting' 
+                                      ? const Color(0xFFF5F5DC) 
+                                      : const Color(0xFF3E2723),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => EditBookingPage(
-                                          bookingId: booking['id'],
-                                          restaurantName: booking['restaurant_name'],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text('Edit', style: TextStyle(color: Colors.white)),
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFB71C1C),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Color(0xFF6D4C41)),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditBookingPage(
+                                            bookingId: booking['id'],
+                                            restaurantName: booking['restaurant_name'],
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   ),
-                                  onPressed: () => deleteBooking(booking['id']),
-                                  child: const Text('Delete', style: TextStyle(color: Colors.white)),
-                                ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Color(0xFF842323)),
+                                    onPressed: () => deleteBooking(booking['id']),
+                                  ),
+                                ],
                               ),
                             ],
                           ),

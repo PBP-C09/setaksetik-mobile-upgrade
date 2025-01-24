@@ -420,7 +420,7 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 15),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -433,8 +433,8 @@ class _BookingPageState extends State<BookingPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFF7B32B),
-                        foregroundColor: Colors.white,
+                        backgroundColor: const Color(0xFF842323),
+                        foregroundColor: const Color(0xFFF5F5DC),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         minimumSize: const Size(double.infinity, 48),
                         shape: RoundedRectangleBorder(

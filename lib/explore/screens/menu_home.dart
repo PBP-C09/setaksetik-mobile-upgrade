@@ -462,7 +462,7 @@ class _MenuPageState extends State<MenuPage> {
                                         vertical: 4,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFFF7B32B),
+                                        color: const Color(0xFF842323),
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       child: Text(
@@ -495,7 +495,7 @@ class _MenuPageState extends State<MenuPage> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 15),
                                 // See details button
                                 SizedBox(
                                   width: double.infinity,
