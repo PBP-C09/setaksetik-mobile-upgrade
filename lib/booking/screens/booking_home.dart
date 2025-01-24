@@ -274,7 +274,7 @@ class _BookingPageState extends State<BookingPage> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF6D4C41),
+              backgroundColor: const Color(0xFFF7B32B),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -282,7 +282,7 @@ class _BookingPageState extends State<BookingPage> {
             ),
             child: const Text(
               'Your Bookings',
-              style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold),
             ),
           ),
         ],
@@ -357,26 +357,6 @@ class _BookingPageState extends State<BookingPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
-                        Icons.restaurant,
-                        size: 16,
-                        color: Color(0xFF3E2723),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${menu.fields.menu}',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF3E2723),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
                         Icons.location_on_outlined,
                         size: 16,
                         color: Color(0xFF3E2723),
@@ -420,26 +400,6 @@ class _BookingPageState extends State<BookingPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
-                        Icons.payments_outlined,
-                        size: 16,
-                        color: Color(0xFF3E2723),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        'Rp ${menu.fields.price}',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF3E2723),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
                       Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -450,7 +410,7 @@ class _BookingPageState extends State<BookingPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          menu.fields.category,
+                          menu.fields.specialized,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: Colors.white,
@@ -473,7 +433,7 @@ class _BookingPageState extends State<BookingPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6D4C41),
+                        backgroundColor: const Color(0xFFF7B32B),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         minimumSize: const Size(double.infinity, 48),
@@ -482,7 +442,7 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                       ),
                       child: const Text(
-                        'Book Now',
+                        'Select Restaurant',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
@@ -512,7 +472,7 @@ class _BookingPageState extends State<BookingPage> {
                         ),
                       ),
                       child: const Text(
-                        'See Detail',
+                        'See Details',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14,
