@@ -146,19 +146,33 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
                     children: [
                       ClipRRect(
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                        child: Image.network(
-                          restaurant['image_url'] ?? 'https://via.placeholder.com/150', // URL gambar restoran
-                          fit: BoxFit.cover,
-                          height: 200,
-                          width: double.infinity,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
+                        child: AspectRatio(
+                          aspectRatio: 2.0,
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Image.network(
+                              restaurant['image_url'] ?? 'https://via.placeholder.com/150',
+                              fit: BoxFit.cover,
                               height: 200,
                               width: double.infinity,
-                              color: Colors.grey,
-                              child: const Icon(Icons.broken_image, size: 50, color: Colors.white),
-                            );
-                          },
+                              errorBuilder: (context, error, stackTrace) {
+                                List<String> placeholderImages = [
+                                  "assets/images/placeholder-image-1.png",
+                                  "assets/images/placeholder-image-2.png",
+                                  "assets/images/placeholder-image-3.png",
+                                  "assets/images/placeholder-image-4.png",
+                                  "assets/images/placeholder-image-5.png",
+                                ];
+
+                                int index = restaurant['id'] % placeholderImages.length;
+
+                                return Image.asset(
+                                  placeholderImages[index],
+                                  fit: BoxFit.cover,
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
                       Padding(
