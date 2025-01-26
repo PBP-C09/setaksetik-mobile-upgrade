@@ -5,7 +5,7 @@ import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 Future<List<Map<String, dynamic>>> fetchClaimedRestaurants(CookieRequest request) async {
   try {
-    final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/manage_flutter/');
+    final response = await request.get('http://127.0.0.1:8000/claim/manage_flutter/');
     if (response != null && response['status'] == 'success') {
       return List<Map<String, dynamic>>.from(response['claimed_restaurants']);
     }
@@ -19,7 +19,7 @@ Future<List<Map<String, dynamic>>> fetchClaimedRestaurants(CookieRequest request
 
 Future<bool> revokeOwnership(CookieRequest request, int menuId) async {
   try {
-    final response = await request.post('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/claim/revoke_flutter/', {
+    final response = await request.post('http://127.0.0.1:8000/claim/revoke_flutter/', {
       'menu_id': menuId.toString(),
     });
     if (response['status'] == 'success') {
