@@ -2,7 +2,7 @@ name: setaksetikmobile
 description: "An app for Steak Lovers, curated by C09."
 
 publish_to: 'none'
-version: 2.1.2+4
+version: 2.2.0+5
 
 environment:
   sdk: ^3.5.4

@@ -170,7 +170,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                           ),
                         );
                       },
-                      child: const Text('Add another'),
+                      child: const Text('Add Another'),
                     ),
                   ],
                 ),

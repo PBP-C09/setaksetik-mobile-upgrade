@@ -196,7 +196,7 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                         elevation: 4,
                         // margin: EdgeInsets.only(bottom: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +204,12 @@ class _OwnedRestaurantPageState extends State<OwnedRestaurantPage> {
                             Stack(
                               children: [
                                 ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12),
+                                    topRight: Radius.circular(12),
+                                    bottomLeft: Radius.zero,
+                                    bottomRight: Radius.zero,
+                                  ),
                                   child: Image.network(
                                     menu.fields.image,
                                     height: 200,

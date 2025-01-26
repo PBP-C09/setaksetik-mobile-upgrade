@@ -185,7 +185,7 @@ class AdminDetail extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${menuList.fields.rating}',
+                      '${menuList.fields.rating.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 16.0,
                         color: const Color(0xFF3E2723),

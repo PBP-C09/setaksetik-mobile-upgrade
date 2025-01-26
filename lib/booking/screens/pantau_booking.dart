@@ -11,7 +11,6 @@ Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
     final menuResponse = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
 
     if (response != null && menuResponse != null) {
-      // menuResponse jadi object menu
       final menus = menuResponse.map((item) => MenuList.fromJson(item)).toList();
       
       final restaurant = response['restaurant'];

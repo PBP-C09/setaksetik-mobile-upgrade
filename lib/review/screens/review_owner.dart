@@ -302,7 +302,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                                   IconButton(
                                                     icon: const Icon(
                                                       Icons.edit,
-                                                      color: Colors.blue, // Blue color for the edit icon
+                                                      color: Color(0xFF3E2723),
                                                     ),
                                                     onPressed: () async {
                                                       final updatedReply = await showDialog<String>(
@@ -366,20 +366,54 @@ class _ReplyDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Your Reply'),
+      contentPadding: EdgeInsets.all(20.0),
+      title: Center(
+        child: Text(
+          'Your Reply',
+          style: TextStyle(
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.italic,
+            color: Color(0xFF3E2723),
+            fontSize: 20.0,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
       content: TextField(
         controller: _controller,
-        decoration: const InputDecoration(hintText: 'Enter your reply'),
+        decoration: InputDecoration(
+          hintText: 'Enter your reply',
+          hintStyle: TextStyle(
+            fontFamily: 'Raleway',
+            color: Color(0xFFF5F5DC),
+          ),
+          filled: true,
+          fillColor: Color(0xFF3E2723),
+          border: OutlineInputBorder(),
+        ),
+        style: TextStyle(
+          fontFamily: 'Raleway',
+          color: Color(0xFFF5F5DC),
+        ),
         maxLines: 3,
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(_controller.text),
-          child: const Text('Submit'),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              SizedBox(width: 10),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(_controller.text),
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ],
     );
