@@ -60,6 +60,7 @@ class MenuDetailPage extends StatelessWidget {
 
                 Text(
                   menuList.fields.menu,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0,
