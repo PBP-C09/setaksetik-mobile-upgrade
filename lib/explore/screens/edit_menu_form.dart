@@ -149,7 +149,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                   hint: "Menu name (max length: 50)",
                   onChanged: (value) => setState(() => _menuName = value),
                   validator: (value) =>
-                    value == null || value.isEmpty ? "Nama menu tidak boleh kosong!" : null,
+                    value == null || value.isEmpty ? "Menu name cannot be empty!" : null,
                 ),
 
                 // Restaurant Name Input
@@ -158,7 +158,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                   hint: "Restaurant name (max length: 50)",
                   onChanged: (value) => setState(() => _restaurantName = value),
                   validator: (value) =>
-                    value == null || value.isEmpty ? "Nama restoran tidak boleh kosong!" : null,
+                    value == null || value.isEmpty ? "Restaurant cannot be empty!" : null,
                 ),
 
                 // Dropdown for City
@@ -192,10 +192,10 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                   isNumeric: true,
                   onChanged: (value) => setState(() => _price = int.tryParse(value) ?? 0),
                   validator: (value) {
-                    if (value == null || value.isEmpty) return "Harga menu tidak boleh kosong!";
-                    if (int.tryParse(value) == null) return "Harga harus berupa angka!";
+                    if (value == null || value.isEmpty) return "Price cannot be empty!";
+                    if (int.tryParse(value) == null) return "Price must be numbers!";
                     if (_price < 10000 || _price > 1800000) {
-                      return "Rating harus antara 10000 dan 1800000!";
+                      return "Price must be between 10000 and 1800000!";
                     }
                     return null;
                   },
@@ -212,11 +212,11 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                     });
                   },
                   validator: (value) {
-                    if (value == null || value.isEmpty) return "Rating tidak boleh kosong!";
-                    if (double.tryParse(value) == null) return "Harga harus berupa angka!";
+                    if (value == null || value.isEmpty) return "Rating cannot be empty!!";
+                    if (double.tryParse(value) == null) return "Rating must be numbers!";
                     double? rating = double.tryParse(value);
                     if (rating == null || rating < 0.0 || rating > 5.0) {
-                      return "Rating harus antara 0.0 dan 5.0!";
+                      return "Rating must be between 0.0 and 5.0!";
                     }
                     return null;
                   },
@@ -228,7 +228,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                   hint: "Add image URL",
                   onChanged: (value) => setState(() => _imageUrl = value),
                   validator: (value) =>
-                    value == null || value.isEmpty ? "Gambar menu tidak boleh kosong!" : null,
+                    value == null || value.isEmpty ? "Image URL cannot be empty!" : null,
                 ),
 
                 // Checkboxes for Additional Features
@@ -273,7 +273,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
                               final response = await request.postJson(
-                                "https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/edit-flutter/${widget.menuToEdit.pk}/",
+                                "http://127.0.0.1:8000/explore/edit-flutter/${widget.menuToEdit.pk}/",
                                 jsonEncode(<String, String>{
                                   "menu": _menuName,
                                   "category": _selectedCategory ?? "",
@@ -293,7 +293,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                               if (context.mounted) {
                                 if (response['status'] == 'success') {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Menu berhasil diupdate!")),
+                                    const SnackBar(content: Text("Menu successfully updated!")),
                                   );
                                   Navigator.pushReplacement(
                                     context,
@@ -301,7 +301,7 @@ class _EditMenuFormPageState extends State<EditMenuFormPage> {
                                   );
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Terdapat kesalahan, silakan coba lagi.")),
+                                    const SnackBar(content: Text("There was an error, please try again.")),
                                   );
                                 }
                               }
@@ -424,7 +424,7 @@ Widget _buildDropdown({
       ),
       items: items,
       onChanged: onChanged,
-      validator: (value) => value == null || value.isEmpty ? "$label harus dipilih!" : null,
+      validator: (value) => value == null || value.isEmpty ? "$label must be selected!" : null,
     ),
   );
 }
