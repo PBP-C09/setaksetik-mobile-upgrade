@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/review/screens/review_home.dart';
+import 'package:setaksetikmobile/review/screens/review_list.dart';
 
 
 class ReviewEntryFormPage extends StatefulWidget {
@@ -95,7 +95,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
 
                 // Title
                 const Text(
-                  'Review Berhasil Ditambahkan',
+                  'Review Added!',
                   style: TextStyle(
                     fontSize: 20.0,
                     fontWeight: FontWeight.bold,
@@ -107,7 +107,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
 
                 // Description
                 const Text(
-                  'Terima kasih atas review Anda! Apa yang ingin Anda lakukan setelah ini?',
+                  'What do you want to do next?',
                   style: TextStyle(
                     color: Color(0xFF5B3E39),
                   ),
@@ -121,16 +121,29 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF5B3E39),
+                        backgroundColor: const Color(0xFF6D4C41),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pop(context); // Tutup dialog
-                        Navigator.pop(context); // Kembali ke halaman sebelumnya
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReviewMainPage(),
+                          ),
+                        );
                       },
-                      child: const Text('Kembali'),
+                      child: const Text(
+                        'See Reviews',
+                        style: TextStyle(
+                          color: Color(0xFFF5F5DC),
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 8.0),
                     ElevatedButton(
@@ -141,9 +154,23 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.pop(context); // Tutup dialog untuk tambah review lagi
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReviewMainPage(),
+                          ),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ReviewPage(),
+                          ),
+                        );
                       },
-                      child: const Text('Tambah Review'),
+                      child: const Text('Add another'),
                     ),
                   ],
                 ),

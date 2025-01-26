@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/review/screens/review_list.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
-import 'package:setaksetikmobile/explore/screens/menu_detail.dart';
 
 class ReviewMainPage extends StatefulWidget {
   const ReviewMainPage({super.key});
@@ -32,7 +31,6 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
 
       if (response != null) {
         setState(() {
-          // print("response yan/g bener: " + response);
           reviews = reviewListFromJson(response);
           
           filteredReviews = reviews;
@@ -51,8 +49,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
       searchQuery = query;
       filteredReviews = reviews
           .where((review) =>
-              //TODO: ini perhatiin lagi
-              // review.fields.menu.toLowerCase().contains(query.toLowerCase()) ||
+              review.fields.name.toLowerCase().contains(query.toLowerCase()) ||
               review.fields.place.toLowerCase().contains(query.toLowerCase()))
           .toList();
     });
@@ -69,7 +66,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
       body: reviews.isEmpty
           ? const Center(
               child: Text(
-                "There's no review yet :(",
+                "No reviews yet :(",
                 style: TextStyle(
                   fontSize: 20,
                   color: Color(0xFFF5F5DC),
@@ -93,7 +90,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                             text: const TextSpan(
                               children: [
                                 TextSpan(
-                                  text: 'Apa kata ',
+                                  text: 'What do they ',
                                   style: TextStyle(
                                     fontFamily: 'Playfair Display',
                                     fontSize: 30.0,
@@ -102,7 +99,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: 'mereka?',
+                                  text: 'say?',
                                   style: TextStyle(
                                     fontFamily: 'Playfair Display',
                                     fontSize: 30.0,
@@ -115,33 +112,6 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                             ),
                           ),
                           const SizedBox(height: 12.0),
-                          Divider(
-                            color: Colors.white,
-                            thickness: 1.0,
-                          ),
-                          const SizedBox(height: 12.0),
-                          Column(
-                            children: const [
-                              Text(
-                                'Dengar cerita dan rekomendasi dari',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Raleway',
-                                  fontSize: 14.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                'steak lovers di seluruh penjuru',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Raleway',
-                                  fontSize: 14.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -161,7 +131,7 @@ class _ReviewMainPageState extends State<ReviewMainPage> {
                       child: TextField(
                         onChanged: updateSearch,
                         decoration: InputDecoration(
-                          hintText: "Cari menu atau restoran...",
+                          hintText: "Search menu or restaurant",
                           hintStyle: const TextStyle(
                             color: Color(0xFF8D6E63),
                           ),

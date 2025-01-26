@@ -110,7 +110,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                           controller: _searchController,
                           style: const TextStyle(color: Colors.black),
                           decoration: InputDecoration(
-                            hintText: 'Cari menu',
+                            hintText: 'Search menu',
                             hintStyle: const TextStyle(fontSize: 14),
                             prefixIcon: const Icon(Icons.search, size: 20),
                             isDense: true,
@@ -190,11 +190,12 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Menu yang kamu cari tidak ada',
+                    'No matches!',
                     style: TextStyle(
                       fontSize: 18,
                       color: Color(0xFFF5F5DC),
                       fontFamily: 'Playfair Display',
+                      fontStyle: FontStyle.italic
                     ),
                   ),
                 ],
@@ -247,7 +248,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
                                   controller: _searchController, 
                                   style: const TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
-                                    hintText: 'Cari menu',
+                                    hintText: 'Search menu',
                                     hintStyle: const TextStyle(fontSize: 14),
                                     prefixIcon: const Icon(Icons.search, size: 20),
                                     isDense: true,
