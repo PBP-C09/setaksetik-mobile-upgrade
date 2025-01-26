@@ -237,6 +237,7 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
                           color: Color(0xFF3E2723),
+                          fontFamily: 'Playfair Display',
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -246,9 +247,9 @@ class _ReviewEntryFormPageState extends State<ReviewEntryFormPage> {
                       Text(
                         widget.menu.fields.restaurantName,
                         style: const TextStyle(
+                          fontWeight: FontWeight.w600,
                           fontSize: 18.0,
                           color: Color(0xFF6D4C41),
-                          fontStyle: FontStyle.italic,
                         ),
                         textAlign: TextAlign.center,
                       ),

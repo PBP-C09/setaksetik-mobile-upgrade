@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 
@@ -34,17 +33,17 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
 
   // Dropdown
   final List<DropdownMenuItem<String>> categoryChoices = const [
-    DropdownMenuItem(value: 'beef', child: Text('Beef')),
-    DropdownMenuItem(value: 'chicken', child: Text('Chicken')),
-    DropdownMenuItem(value: 'fish', child: Text('Fish')),
-    DropdownMenuItem(value: 'lamb', child: Text('Lamb')),
-    DropdownMenuItem(value: 'pork', child: Text('Pork')),
-    DropdownMenuItem(value: 'rib eye', child: Text('Rib Eye')),
-    DropdownMenuItem(value: 'sirloin', child: Text('Sirloin')),
-    DropdownMenuItem(value: 't-bone', child: Text('T-Bone')),
-    DropdownMenuItem(value: 'tenderloin', child: Text('Tenderloin')),
-    DropdownMenuItem(value: 'wagyu', child: Text('Wagyu')),
-    DropdownMenuItem(value: 'other', child: Text('Other')),
+    DropdownMenuItem(value: 'Beef', child: Text('Beef')),
+    DropdownMenuItem(value: 'Chicken', child: Text('Chicken')),
+    DropdownMenuItem(value: 'Fish', child: Text('Fish')),
+    DropdownMenuItem(value: 'Lamb', child: Text('Lamb')),
+    DropdownMenuItem(value: 'Pork', child: Text('Pork')),
+    DropdownMenuItem(value: 'Rib Eye', child: Text('Rib Eye')),
+    DropdownMenuItem(value: 'Sirloin', child: Text('Sirloin')),
+    DropdownMenuItem(value: 'T-Bone', child: Text('T-Bone')),
+    DropdownMenuItem(value: 'Tenderloin', child: Text('Tenderloin')),
+    DropdownMenuItem(value: 'Wagyu', child: Text('Wagyu')),
+    DropdownMenuItem(value: 'Other', child: Text('Other')),
   ];
 
   final List<DropdownMenuItem<String>> cityChoices = const [
@@ -56,19 +55,19 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
   ];
 
   final List<DropdownMenuItem<String>> specializedChoices = const [
-    DropdownMenuItem(value: 'argentinian', child: Text('Argentinian')),
-    DropdownMenuItem(value: 'brazilian', child: Text('Brazilian')),
-    DropdownMenuItem(value: 'breakfast cafe', child: Text('Breakfast Cafe')),
-    DropdownMenuItem(value: 'british', child: Text('British')),
-    DropdownMenuItem(value: 'french', child: Text('French')),
-    DropdownMenuItem(value: 'fushioned', child: Text('Fushioned')),
-    DropdownMenuItem(value: 'italian', child: Text('Italian')),
-    DropdownMenuItem(value: 'japanese', child: Text('Japanese')),
-    DropdownMenuItem(value: 'local', child: Text('Local')),
-    DropdownMenuItem(value: 'local westerned', child: Text('Local Westerned')),
-    DropdownMenuItem(value: 'mexican', child: Text('Mexican')),
-    DropdownMenuItem(value: 'western', child: Text('Western')),
-    DropdownMenuItem(value: 'singaporean', child: Text('Singaporean')),
+    DropdownMenuItem(value: 'Argentinian', child: Text('Argentinian')),
+    DropdownMenuItem(value: 'Brazilian', child: Text('Brazilian')),
+    DropdownMenuItem(value: 'Breakfast Cafe', child: Text('Breakfast Cafe')),
+    DropdownMenuItem(value: 'British', child: Text('British')),
+    DropdownMenuItem(value: 'French', child: Text('French')),
+    DropdownMenuItem(value: 'Fushioned', child: Text('Fushioned')),
+    DropdownMenuItem(value: 'Italian', child: Text('Italian')),
+    DropdownMenuItem(value: 'Japanese', child: Text('Japanese')),
+    DropdownMenuItem(value: 'Local', child: Text('Local')),
+    DropdownMenuItem(value: 'Local Westerned', child: Text('Local Westerned')),
+    DropdownMenuItem(value: 'Mexican', child: Text('Mexican')),
+    DropdownMenuItem(value: 'Western', child: Text('Western')),
+    DropdownMenuItem(value: 'Singaporean', child: Text('Singaporean')),
   ];
 
   @override
