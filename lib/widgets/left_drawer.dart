@@ -76,7 +76,7 @@ class LeftDrawer extends StatelessWidget {
       tiles.addAll([
         createStyledListTile(
           icon: Icons.menu_book,
-          title: 'Manage Menus',
+          title: 'Manage Menu',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -86,7 +86,7 @@ class LeftDrawer extends StatelessWidget {
         ),
         createStyledListTile(
           icon: Icons.rate_review,
-          title: 'Manage Reviews',
+          title: 'Manage Review',
           onTap: () {
             Navigator.pushReplacement(
               context,
@@ -110,7 +110,7 @@ class LeftDrawer extends StatelessWidget {
         tiles.add(
           createStyledListTile(
             icon: Icons.store,
-            title: 'Claim a Steakhouse',
+            title: 'Claim Ownership',
             onTap: () {
               Navigator.pushReplacement(
                 context,

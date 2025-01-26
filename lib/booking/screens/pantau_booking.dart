@@ -90,7 +90,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text('Monitor Bookings'),
+        title: const Text('Monitor Booking'),
         centerTitle: true,
       ),
       drawer: const LeftDrawer(),

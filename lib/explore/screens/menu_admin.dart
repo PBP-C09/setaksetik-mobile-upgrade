@@ -63,7 +63,7 @@ class _ExploreAdminState extends State<ExploreAdmin> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text('Manage Menus'),
+        title: const Text('Manage Menu'),
         centerTitle: true,
       ),
       drawer: LeftDrawer(),

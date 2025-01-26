@@ -65,7 +65,7 @@ class _MessageFormPageState extends State<MessageFormPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: Text(widget.messageToEdit != null ? 'Edit Meat Up Request' : 'Mau meat up sama siapa?'),
+        title: Text(widget.messageToEdit != null ? 'Edit Meat Up Message' : 'Send a Meat Up Message'),
         centerTitle: true,
       ),
       body: _isLoading
