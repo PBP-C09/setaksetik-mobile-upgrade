@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/wheel_tab.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/history_tab.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/free/secret_front_screen.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/free/secret_wheel_tab.dart';
+import 'package:setaksetikmobile/spinthewheel/screens/free/secret_history_tab.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
-class SpinPage extends StatefulWidget {
-  const SpinPage({super.key});
+class SecretPage extends StatefulWidget {
+  const SecretPage({super.key});
 
   @override
-  _SpinPageState createState() => _SpinPageState();
+  _SecretPageState createState() => _SecretPageState();
 }
 
-class _SpinPageState extends State<SpinPage> with SingleTickerProviderStateMixin {
+class _SecretPageState extends State<SecretPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
@@ -30,19 +29,7 @@ class _SpinPageState extends State<SpinPage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SecretPage(),
-              ),
-            );
-          },
-          child: const Text(
-            'Spin the Wheel',
-          ),
-        ),
+        title: const Text('Wheel of Free Will'),
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
@@ -74,8 +61,8 @@ class _SpinPageState extends State<SpinPage> with SingleTickerProviderStateMixin
       body: TabBarView(
         controller: _tabController,
         children: const [
-          WheelTab(),
-          SpinHistoryTab()
+          SecretWheelTab(),
+          SecretHistoryTab()
         ],
       ),
     );
