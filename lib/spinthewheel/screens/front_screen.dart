@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/wheel_tab.dart';
 import 'package:setaksetikmobile/spinthewheel/screens/history_tab.dart';
-import 'package:setaksetikmobile/spinthewheel/screens/free/secret_front_screen.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 
 class SpinPage extends StatefulWidget {
@@ -30,19 +29,7 @@ class _SpinPageState extends State<SpinPage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SecretPage(),
-              ),
-            );
-          },
-          child: const Text(
-            'Spin the Wheel',
-          ),
-        ),
+        title: const Text('Spin the Wheel'),
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:setaksetikmobile/booking/screens/resto_menu.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 import 'package:setaksetikmobile/booking/screens/booking_form.dart';
-import 'package:setaksetikmobile/review/screens/review_entry.dart';
 
 class BookingDetailPage extends StatelessWidget {
   final MenuList menu;
@@ -219,7 +218,7 @@ class BookingDetailPage extends StatelessWidget {
                           );
                         },
                         child: const Text(
-                          'View Menu',
+                          'View Menus in Restaurant',
                           style: TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.bold,

@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/spinthewheel/fortune_wheel/flutter_fortune_wheel.dart';
-// import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
+import 'package:flutter_fortune_wheel/flutter_fortune_wheel.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
 
 class WheelTab extends StatefulWidget {
@@ -25,7 +24,7 @@ class _WheelTabState extends State<WheelTab> {
 
   Map<int, bool> _isAddedMap = {}; // Primary key - bool added
   Map<int, MenuList> _menuOptionsMap = {}; // Primary key - MenuList object in current filter
-   Map<int, MenuList> _addedMenuMap = {}; // // Primary key - MenuList object in wheel
+  Map<int, MenuList> _addedMenuMap = {}; // // Primary key - MenuList object in wheel
   Map<int, int> _wheelIndexToMenuKey = {}; // Wheel index - MenuList primary key
   Set<int> _addedMenuKeys = {}; // Set of added MenuList primary key
 
