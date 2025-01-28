@@ -2,7 +2,7 @@
 
 Aplikasi yang didedikasikan untuk pecinta dan calon pecinta steak!
 
-Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web Upgrade](https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/).
+_Mobile upgraded version_ dari aplikasi yang ada di [SetakSetik Web Upgrade](https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/).
 
 ---
 
@@ -13,9 +13,8 @@ Versi _mobile_ dari aplikasi yang sudah ada di [SetakSetik Web Upgrade](https://
 4. [Initial Dataset](#initial-dataset)
 5. [Role atau Peran Pengguna](#role-atau-peran-pengguna)
 6. [Alur Pengintegrasian](#alur-pengintegrasian-dengan-web-service)
-7. [Rancangan](#rancangan-desain)
-8. [Tautan Deployment](#tautan-deployment)
-9. [Dokumentasi](#dokumentasi)
+7. [Tautan Deployment](#tautan-deployment)
+8. [Dokumentasi](#dokumentasi)
 
 ---
 
@@ -131,16 +130,10 @@ Saat ini, aplikasi ini dirancang untuk pecinta _steak_ berbasis Jakarta. Dataset
 
 ---
 
-## Rancangan Desain
-**Rancangan Awal:** [Google Drive](https://drive.google.com/drive/folders/1O0XBPTdz9gD1TJ1LrmA1kOUIPMY3dUva?usp=drive_link).
-
----
-
 ## Tautan Deployment
-**Aplikasi via App Center:** [SetakSetik Mobile Upgrade](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik-1/distribution_groups/public/releases/).
+**Aplikasi via App Center:** [SetakSetik Mobile Upgrade](https://install.appcenter.ms/orgs/pbp-c09/apps/setaksetik-1/distribution_groups/public).
 
 ---
 
 ## Dokumentasi
-- **Video Storyline:** [YouTube](https://youtu.be/KW6MbHLqILY?si=hb9QnD6wYGYt6XDk).
-- **Dokumentasi Aplikasi**: [Google Drive](https://drive.google.com/drive/folders/1RZED_cz4inNtOVT0_EubHG1Jb0msE876?usp=drive_link).
+**Dokumentasi Aplikasi**: [Google Drive](https://drive.google.com/drive/folders/1RZED_cz4inNtOVT0_EubHG1Jb0msE876?usp=drive_link).
