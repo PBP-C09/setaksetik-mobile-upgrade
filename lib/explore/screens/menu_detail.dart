@@ -60,6 +60,7 @@ class MenuDetailPage extends StatelessWidget {
 
                 Text(
                   menuList.fields.menu,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0,
@@ -187,7 +188,7 @@ class MenuDetailPage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '${menuList.fields.rating}',
+                      '${menuList.fields.rating.toStringAsFixed(2)}',
                       style: const TextStyle(
                         fontSize: 16.0,
                         color: const Color(0xFF3E2723),

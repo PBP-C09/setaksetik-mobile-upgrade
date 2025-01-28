@@ -11,7 +11,6 @@ Future<Map<String, dynamic>?> fetchBookings(CookieRequest request) async {
     final menuResponse = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/explore/get_menu/');
 
     if (response != null && menuResponse != null) {
-      // menuResponse jadi object menu
       final menus = menuResponse.map((item) => MenuList.fromJson(item)).toList();
       
       final restaurant = response['restaurant'];
@@ -90,7 +89,7 @@ class _PantauBookingPageState extends State<PantauBookingPage> {
     return Scaffold(
       backgroundColor: const Color(0xFF3E2723),
       appBar: AppBar(
-        title: const Text('Monitor Bookings'),
+        title: const Text('Monitor Booking'),
         centerTitle: true,
       ),
       drawer: const LeftDrawer(),

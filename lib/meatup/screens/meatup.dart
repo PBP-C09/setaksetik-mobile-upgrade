@@ -417,7 +417,7 @@ Future<void> _acceptMessage(CookieRequest request, int messageId) async {
                         TextButton.icon(
                           onPressed: () => _rejectMessage(request, message['id']),
                           icon: const Icon(Icons.block, color: Colors.red),
-                          label: const Text('Decline', style: TextStyle(color: Colors.red)),
+                          label: const Text('Reject', style: TextStyle(color: Colors.red)),
                         ),
                       ],
                       if (!isReceived)

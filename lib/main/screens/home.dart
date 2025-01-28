@@ -167,7 +167,7 @@ class HomePage extends StatelessWidget {
       buttons.addAll([
         _buildButtonWithInfo(
           context,
-          'Manage Menus',
+          'Manage Menu',
           const ExploreAdmin(),
           const Color(0xFF3E2723),
           const Color(0xFFF5F5DC),
@@ -178,7 +178,7 @@ class HomePage extends StatelessWidget {
         SizedBox(height: 16.0),
         _buildButtonWithInfo(
           context,
-          'Manage Reviews',
+          'Manage Review',
           const ReviewAdmin(),
           const Color(0xFF842323),
           const Color(0xFFF5F5DC),
@@ -204,7 +204,7 @@ class HomePage extends StatelessWidget {
           // Tombol untuk claim restoran
           _buildButtonWithInfo(
             context,
-            'Claim a Steakhouse',
+            'Claim Ownership',
             const ClaimPage(),
             const Color(0xFF3E2723),
             const Color(0xFFF5F5DC),

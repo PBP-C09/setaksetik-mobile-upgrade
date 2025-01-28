@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:setaksetikmobile/claim/screens/owned_restaurant.dart';
 import 'package:pbp_django_auth/pbp_django_auth.dart';
 import 'dart:convert';
 
@@ -34,17 +33,17 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
 
   // Dropdown
   final List<DropdownMenuItem<String>> categoryChoices = const [
-    DropdownMenuItem(value: 'beef', child: Text('Beef')),
-    DropdownMenuItem(value: 'chicken', child: Text('Chicken')),
-    DropdownMenuItem(value: 'fish', child: Text('Fish')),
-    DropdownMenuItem(value: 'lamb', child: Text('Lamb')),
-    DropdownMenuItem(value: 'pork', child: Text('Pork')),
-    DropdownMenuItem(value: 'rib eye', child: Text('Rib Eye')),
-    DropdownMenuItem(value: 'sirloin', child: Text('Sirloin')),
-    DropdownMenuItem(value: 't-bone', child: Text('T-Bone')),
-    DropdownMenuItem(value: 'tenderloin', child: Text('Tenderloin')),
-    DropdownMenuItem(value: 'wagyu', child: Text('Wagyu')),
-    DropdownMenuItem(value: 'other', child: Text('Other')),
+    DropdownMenuItem(value: 'Beef', child: Text('Beef')),
+    DropdownMenuItem(value: 'Chicken', child: Text('Chicken')),
+    DropdownMenuItem(value: 'Fish', child: Text('Fish')),
+    DropdownMenuItem(value: 'Lamb', child: Text('Lamb')),
+    DropdownMenuItem(value: 'Pork', child: Text('Pork')),
+    DropdownMenuItem(value: 'Rib Eye', child: Text('Rib Eye')),
+    DropdownMenuItem(value: 'Sirloin', child: Text('Sirloin')),
+    DropdownMenuItem(value: 'T-Bone', child: Text('T-Bone')),
+    DropdownMenuItem(value: 'Tenderloin', child: Text('Tenderloin')),
+    DropdownMenuItem(value: 'Wagyu', child: Text('Wagyu')),
+    DropdownMenuItem(value: 'Other', child: Text('Other')),
   ];
 
   final List<DropdownMenuItem<String>> cityChoices = const [
@@ -56,19 +55,19 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
   ];
 
   final List<DropdownMenuItem<String>> specializedChoices = const [
-    DropdownMenuItem(value: 'argentinian', child: Text('Argentinian')),
-    DropdownMenuItem(value: 'brazilian', child: Text('Brazilian')),
-    DropdownMenuItem(value: 'breakfast cafe', child: Text('Breakfast Cafe')),
-    DropdownMenuItem(value: 'british', child: Text('British')),
-    DropdownMenuItem(value: 'french', child: Text('French')),
-    DropdownMenuItem(value: 'fushioned', child: Text('Fushioned')),
-    DropdownMenuItem(value: 'italian', child: Text('Italian')),
-    DropdownMenuItem(value: 'japanese', child: Text('Japanese')),
-    DropdownMenuItem(value: 'local', child: Text('Local')),
-    DropdownMenuItem(value: 'local westerned', child: Text('Local Westerned')),
-    DropdownMenuItem(value: 'mexican', child: Text('Mexican')),
-    DropdownMenuItem(value: 'western', child: Text('Western')),
-    DropdownMenuItem(value: 'singaporean', child: Text('Singaporean')),
+    DropdownMenuItem(value: 'Argentinian', child: Text('Argentinian')),
+    DropdownMenuItem(value: 'Brazilian', child: Text('Brazilian')),
+    DropdownMenuItem(value: 'Breakfast Cafe', child: Text('Breakfast Cafe')),
+    DropdownMenuItem(value: 'British', child: Text('British')),
+    DropdownMenuItem(value: 'French', child: Text('French')),
+    DropdownMenuItem(value: 'Fushioned', child: Text('Fushioned')),
+    DropdownMenuItem(value: 'Italian', child: Text('Italian')),
+    DropdownMenuItem(value: 'Japanese', child: Text('Japanese')),
+    DropdownMenuItem(value: 'Local', child: Text('Local')),
+    DropdownMenuItem(value: 'Local Westerned', child: Text('Local Westerned')),
+    DropdownMenuItem(value: 'Mexican', child: Text('Mexican')),
+    DropdownMenuItem(value: 'Western', child: Text('Western')),
+    DropdownMenuItem(value: 'Singaporean', child: Text('Singaporean')),
   ];
 
   @override
@@ -160,7 +159,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                 hint: "Menu name (max length: 50)",
                 onChanged: (value) => setState(() => _menuName = value),
                 validator: (value) =>
-                    value == null || value.isEmpty ? "Nama menu tidak boleh kosong!" : null,
+                    value == null || value.isEmpty ? "Menu name cannot be empty!" : null,
               ),
 
               // Restaurant Name Input
@@ -238,10 +237,10 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                 isNumeric: true,
                 onChanged: (value) => setState(() => _price = int.tryParse(value) ?? 0),
                 validator: (value) {
-                  if (value == null || value.isEmpty) return "Harga menu tidak boleh kosong!";
-                  if (int.tryParse(value) == null) return "Harga harus berupa angka!";
+                  if (value == null || value.isEmpty) return "Price cannot be empty!";
+                  if (int.tryParse(value) == null) return "Price must be numbers!";
                   if (_price < 10000 || _price > 1800000) {
-                    return "Rating harus antara 10000 dan 1800000!";
+                    return "Price must be between 10000 and 1800000!";
                   }
                   return null;
                 },
@@ -258,11 +257,11 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                   });
                 },
                 validator: (value) {
-                  if (value == null || value.isEmpty) return "Rating tidak boleh kosong!";
-                  if (double.tryParse(value) == null) return "Harga harus berupa angka!";
+                  if (value == null || value.isEmpty) return "Rating cannot be empty!";
+                  if (double.tryParse(value) == null) return "Rating must be number!";
                   double? rating = double.tryParse(value);
                   if (rating == null || rating < 0.0 || rating > 5.0) {
-                    return "Rating harus antara 0.0 dan 5.0!";
+                    return "Rating must be between 0.0 and 5.0!";
                   }
                   return null;
                 },
@@ -274,7 +273,7 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                 hint: "Add image URL",
                 onChanged: (value) => setState(() => _imageUrl = value),
                 validator: (value) =>
-                    value == null || value.isEmpty ? "Gambar menu tidak boleh kosong!" : null,
+                    value == null || value.isEmpty ? "Image URL cannot be empty!" : null,
               ),
 
               // Checkboxes for Additional Features
@@ -370,13 +369,13 @@ class _AddMenuOwnerState extends State<AddMenuOwner> {
                               if (context.mounted) {
                                 if (response['status'] == 'success') {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("Menu baru berhasil disimpan!")),
+                                    const SnackBar(content: Text("New menu has been saved successfully!")),
                                   );
                                    Navigator.pop(context, true);
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text("Terdapat kesalahan, silakan coba lagi."),
+                                      content: Text("There was an error, please try again."),
                                     ),
                                   );
                                 }
@@ -454,7 +453,7 @@ Widget _buildDropdown({
       ),
       items: items,
       onChanged: onChanged,
-      validator: (value) => value == null || value.isEmpty ? "$label harus dipilih!" : null,
+      validator: (value) => value == null || value.isEmpty ? "$label must be selected!" : null,
     ),
   );
 }

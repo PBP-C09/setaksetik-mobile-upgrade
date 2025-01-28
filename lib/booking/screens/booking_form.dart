@@ -160,6 +160,7 @@ class _BookingFormPageState extends State<BookingFormPage> {
                         const SizedBox(height: 8),
                         Text(
                           widget.restaurantName,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.bold,

@@ -19,9 +19,14 @@ class _FilterWidgetState extends State<FilterWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.only(
+        top: 4,
+        left: 24,
+        right: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: Color(0xFFF5F5DC),
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(24),
         ),
@@ -30,25 +35,41 @@ class _FilterWidgetState extends State<FilterWidget> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Text(
-            'Filter Restaurants',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
+              "Filter Restaurants",
+              style: TextStyle(
+                fontSize: 24,
+                fontFamily: 'Playfair Display',
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF5B3E39),
+              ),
+            ),
           const SizedBox(height: 16),
-          DropdownButtonFormField<String>(
-            value: selectedCity,
-            items: const [
-              DropdownMenuItem(value: 'Central Jakarta', child: Text('Central Jakarta')),
-              DropdownMenuItem(value: 'East Jakarta', child: Text('East Jakarta')),
-              DropdownMenuItem(value: 'North Jakarta', child: Text('North Jakarta')),
-              DropdownMenuItem(value: 'South Jakarta', child: Text('South Jakarta')),
-              DropdownMenuItem(value: 'West Jakarta', child: Text('West Jakarta')),
-            ],
-            onChanged: (value) {
-              setState(() {
-                selectedCity = value;
-              });
-            },
-            decoration: const InputDecoration(labelText: 'City'),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child:
+              DropdownButtonFormField<String>(
+                value: selectedCity,
+                items: const [
+                  DropdownMenuItem(value: 'Central Jakarta', child: Text('Central Jakarta')),
+                  DropdownMenuItem(value: 'East Jakarta', child: Text('East Jakarta')),
+                  DropdownMenuItem(value: 'North Jakarta', child: Text('North Jakarta')),
+                  DropdownMenuItem(value: 'South Jakarta', child: Text('South Jakarta')),
+                  DropdownMenuItem(value: 'West Jakarta', child: Text('West Jakarta')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    selectedCity = value;
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: 'City', 
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
+              ),
           ),
           const SizedBox(height: 16),
           CheckboxListTile(
@@ -87,19 +108,31 @@ class _FilterWidgetState extends State<FilterWidget> {
               });
             },
           ),
-          ElevatedButton(
-            onPressed: () {
-              widget.onFilter({
-                'city': selectedCity,
-                'takeaway': takeaway,
-                'delivery': delivery,
-                'outdoor': outdoor,
-                'wifi': wifi,
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Apply Filters'),
-          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                widget.onFilter({
+                  'city': selectedCity,
+                  'takeaway': takeaway,
+                  'delivery': delivery,
+                  'outdoor': outdoor,
+                  'wifi': wifi,
+                });
+                Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF5B3E39),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Apply Filters'),
+            ),
+          )
         ],
       ),
     );

@@ -30,8 +30,6 @@ class _ReviewAdminState extends State<ReviewAdmin> {
         jsonEncode({'review_id': reviewId}),
       );
 
-      print(response);
-
       if (response['status'] == 'success') {
         setState(() {
           reviews.removeWhere((review) => review.pk == reviewId);
@@ -84,7 +82,7 @@ class _ReviewAdminState extends State<ReviewAdmin> {
       body: reviews.isEmpty
           ? const Center(
               child: Text(
-                "There's no review yet :(",
+                "No reviews yet :(",
                 style: TextStyle(
                   fontSize: 20,
                   color: Color(0xFFF5F5DC),

@@ -76,7 +76,7 @@ class _MenuPageState extends State<MenuPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  'Makan apa',
+                  'Discover new',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 42,
@@ -85,7 +85,7 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                 ),
                 Text(
-                  'hari ini?',
+                  'favourites!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 42,
@@ -110,7 +110,7 @@ class _MenuPageState extends State<MenuPage> {
                           controller: _searchController,
                           style: const TextStyle(color: Colors.black),
                           decoration: InputDecoration(
-                            hintText: 'Cari menu',
+                            hintText: 'Search menu',
                             hintStyle: const TextStyle(fontSize: 14),
                             prefixIcon: const Icon(Icons.search, size: 20),
                             isDense: true,
@@ -192,11 +192,12 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Menu yang kamu cari tidak ada',
+                    'No matches!',
                     style: TextStyle(
                       fontSize: 18,
                       color: Color(0xFFF5F5DC),
                       fontFamily: 'Playfair Display',
+                      fontStyle: FontStyle.italic
                     ),
                   ),
                 ],
@@ -221,7 +222,7 @@ class _MenuPageState extends State<MenuPage> {
                           
                         ),
                         Text(
-                  'Makan apa',
+                  'Discover new',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 42,
@@ -230,7 +231,7 @@ class _MenuPageState extends State<MenuPage> {
                   ),
                 ),
                 Text(
-                  'hari ini?',
+                  'favourites!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 42,
@@ -255,7 +256,7 @@ class _MenuPageState extends State<MenuPage> {
                                   controller: _searchController, 
                                   style: const TextStyle(color: Colors.black),
                                   decoration: InputDecoration(
-                                    hintText: 'Cari menu',
+                                    hintText: 'Search menu',
                                     hintStyle: const TextStyle(fontSize: 14),
                                     prefixIcon: const Icon(Icons.search, size: 20),
                                     isDense: true,

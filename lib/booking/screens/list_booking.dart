@@ -145,30 +145,15 @@ class _BookingListPageState extends State<BookingListPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                         const Text(
-                            'No bookings found :O, please make a booking :D',
+                            'No bookings yet!',
                             style: TextStyle(
                               fontSize: 20,
                               color: Color(0xFFF5F5DC),
                               fontFamily: 'Playfair Display',
+                              fontStyle: FontStyle.italic
                             ),
                             textAlign: TextAlign.center,
                             softWrap: true,
-                        ),
-                        const SizedBox(height: 16),
-                        ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255, 166, 143, 140),
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => const BookingPage(),
-                                    ),
-                                );
-                            },
-                            child: const Text('Booking'),
                         ),
                     ],
                 ),
@@ -271,7 +256,7 @@ class _BookingListPageState extends State<BookingListPage> {
                                 decoration: BoxDecoration(
                                   color: booking['status'] == 'waiting' 
                                       ? const Color(0xFF842323) 
-                                      : const Color(0xFFFFD54F), // Conditional color
+                                      : const Color(0xFFFFD54F),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
@@ -286,28 +271,28 @@ class _BookingListPageState extends State<BookingListPage> {
                                 ),
                               ),
                               if (booking['status'] == 'waiting')
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.edit, color: Color(0xFF6D4C41)),
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => EditBookingPage(
-                                              bookingId: booking['id'],
-                                              restaurantName: booking['restaurant_name'],
-                                            ),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit, color: Color(0xFF6D4C41)),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => EditBookingPage(
+                                            bookingId: booking['id'],
+                                            restaurantName: booking['restaurant_name'],
                                           ),
-                                        );
-                                      },
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete, color: Color(0xFF842323)),
-                                      onPressed: () => deleteBooking(booking['id']),
-                                    ),
-                                  ],
-                                ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Color(0xFF842323)),
+                                    onPressed: () => deleteBooking(booking['id']),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ],

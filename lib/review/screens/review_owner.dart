@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:setaksetikmobile/review/models/review.dart';
 import 'package:setaksetikmobile/widgets/left_drawer.dart';
 import 'package:setaksetikmobile/explore/models/menu_entry.dart';
-import 'review_list.dart';
 
 class ReviewOwner extends StatefulWidget {
   const ReviewOwner({super.key});
@@ -19,15 +18,6 @@ class _ReviewOwnerState extends State<ReviewOwner> {
   List<MenuList> menus = [];
   List<ReviewList> filteredReviews = [];
   TextEditingController _searchController = TextEditingController();
-
-    // Fungsi helper
-  // String getMenuNameByIndex(int index) {
-  //   final menu = menus.firstWhere(
-  //     (menu) => menu.pk == index,
-  //     orElse: () => MenuList(pk: -1, name: 'Unknown'),
-  //   );
-  //   return menu.name;
-  // }
 
   @override
   void initState() {
@@ -58,11 +48,9 @@ class _ReviewOwnerState extends State<ReviewOwner> {
   Future<void> fetchReviews(CookieRequest request) async {
     try {
       final response = await request.get('https://haliza-nafiah-setaksetik.pbp.cs.ui.ac.id/review/pantau-review-owner/');
-      print("Response: $response");
 
       if (response is Map<String, dynamic> && response.containsKey('reviews')) {
         final reviewsData = response['reviews'];
-        print("Reviews: $reviewsData");
 
         if (reviewsData is List) {
           final List<ReviewList> tempReviews = [];
@@ -89,17 +77,12 @@ class _ReviewOwnerState extends State<ReviewOwner> {
     }
   }
 
-
-
-
-
   void filterReviews() {
     final query = _searchController.text.toLowerCase();
     setState(() {
       filteredReviews = reviews
           .where((review) =>
-              //TODO: ini perhatiin lagi
-              // review.fields.menu.toLowerCase().contains(query) ||
+              review.fields.name.toLowerCase().contains(query) ||
               review.fields.place.toLowerCase().contains(query) ||
               review.fields.description.toLowerCase().contains(query))
           .toList();
@@ -156,6 +139,26 @@ class _ReviewOwnerState extends State<ReviewOwner> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Text(
+                  'Reviews in',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontFamily: 'Playfair Display',
+                    color: Color(0xFFF5F5DC),
+                  ),
+                ),
+                Text(
+                  'your restaurant',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 42,
+                    fontFamily: 'Playfair Display',
+                    color: Color(0xFFF5F5DC),
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+                const SizedBox(height: 16),
             // Search Bar
             Padding(
               padding: const EdgeInsets.only(bottom: 16.0),
@@ -179,7 +182,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
             filteredReviews.isEmpty
                 ? const Center(
                     child: Text(
-                      "There's no review yet :(",
+                      "No reviews yet :(",
                       style: TextStyle(
                         fontSize: 20,
                         color: Color(0xFFF5F5DC),
@@ -288,7 +291,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                                 children: [
                                                   Expanded(
                                                     child: Text(
-                                                      review.fields.ownerReply!,
+                                                      review.fields.ownerReply,
                                                       style: const TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.black,
@@ -299,7 +302,7 @@ class _ReviewOwnerState extends State<ReviewOwner> {
                                                   IconButton(
                                                     icon: const Icon(
                                                       Icons.edit,
-                                                      color: Colors.blue, // Blue color for the edit icon
+                                                      color: Color(0xFF3E2723),
                                                     ),
                                                     onPressed: () async {
                                                       final updatedReply = await showDialog<String>(
@@ -363,20 +366,54 @@ class _ReplyDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Your Reply'),
+      contentPadding: EdgeInsets.all(20.0),
+      title: Center(
+        child: Text(
+          'Your Reply',
+          style: TextStyle(
+            fontFamily: 'Playfair Display',
+            fontWeight: FontWeight.w600,
+            fontStyle: FontStyle.italic,
+            color: Color(0xFF3E2723),
+            fontSize: 20.0,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
       content: TextField(
         controller: _controller,
-        decoration: const InputDecoration(hintText: 'Enter your reply'),
+        decoration: InputDecoration(
+          hintText: 'Enter your reply',
+          hintStyle: TextStyle(
+            fontFamily: 'Raleway',
+            color: Color(0xFFF5F5DC),
+          ),
+          filled: true,
+          fillColor: Color(0xFF3E2723),
+          border: OutlineInputBorder(),
+        ),
+        style: TextStyle(
+          fontFamily: 'Raleway',
+          color: Color(0xFFF5F5DC),
+        ),
         maxLines: 3,
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(_controller.text),
-          child: const Text('Submit'),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              SizedBox(width: 10),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(_controller.text),
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ],
     );
